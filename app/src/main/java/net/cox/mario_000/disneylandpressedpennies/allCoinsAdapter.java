@@ -58,7 +58,7 @@ public class allCoinsAdapter extends ArrayAdapter<Coin> {
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         newCoins = getContext().getResources().getStringArray(R.array.new_coins);
         offMachine = getContext().getResources().getStringArray(R.array.off_mac);
-        String a = "Test";
+        String a = "Testing";
     }
 
     public void addSeparatorItem(final String item) {
