@@ -41,14 +41,13 @@
         \n\n<b>Map:</b>\nThis displays an integrated Google Map with a marker at each machine location. When you click on a marker a window will appear with the machine name.
         You can click on the name and it will open the details of that machine.\n\n<b>Search:</b>\nLet\'s you search the coin database for a certain Character or anything you would like a coin to feature. Enter your search term and it will display all coins
         including your search term with a count of how many were found. From here you can access any coin like normal.\n\n<b>Email developer:</b>\nOpen the menu bar on the top left and select E-Mail. Any and all feedback is welcomed and will be reviewed quickly. So if you
-        have any questions, ideas, comments, or improvements please don\'t hesitate to contact me.\n<b>Backup/Restore:</b>\nClick Backup to backup your current collection. Click Restore to restore your backup. Click Export to export your current collection to a PDF.\n</string>
+        have any questions, ideas, comments, or improvements please don\'t hesitate to contact me.\n\n<b>Backup/Restore:</b>\nClick Backup to backup your current collection. Click Restore to restore your backup. Click Export to export your current collection to a PDF.\n</string>
 
     <string name="whatsnew">
         Machine Update:
         \n\nDisneyland:\n-Returned \'Penny Arcade #2\'
         \n\nNew Features:\n-Long titles now scroll on one line.
-        \n\nTips:
-        \n\n-Be on the lookout for new Pixar Pier coins showing up soon.\n-Also, expect a lot of changes coming to Downtown Disney soon as well.
+        \n\nTips:\n-Be on the lookout for new Pixar Pier coins showing up soon.\n-Also, expect a lot of changes coming to Downtown Disney as well.
         \n\nThank you for your continued support.
     </string>
 

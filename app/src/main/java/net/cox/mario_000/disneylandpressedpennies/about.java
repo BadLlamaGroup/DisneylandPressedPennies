@@ -34,7 +34,6 @@ public class about extends Fragment {
         mTracker = application.getDefaultTracker();
         mTracker.setScreenName("Page - About");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        int i = 1;
 
         Button btnExit = (Button) view.findViewById(R.id.btnAboutExit);
         btnExit.setOnClickListener(new View.OnClickListener() {
