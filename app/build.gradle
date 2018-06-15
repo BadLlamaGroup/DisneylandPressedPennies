@@ -1,0 +1,52 @@
+apply plugin: 'com.android.application'
+
+
+android {
+    signingConfigs {
+        config {
+            keyAlias 'MyKey'
+            keyPassword 'disney55'
+            storeFile file('C:/Users/mario_000/Desktop/keystore.jks')
+            storePassword 'bologna3742'
+        }
+    }
+    compileSdkVersion 27
+    buildToolsVersion '26.0.2'
+    defaultConfig {
+        applicationId "net.cox.mario_000.disneylandpressedpennies"
+        minSdkVersion 18
+        targetSdkVersion 27
+        versionCode 57
+        versionName "1.57"
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            signingConfig signingConfigs.config
+            debuggable false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                    'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.google.android.gms:play-services-location:11.0.4'
+    compile 'com.google.android.gms:play-services-maps:11.0.4'
+    compile 'com.android.support:support-v13:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+    compile project(':dynamicgrid')
+    compile 'io.github.kobakei:ratethisapp:1.1.2'
+    compile 'com.github.clans:fab:1.6.4'
+    compile 'com.google.android.gms:play-services-analytics:11.0.4'
+    compile 'com.github.jinatonic.confetti:confetti:1.1.0'
+    compile 'com.itextpdf:itextpdf:5.5.12'
+}
+
+
+apply plugin: 'com.google.gms.google-services'

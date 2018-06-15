@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <group android:checkableBehavior="single">
+
+        <item
+
+            android:id="@+id/nav_main_page"
+
+            android:icon="@drawable/disney_icon"
+
+            android:title="Main Page" />
+
+
+    </group>
+
+    <item android:title="Lands">
+
+        <menu>
+
+            <group android:checkableBehavior="single">
+
+                <item
+
+                    android:id="@+id/nav_disneyland"
+                    android:icon="@drawable/partners"
+                    android:title="Disneyland" />
+                <item
+
+                    android:id="@+id/nav_california"
+                    android:icon="@drawable/suitcase"
+                    android:title="California Adventure" />
+                <item
+
+                    android:id="@+id/nav_downtown"
+                    android:icon="@drawable/downtown"
+                    android:title="Downtown Disney" />
+
+
+            </group>
+
+        </menu>
+
+    </item>
+
+
+    <item android:title="Extras">
+
+        <menu>
+
+            <group android:checkableBehavior="single">
+                <item
+
+                    android:id="@+id/nav_all_coins"
+
+                    android:icon="@drawable/list"
+
+                    android:title="Coin List" />
+
+                <item
+
+                    android:id="@+id/nav_coin_book"
+                    android:icon="@drawable/book"
+                    android:title="Coin Book" />
+
+                <item
+
+                    android:id="@+id/nav_want_list"
+
+                    android:icon="@drawable/want"
+
+                    android:title="Want It List" />
+
+                <item
+
+                    android:id="@+id/nav_maps"
+
+                    android:icon="@drawable/find_map"
+
+                    android:title="Map" />
+
+                <item
+
+                    android:id="@+id/nav_search"
+
+                    android:icon="@drawable/search"
+
+                    android:title="Search" />
+
+
+            </group>
+
+
+        </menu>
+
+    </item>
+
+
+    <item android:title="Misc.">
+
+        <menu>
+
+            <group android:checkableBehavior="single">
+                <item
+
+                    android:id="@+id/nav_tutorial"
+
+                    android:icon="@drawable/tutorial"
+
+                    android:title="Tutorial" />
+                <item
+
+                    android:id="@+id/nav_about"
+
+                    android:icon="@drawable/about"
+
+                    android:title="About" />
+
+                <item
+
+                    android:id="@+id/nav_email"
+
+                    android:icon="@drawable/email"
+
+                    android:title="Email Bad Llama Group" />
+
+                <item
+
+                    android:id="@+id/nav_rate"
+
+                    android:icon="@drawable/rate"
+
+                    android:title="Rate App" />
+
+                <item
+
+                    android:id="@+id/nav_backup"
+
+                    android:icon="@drawable/settings"
+
+                    android:title="Backup / Restore" />
+
+
+
+            </group>
+
+
+        </menu>
+
+    </item>
+
+
+    <group
+        android:id="@+id/exitGroup"
+        android:checkableBehavior="single">
+
+
+        <item
+
+            android:id="@+id/nav_exit"
+
+            android:icon="@drawable/exit"
+
+            android:title="Exit" />
+
+
+    </group>
+
+
+</menu>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/row_new_bg">
+
+    <ImageView
+        android:id="@+id/imgCoin"
+        android:layout_width="80dp"
+        android:layout_height="140dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:scaleType="centerInside" />
+
+    <TextView
+        android:id="@+id/rowName"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit ="1"
+        android:scrollHorizontally="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_toEndOf="@+id/imgCoin"
+        android:paddingStart="30dp"
+        android:text="Name of coin"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"/>
+
+    <!--<TextView-->
+        <!--android:id="@+id/rowName"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="30dp"-->
+        <!--android:layout_toEndOf="@+id/imgCoin"-->
+        <!--android:paddingStart="30dp"-->
+        <!--android:text="Name of coin"-->
+        <!--android:textColor="@android:color/black"-->
+        <!--android:textSize="24sp" />-->
+
+    <TextView
+        android:id="@+id/rowDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rowName"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/imgCoin"
+        android:text="Machine"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/rowCollected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rowDescription"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/imgCoin"
+        android:text="Not yet collected"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+
+    <ImageView
+        android:id="@+id/newCoin"
+        android:layout_width="65dp"
+        android:layout_height="53dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/new_coins"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:id="@+id/offMac"
+        android:layout_width="65dp"
+        android:layout_height="53dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/construction_mickey"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
+        android:visibility="invisible"/>
+
+</RelativeLayout>

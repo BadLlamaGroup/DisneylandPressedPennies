@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">Pressed Coins at Disneyland</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
+    <string-array name="Sort_Type">
+        <item>A-Z</item>
+        <item>Z-A</item>
+        <item>Old-New</item>
+        <item>New-Old</item>
+        <item>Custom</item>
+        <item>By land</item>
+    </string-array>
+
+    <string-array name="Email_Subject">
+        <item>Feature</item>
+        <item>Complaint</item>
+        <item>Machine Change</item>
+        <item>Ideas</item>
+    </string-array>
+
+    <string name="about">The purpose of Pressed Coins at Disneyland is to assist you in keeping track of the coins you have collected. It
+        will also help locate machines and guide you to them. \nThis app will help keep your collection organized and easy to identify which coins are still needed.
+        This will eliminate the need to bring your whole collection with you to the park.</string>
+
+    <string name="disclaimer">The property in the images are copyright of Disney and all rights of the machines and coins belong to Disney.
+    All coin machines displayed in this app are under the trademark of the Disney Parks company and I am not affiliated with Disney.\n
+    All coin images are retrieved from ParkPennies.com\n\nAll rights of use of those images belong to them. They are a great website to use as a
+        resource and I highly recommend them. </string>
+
+    <string name="tutorial"><b>Main Page:</b>\nYou have the option to choose which park you want to look at. Simply click on the image of the park you wish to visit.\n\n<b>In park page:</b>\nChoose from the list of lands displayed to view machines located in that land. You also have the option to choose between three features on that page;
+        Coin Book, Coin List, and Map which are described below.\n\n<b>In selected land page:</b>\nDisplays all machines located in that land. Each machine shows how many coins are collected from it. From here you can choose
+        a certain machine to display the coins from it.\n\n<b>In selected machine page:</b>\nDisplays preview of coins in machine along with two features. The first of the features is Navigate which will navigate you to that machine from
+        your current location. The second feature is Show on Map which will open the map with that machine selected. Following that is the list of coins
+        available. You can click on any coin to see the details for it.\n\n<b>In selected coin page:</b>\nDisplays all details of the selected coin. This is where you can mark if you have collected the coin or to remove it.\n\n<b>Coin Book:</b>\nDisplays images of all coins currently collected. There are several sorting options as well as a custom arrangement you get to decide from. You can
+        also click on any coin to enlarge the coin with the information displayed. You are able to swipe from left to right to go through your whole collection.
+        You have two different display options for this page, display book and display details of coins.\n\n<b>Coin List:</b>\nDisplays all coins per park separated by land. From here you can access any coin in the selected park. You can change parks by clicking on the icon
+        in the lower right corner. Coin details will be grayed out until collected. You can also switch to the list of retired machines to update your collection of older coins.
+        This makes checking whats in your collection quick and easy.\n\n<b>Want It List:</b>\nDisplays list of coins you still want to collect. You can choose which coins you want in the coin detail page. This makes it easy to see coins your interested in and to plan ahead. The list is separated by land for convenience.
+        \n\n<b>Map:</b>\nThis displays an integrated Google Map with a marker at each machine location. When you click on a marker a window will appear with the machine name.
+        You can click on the name and it will open the details of that machine.\n\n<b>Search:</b>\nLet\'s you search the coin database for a certain Character or anything you would like a coin to feature. Enter your search term and it will display all coins
+        including your search term with a count of how many were found. From here you can access any coin like normal.\n\n<b>Email developer:</b>\nOpen the menu bar on the top left and select E-Mail. Any and all feedback is welcomed and will be reviewed quickly. So if you
+        have any questions, ideas, comments, or improvements please don\'t hesitate to contact me.\n<b>Backup/Restore:</b>\nClick Backup to backup your current collection. Click Restore to restore your backup. Click Export to export your current collection to a PDF.\n</string>
+
+    <string name="whatsnew">
+        Machine Update:
+        \n\nDisneyland:\n-Returned \'Penny Arcade #2\'
+        \n\nNew Features:\n-Long titles now scroll on one line.
+        \n\nTips:
+        \n\n-Be on the lookout for new Pixar Pier coins showing up soon.\n-Also, expect a lot of changes coming to Downtown Disney soon as well.
+        \n\nThank you for your continued support.
+    </string>
+
+    <string-array name="new_coins">
+        <item>Port Royal Curios &amp; Curiosities</item>
+        <item>Opera House Exit #4</item>
+        <item>Trolley Treats</item>
+        <item>Penny Arcade #2</item>
+
+    </string-array>
+
+    <string-array name="off_mac">
+        <item>Treasures In Paradise</item>
+        <item>Sideshow Shirts</item>
+        <item>East Door</item>
+        <item>ESPN Zone</item>
+
+    </string-array>
+
+</resources>

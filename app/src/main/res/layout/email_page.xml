@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/border"
+    android:orientation="vertical"
+    android:padding="5dp"
+    android:paddingEnd="20dp"
+    android:paddingStart="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:text="Reason"
+        android:textColor="@android:color/black" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/gradient" />
+
+
+    <RadioGroup
+        android:id="@+id/rdoReason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp">
+
+        <RadioButton
+            android:id="@+id/rdoFeature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Feature Request" />
+
+        <RadioButton
+            android:id="@+id/rdoIdea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Idea" />
+
+        <RadioButton
+            android:id="@+id/rdoMac"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Machine Change" />
+
+        <RadioButton
+            android:id="@+id/rdoComplaint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Complaint" />
+
+        <RadioButton
+            android:id="@+id/rdoOther"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Other" />
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btn_send_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/border"
+        android:text="Open E-Mail" />
+
+</LinearLayout>

@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "401739676858",
+    "project_id": "disneyland-pressed-coins"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:401739676858:android:965553292c960657",
+        "android_client_info": {
+          "package_name": "net.cox.mario_000.disneylandpressedpennies"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACmXmLKtfWD0-urxg8H5tXXmQffkHVTi0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-92977200-1"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

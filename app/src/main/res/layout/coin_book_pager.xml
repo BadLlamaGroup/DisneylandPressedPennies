@@ -1,0 +1,51 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    tools:context=".MainActivity">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/txt_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:text="Title"
+        android:textColor="#ffffff"
+        android:layout_marginStart="5dp"/>
+    <TextView
+        android:id="@+id/txt_land"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_title"
+        android:text="Land"
+        android:textColor="#ffffff"
+        android:layout_marginStart="5dp"/>
+    <TextView
+        android:id="@+id/txt_mac"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_land"
+        android:text="Machine"
+        android:textColor="#ffffff"
+        android:layout_marginStart="5dp"/>
+
+    <TextView
+        android:id="@+id/txt_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_mac"
+        android:text="Date"
+        android:textColor="#ffffff"
+        android:layout_marginStart="5dp"/>
+
+
+
+
+
+</RelativeLayout>
