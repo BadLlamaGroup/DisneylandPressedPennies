@@ -59,7 +59,7 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:text="Press your pennies and expand your collection. Its that simple!"
+                android:text="Press your pennies and expand your collection. It's that simple!"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"/>
 

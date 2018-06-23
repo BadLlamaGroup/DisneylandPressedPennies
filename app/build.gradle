@@ -11,13 +11,13 @@ android {
         }
     }
     compileSdkVersion 27
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "net.cox.mario_000.disneylandpressedpennies"
         minSdkVersion 18
         targetSdkVersion 27
-        versionCode 57
-        versionName "1.57"
+        versionCode 59
+        versionName "1.59"
     }
     buildTypes {
         release {
@@ -31,22 +31,23 @@ android {
     }
 }
 
+
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'com.google.android.gms:play-services-location:11.0.4'
-    compile 'com.google.android.gms:play-services-maps:11.0.4'
-    compile 'com.android.support:support-v13:25.3.1'
-    compile 'com.android.support:design:25.3.1'
-    compile project(':dynamicgrid')
-    compile 'io.github.kobakei:ratethisapp:1.1.2'
-    compile 'com.github.clans:fab:1.6.4'
-    compile 'com.google.android.gms:play-services-analytics:11.0.4'
-    compile 'com.github.jinatonic.confetti:confetti:1.1.0'
-    compile 'com.itextpdf:itextpdf:5.5.12'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'com.android.support:support-v13:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation project(':dynamicgrid')
+    implementation 'io.github.kobakei:ratethisapp:1.1.2'
+    implementation 'com.github.clans:fab:1.6.4'
+    implementation 'com.google.android.gms:play-services-analytics:16.0.1'
+    implementation 'com.github.jinatonic.confetti:confetti:1.1.0'
+    implementation 'com.itextpdf:itextpdf:5.5.12'
+    implementation 'com.google.android.gms:play-services-maps:15.0.1'
 }
 
 
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'

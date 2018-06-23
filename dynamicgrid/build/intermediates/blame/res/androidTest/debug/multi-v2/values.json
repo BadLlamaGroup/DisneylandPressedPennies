@@ -4,7 +4,7 @@
             "outputFile": "C:\\DisneylandPressedPennies1 - In progress\\dynamicgrid\\build\\intermediates\\incremental\\mergeDebugAndroidTestResources\\merged.dir\\values\\values.xml",
             "map": [
                 {
-                    "source": "C:\\DisneylandPressedPennies1 - In progress\\dynamicgrid\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "source": "C:\\DisneylandPressedPennies1 - In progress\\dynamicgrid\\build\\intermediates\\packaged_res\\debug\\values\\values.xml",
                     "from": {
                         "startLines": "2,3",
                         "startColumns": "4,4",
