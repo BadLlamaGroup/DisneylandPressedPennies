@@ -1,5 +1,6 @@
 package net.cox.mario_000.disneylandpressedpennies;
 
+import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -7,8 +8,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,7 +17,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,14 +33,16 @@ import com.github.jinatonic.confetti.confetto.BitmapConfetto;
 import com.github.jinatonic.confetti.confetto.Confetto;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import static android.app.Activity.RESULT_OK;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.numArcCoinsCollected;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.numCalCoinsCollected;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.numCalCoinsTotal;
@@ -67,7 +69,7 @@ public class MainPage extends Fragment implements View.OnClickListener {
     MainActivity application;
     private Tracker mTracker;
     Button pictureBtn;
-    ImageView picturePreview;
+    ImageView newImage;
     boolean storageApproved;
 
 
@@ -82,6 +84,7 @@ public class MainPage extends Fragment implements View.OnClickListener {
         downtownCollected.setText(numDowntownCoinsCollected + " / " + numDowntownCoinsTotal);
     }
 
+    @TargetApi(23)
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View myFragmentView = inflater.inflate(R.layout.main_page, container, false);
@@ -95,16 +98,26 @@ public class MainPage extends Fragment implements View.OnClickListener {
 
 
         pictureBtn = myFragmentView.findViewById(R.id.picture);
-        picturePreview = myFragmentView.findViewById(R.id.picturePreview);
+        //picturePreview = myFragmentView.findViewById(R.id.cropImageView);
+        newImage = myFragmentView.findViewById(R.id.newImage);
+
+        //pictureBtn.setOnClickListener(this);
 
         pictureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 isStoragePermissionGranted();
-                dispatchTakePictureIntent();
+                //dispatchTakePictureIntent();
+
+                CropImage.activity()
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setRequestedSize(290,520)
+                        .setAspectRatio(29,52)
+                        .setCropShape(CropImageView.CropShape.OVAL)
+                        .setAutoZoomEnabled(true)
+                        .start(getContext(), MainPage.this);
             }
         });
-
 
         LinearLayout disneyLayout = (LinearLayout) myFragmentView.findViewById(R.id.disneyMain);
         disneyLayout.setOnClickListener(this);
@@ -186,6 +199,9 @@ public class MainPage extends Fragment implements View.OnClickListener {
             case (R.id.downtownMain):
                 fragment = new DowntownPage();
                 break;
+            case (R.id.picture):
+                fragment = new CustomCoinFragment();
+                break;
         }
         fragmentTransaction.setCustomAnimations(
                 R.animator.fade_in,
@@ -197,91 +213,64 @@ public class MainPage extends Fragment implements View.OnClickListener {
         fragmentTransaction.commit();
     }
 
-    static final int REQUEST_TAKE_PHOTO = 1;
-
-    @Override
     public void onActivityResult(int requestCode,
                                  int resultCode, Intent data) {
-        if (requestCode == REQUEST_TAKE_PHOTO) {
-                Bitmap myBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
-
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
                 try {
-                    ExifInterface ei = new ExifInterface(mCurrentPhotoPath);
-                    int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-                            ExifInterface.ORIENTATION_UNDEFINED);
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), resultUri);
+                    Bitmap newBitmap = CropImage.toOvalBitmap(bitmap);
+                    Bitmap b = Bitmap.createBitmap(400, 600, Bitmap.Config.ARGB_8888);
 
-                    Bitmap rotatedBitmap;
-                    switch (orientation) {
+                    Bitmap bmOverlay = Bitmap.createBitmap(b.getWidth(), b.getHeight(), b.getConfig());
+                    Canvas canvas = new Canvas(bmOverlay);
+                    canvas.drawBitmap(b, new Matrix(), null);
+                    canvas.drawBitmap(newBitmap, (b.getWidth() - newBitmap.getWidth()) / 2, (b.getHeight() - newBitmap.getHeight()) / 2, null);
 
-                        case ExifInterface.ORIENTATION_ROTATE_90:
-                            rotatedBitmap = rotateImage(myBitmap, 90);
-                            break;
 
-                        case ExifInterface.ORIENTATION_ROTATE_180:
-                            rotatedBitmap = rotateImage(myBitmap, 180);
-                            break;
+                    SaveImage(bmOverlay);
 
-                        case ExifInterface.ORIENTATION_ROTATE_270:
-                            rotatedBitmap = rotateImage(myBitmap, 270);
-                            break;
 
-                        case ExifInterface.ORIENTATION_NORMAL:
-                        default:
-                            rotatedBitmap = myBitmap;
-                    }
+//                    Coin[] b = new Coin[]{
+//                            new Coin("Minnie & Mickey Happy Holidays 2017", "penny_arcade_3_mickey_2017", null)};
+//                    Machine a = new Machine("Main Street", "Peter Pan", "Quarter", null, "image", null, b, null);
+//                    List<Coin> c = Arrays.asList(a.getCoins());
+//                    Coin d = new Coin("Minnie & Mickey Happy Holidays 2017", "penny_arcade_3_mickey_2017", null);
+//                    c.add(d);
 
-                    picturePreview.setImageBitmap(rotatedBitmap);
-
-                } catch (IOException e) {
+                }
+                catch (IOException e)
+                {
                     e.printStackTrace();
                 }
-        }
-    }
-
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(getActivity().getApplicationContext(),
-                        "com.example.android.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
             }
         }
     }
 
-    String mCurrentPhotoPath;
+    private void SaveImage(Bitmap finalBitmap) {
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "TEST";
-        File sdCard = Environment.getExternalStorageDirectory();
-        File dir = new File(sdCard.getAbsolutePath() + "/Pressed Coins at Disneyland/Coins");
+        String root = Environment.getExternalStorageDirectory().toString();
+        File dir = new File(root + "/Pressed Coins at Disneyland/Coins");
         dir.mkdirs();
+        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);
+        String fname = "Image-"+ n +".png";
+        File file = new File (dir, fname);
+        if (file.exists ()) file.delete ();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
 
-        File image = new File(dir, imageFileName + "_" + timeStamp + ".jpg");
-
-        mCurrentPhotoPath = image.getAbsolutePath();
-
-        return image;
-    }
-
-    public static Bitmap rotateImage(Bitmap source, float angle) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
-                matrix, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void isStoragePermissionGranted() {

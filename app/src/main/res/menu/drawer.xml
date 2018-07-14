@@ -52,6 +52,14 @@
             <group android:checkableBehavior="single">
                 <item
 
+                    android:id="@+id/nav_custom_coin"
+
+                    android:icon="@drawable/list"
+
+                    android:title="Custom Coins" />
+
+                <item
+
                     android:id="@+id/nav_all_coins"
 
                     android:icon="@drawable/list"

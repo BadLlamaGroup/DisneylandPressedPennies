@@ -11,11 +11,21 @@ import java.util.Date;
 public class Coin implements Serializable {
     private String titleCoin;
     private String coinFrontImg;
+    private String coinBackImg;
+    private String notes;
     private Date dateCollected;
 
     protected Coin(String titleCoin, String front, Date dateCollected) {
         this.titleCoin = titleCoin;
         this.coinFrontImg = front;
+        this.dateCollected = dateCollected;
+    }
+
+    protected Coin(String titleCoin, String front, String back, String notes, Date dateCollected) {
+        this.titleCoin = titleCoin;
+        coinFrontImg = front;
+        coinBackImg = back;
+        this.notes = notes;
         this.dateCollected = dateCollected;
     }
 
@@ -27,12 +37,28 @@ public class Coin implements Serializable {
         this.coinFrontImg = coinFrontImg;
     }
 
+    public String getCoinBackImg() {
+        return coinBackImg;
+    }
+
+    public void setCoinBackImg(String coinBackImg) {
+        this.coinBackImg = coinBackImg;
+    }
+
     public String getTitleCoin() {
         return titleCoin;
     }
 
     public void setTitleCoin(String newTitle) {
         this.titleCoin = newTitle;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public Date getDateCollected() {
