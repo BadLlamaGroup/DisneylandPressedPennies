@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "C:\\DisneylandPressedPennies1 - In progress\\dynamicgrid\\build\\intermediates\\incremental\\mergeDebugAndroidTestResources\\merged.dir\\values\\values.xml",
+            "map": [
+                {
+                    "source": "C:\\DisneylandPressedPennies1 - In progress\\dynamicgrid\\build\\intermediates\\packaged_res\\debug\\values\\values.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,122",
+                        "endColumns": "66,43",
+                        "endOffsets": "117,161"
+                    }
+                }
+            ]
+        }
+    ]
+}
