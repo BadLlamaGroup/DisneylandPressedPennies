@@ -37,16 +37,16 @@ dependencies {
     androidTestImplementation 'junit:junit:4.12'
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.google.code.gson:gson:2.8.2'
-    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'com.google.android.gms:play-services-location:12.0.1'
     implementation 'com.android.support:support-v13:27.1.1'
     implementation 'com.android.support:design:27.1.1'
     implementation project(':dynamicgrid')
     implementation 'io.github.kobakei:ratethisapp:1.1.2'
     implementation 'com.github.clans:fab:1.6.4'
-    implementation 'com.google.android.gms:play-services-analytics:16.0.1'
+    implementation 'com.google.android.gms:play-services-analytics:12.0.1'
     implementation 'com.github.jinatonic.confetti:confetti:1.1.0'
     implementation 'com.itextpdf:itextpdf:5.5.12'
-    implementation 'com.google.android.gms:play-services-maps:15.0.1'
+    implementation 'com.google.android.gms:play-services-maps:12.0.1'
 }
 
 

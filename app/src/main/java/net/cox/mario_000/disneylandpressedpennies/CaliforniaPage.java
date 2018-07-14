@@ -51,7 +51,7 @@ public class CaliforniaPage extends Fragment implements View.OnClickListener {
         grizzlyPeakAirfieldsBtn.setOnClickListener(this);
         ImageButton grizzlyPeakAreaBtn = (ImageButton) myFragmentView.findViewById(R.id.grizzlyPeakAreaBtn);
         grizzlyPeakAreaBtn.setOnClickListener(this);
-        ImageButton paradisePierBtn = (ImageButton) myFragmentView.findViewById(R.id.paradisePierBtn);
+        ImageButton paradisePierBtn = (ImageButton) myFragmentView.findViewById(R.id.pixarPierBtn);
         paradisePierBtn.setOnClickListener(this);
         ImageButton carsBtn = (ImageButton) myFragmentView.findViewById(R.id.carsBtn);
         carsBtn.setOnClickListener(this);

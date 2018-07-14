@@ -328,15 +328,23 @@ public interface Data {
             new Coin("UP House", "rushin_house", null)
     };
 
-    // PARADISE PIER
+    // PIXAR PIER
 
-    Coin[] treasuresPenny = new Coin[]{
+    Coin[] knicksKnacksPenny = new Coin[]{
+            new Coin("Mr. Incredible", "knicks_knacks_mr_incredible", null),
+            new Coin("Elastigirl", "knicks_knacks_mrs_incredible", null),
+            new Coin("Violet and Dash", "knicks_knacks_violet_dash", null)
+    };
+
+    // PARADISE PIER -- RETIRED
+
+    Coin[] retiredTreasuresPenny = new Coin[]{
             new Coin("Duffy the Disney Bear", "treasures_duffy", null),
             new Coin("Mickey and Duffy", "treasures_mickey_duffy", null),
             new Coin("Bandleader Mickey", "treasures_bandleader", null)
     };
 
-    Coin[] sideshowPenny = new Coin[]{
+    Coin[] retiredSideshowPenny = new Coin[]{
             new Coin("Angel", "sideshow_angel", null),
             new Coin("Stitch & Angel heart", "sideshow_stitch_angel", null),
             new Coin("Stitch", "sideshow_stitch", null)
@@ -529,7 +537,6 @@ public interface Data {
             new Machine("Hollywood Land", "Gone Hollywood Gifts #2", "Quarter", "gone_hollywood_2_mac", "gone_hollywood_backstamp","gone_hollywood_2_preview", goneHollyWood2Quarter, new LatLng(33.807748, -117.918306)),
             new Machine("Hollywood Land", "Gone Hollywood Gifts #3", "Quarter", "gone_hollywood_3_mac", "avengers_backstamp","gone_hollywood_3_preview", goneHollyWood3Quarter, new LatLng(33.807748, -117.918266)),
             new Machine("Hollywood Land", "Collector's Warehouse Gifts", "Penny", "collectors_gifts_mac", "collectors_gifts_backstamp","collectors_gifts_preview", collectorsGifts, new LatLng(33.806821, -117.916798))
-
     };
 
     Machine[] carsLandCoins = new Machine[]{
@@ -544,10 +551,9 @@ public interface Data {
             new Machine("Grizzly Peak Recreational Area", "Rushin' River Outfitters", "Quarter", "rushin_river_outfitters_mac", "rushin_backstamp", "rushin_river_preview", rushinRiverQuarter, new LatLng(33.807331, -117.920974)),
     };
 
-    Machine[] paradiseCoins = new Machine[]{
-            new Machine("Paradise Pier", "Treasures In Paradise", "Penny", "treasures_in_paradise_mac", "treasures_backstamp", "treasures_in_paradise_preview", treasuresPenny, new LatLng(33.805332, -117.920737)),
-            new Machine("Paradise Pier", "Sideshow Shirts", "Penny", "sideshow_mac", "sideshow_backstamp","sideshow_preview", sideshowPenny, new LatLng(33.804927, -117.922604))
-    };
+    Machine[] pixarPierCoins = new Machine[]{
+            new Machine("Pixar Pier", "Knick's Knacks", "Penny", "knicks_knacks_mac", "pixar_backstamp", "knicks_knacks_preview", knicksKnacksPenny, new LatLng(33.805332, -117.920737))
+            };
 
     // DOWNTOWN DISNEY
 
@@ -603,7 +609,9 @@ public interface Data {
     Machine[] retiredCaliforniaMachines = new Machine[]{
             new Machine("Buena Vista Street", "Trolley Treats - Retired", "Nickel", "trolley_treats_2_mac", "california_adventure_nickel_backstamp","trolley_treats_2_preview", retiredTrolley2Nickel, new LatLng(33.807985, -117.919042)),
             new Machine("Buena Vista Street", "Kingswell Camera Shop #2 - Retired", "Nickel", "kingswell_2_mac", "kingswell_2_backstamp", "kingswell_2_preview", kingswell2NickelOld, new LatLng(33.808261, -117.919247)),
-            new Machine("Hollywood Land", "Studio Store - Retired", "Dime", "studio_mac", "studio_backstamp","studio_store_preview", studioStoreDimeOld, new LatLng(33.808089, -117.917663))
+            new Machine("Hollywood Land", "Studio Store - Retired", "Dime", "studio_mac", "studio_backstamp","studio_store_preview", studioStoreDimeOld, new LatLng(33.808089, -117.917663)),
+            new Machine("Paradise Pier", "Treasures In Paradise - Retired", "Penny", "treasures_in_paradise_mac", "treasures_backstamp", "treasures_in_paradise_preview", retiredTreasuresPenny, new LatLng(33.805332, -117.920737)),
+            new Machine("Paradise Pier", "Sideshow Shirts - Retired", "Penny", "sideshow_mac", "sideshow_backstamp","sideshow_preview", retiredSideshowPenny, new LatLng(33.804927, -117.922604))
     };
 
     Machine[] retiredDowntownMachines = new Machine[]{
@@ -620,7 +628,7 @@ public interface Data {
     };
 
     Machine[][] calMachines = new Machine[][]{
-            buenaVistaCoins, grizzlyPeakAirfieldsCoins, grizzlyPeakAreaCoins, paradiseCoins, hollywoodCoins, carsLandCoins
+            buenaVistaCoins, grizzlyPeakAirfieldsCoins, grizzlyPeakAreaCoins, pixarPierCoins, hollywoodCoins, carsLandCoins
     };
     Machine[][] downtownMachines = new Machine[][]{
             worldDisneyCoins, annaElsaShopCoins, wetzelsCoins, tortillaCoins, rainforestCoins, espnCoins, disneylandHotelCoins, grandCalifornianCoins, paradiseHotelCoins
