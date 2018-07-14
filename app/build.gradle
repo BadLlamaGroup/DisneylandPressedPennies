@@ -14,7 +14,7 @@ android {
     buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "net.cox.mario_000.disneylandpressedpennies"
-        minSdkVersion 18
+        minSdkVersion 21
         targetSdkVersion 27
         versionCode 60
         versionName "1.60"
@@ -38,6 +38,7 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.google.android.gms:play-services-location:12.0.1'
+    implementation 'com.google.android.gms:play-services-maps:12.0.1'
     implementation 'com.android.support:support-v13:27.1.1'
     implementation 'com.android.support:design:27.1.1'
     implementation project(':dynamicgrid')
@@ -46,7 +47,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-analytics:12.0.1'
     implementation 'com.github.jinatonic.confetti:confetti:1.1.0'
     implementation 'com.itextpdf:itextpdf:5.5.12'
-    implementation 'com.google.android.gms:play-services-maps:12.0.1'
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.+'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 }
 
 
