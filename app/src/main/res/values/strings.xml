@@ -45,23 +45,17 @@
 
     <string name="whatsnew">
         Machine Update:
-        \n\nDisneyland:\n-Returned \'Penny Arcade #2\'
-        \n\nNew Features:\n-Long titles now scroll on one line.
-        \n\nTips:\n-Be on the lookout for new Pixar Pier coins showing up soon.\n-Also, expect a lot of changes coming to Downtown Disney as well.
+        \n\nCalifornia Adventure:\n-Added \'Knick\'s Knacks\'
+        \n\nNews:\n-Pixar Pier added to app. Make sure to check it out before Pixar Fest ends Sep 03.
         \n\nThank you for your continued support.
     </string>
 
     <string-array name="new_coins">
-        <item>Port Royal Curios &amp; Curiosities</item>
-        <item>Opera House Exit #4</item>
-        <item>Trolley Treats</item>
-        <item>Penny Arcade #2</item>
+        <item>Knick's Knacks</item>
 
     </string-array>
 
     <string-array name="off_mac">
-        <item>Treasures In Paradise</item>
-        <item>Sideshow Shirts</item>
         <item>East Door</item>
         <item>ESPN Zone</item>
 
