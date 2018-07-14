@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\DisneylandPressedPennies1 - In progress\\dynamicgrid\\build\\intermediates\\res\\merged\\androidTest\\debug\\values_values.arsc.flat",
+            "outputFile": "C:\\DisneylandPressedPennies\\dynamicgrid\\build\\intermediates\\res\\merged\\androidTest\\debug\\values_values.arsc.flat",
             "map": [
                 {
-                    "source": "C:\\DisneylandPressedPennies1 - In progress\\dynamicgrid\\build\\intermediates\\packaged_res\\debug\\values\\values.xml",
+                    "source": "C:\\DisneylandPressedPennies\\dynamicgrid\\build\\intermediates\\packaged_res\\debug\\values\\values.xml",
                     "from": {
                         "startLines": "2,3",
                         "startColumns": "4,4",
