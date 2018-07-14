@@ -54,8 +54,6 @@ public class CoinsInMachineDetail extends Fragment implements Data, AdapterView.
                 R.animator.fade_out,
                 R.animator.fade_in,
                 R.animator.fade_out);
-        //fragmentTransaction.hide(this);
-        //fragmentTransaction.add(R.id.mainFrag, fragment);
         fragmentTransaction.replace(R.id.mainFrag, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();

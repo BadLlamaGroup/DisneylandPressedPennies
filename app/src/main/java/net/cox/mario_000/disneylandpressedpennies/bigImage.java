@@ -37,8 +37,8 @@ public class bigImage extends Activity {
             String back = extras.getString("backImg");
 
             // Link views
-            frontCoin = (ImageView) findViewById(R.id.spinningCoinFront);
-            backCoin = (ImageView) findViewById(R.id.spinningCoinBack);
+            frontCoin = (ImageView) findViewById(R.id.editCoinFront);
+            backCoin = (ImageView) findViewById(R.id.editCoinBack);
             LinearLayout layout = (LinearLayout) findViewById(R.id.layout);
 
             // Get image resId number

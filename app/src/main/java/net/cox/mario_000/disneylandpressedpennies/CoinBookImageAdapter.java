@@ -73,8 +73,8 @@ class CoinBookImageAdapter extends PagerAdapter {
         }
 
         View itemView = mLayoutInflater.inflate(R.layout.big_image, container, false);
-        final ImageView imageView = (ImageView) itemView.findViewById(R.id.spinningCoinFront);
-        final ImageView imageView2 = (ImageView) itemView.findViewById(R.id.spinningCoinBack);
+        final ImageView imageView = (ImageView) itemView.findViewById(R.id.editCoinFront);
+        final ImageView imageView2 = (ImageView) itemView.findViewById(R.id.editCoinBack);
 
         // Display image
         img = new DisplayImage();

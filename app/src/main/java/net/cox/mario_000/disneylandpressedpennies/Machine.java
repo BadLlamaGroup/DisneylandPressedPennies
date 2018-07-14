@@ -7,13 +7,13 @@ import com.google.android.gms.maps.model.LatLng;
  * Description: Class to create a machine
  */
 public class Machine {
-    private final String land;
-    private final String machineName;
-    private final String typeCoin;
+    private String land;
+    private String machineName;
+    private String typeCoin;
     private final String machineImg;
-    private final String backstampImg;
+    private String backstampImg;
     private final String coinPreviewImg;
-    private final Coin[] coins;
+    private Coin[] coins;
     private final LatLng position;
 
     protected Machine(String land, String machineName, String typeCoin, String machineImg, String backstampImg, String coinPreview, Coin[] coins, LatLng position) {
@@ -31,12 +31,24 @@ public class Machine {
         return land;
     }
 
+    public void setLand( String newLand ) {
+        land = newLand;
+    }
+
     public String getMachineName() {
         return machineName;
     }
 
+    public void setMachineName( String newName ) {
+        machineName = newName;
+    }
+
     public String getTypeCoin() {
         return typeCoin;
+    }
+
+    public void setTypeCoin( String newType ) {
+        typeCoin = newType;
     }
 
     public String getMachineImg() {
@@ -47,12 +59,19 @@ public class Machine {
         return backstampImg;
     }
 
+    public void setBackstampImg( String newBackstamp ) {
+        backstampImg = newBackstamp;
+    }
+
     public String getCoinPreviewImg() {
         return coinPreviewImg;
     }
 
     public Coin[] getCoins() {
         return coins;
+    }
+
+    public void setCoin( String newCoin ) {
     }
 
     public LatLng getPosition() {

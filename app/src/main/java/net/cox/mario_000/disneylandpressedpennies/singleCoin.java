@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,14 +16,18 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,6 +75,13 @@ public class singleCoin extends Fragment implements Data, View.OnClickListener {
     DatePickerDialog.OnDateSetListener onDateSetListener;
     Calendar myCalendar;
 
+
+    private static final int SWIPE_MIN_DISTANCE = 100;
+    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+    private GestureDetector gestureDetector;
+    View.OnTouchListener swipeListener;
+    private ScrollView scrollView;
+
     public singleCoin() {
         sharedPreference = new SharedPreference();
     }
@@ -82,11 +94,11 @@ public class singleCoin extends Fragment implements Data, View.OnClickListener {
         removeDialog.setTitle("Title...");
         removeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         removeDialog.setCancelable(false);
-        TextView coinName = (TextView) removeDialog.findViewById(R.id.txt_coin);
+        TextView coinName = removeDialog.findViewById(R.id.txt_coin);
         coinName.setText(coin.getTitleCoin());
         // Link buttons
-        Button noBtn = (Button) removeDialog.findViewById(R.id.btn_no);
-        Button removeBtn = (Button) removeDialog.findViewById(R.id.btn_yes);
+        Button noBtn = removeDialog.findViewById(R.id.btn_no);
+        Button removeBtn = removeDialog.findViewById(R.id.btn_yes);
 
         // Listeners for buttons
         noBtn.setOnClickListener(new View.OnClickListener() {
@@ -129,14 +141,14 @@ public class singleCoin extends Fragment implements Data, View.OnClickListener {
         mTracker = application.getDefaultTracker();
 
         //Link views
-        TextView titleCoin = (TextView) view.findViewById(R.id.txt_title);
-        TextView machineName = (TextView) view.findViewById(R.id.txt_land);
-        txtDate = (TextView) view.findViewById(R.id.txtDateCollected);
-        coinFront = (ImageView) view.findViewById(R.id.spinningCoinFront);
-        coinBack = (ImageView) view.findViewById(R.id.spinningCoinBack);
-        haveCoinBox = (CheckBox) view.findViewById(R.id.boxCollected);
-        wantItBox = (CheckBox) view.findViewById(R.id.boxWant);
-        txtMac = (TextView) view.findViewById(R.id.txtMachine);
+        TextView titleCoin = view.findViewById(R.id.txt_title);
+        TextView machineName = view.findViewById(R.id.txt_land);
+        txtDate = view.findViewById(R.id.txtDateCollected);
+        coinFront = view.findViewById(R.id.editCoinFront);
+        coinBack = view.findViewById(R.id.editCoinBack);
+        haveCoinBox = view.findViewById(R.id.boxCollected);
+        wantItBox = view.findViewById(R.id.boxWant);
+        txtMac = view.findViewById(R.id.txtMachine);
 
         // Get calendar
         myCalendar = Calendar.getInstance();
@@ -336,6 +348,19 @@ public class singleCoin extends Fragment implements Data, View.OnClickListener {
             });
 
         }
+
+        // Gesture detection
+        gestureDetector = new GestureDetector(getActivity(), new MyGestureDetector());
+        swipeListener = new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        };
+        scrollView = view.findViewById(R.id.normal_coin);
+
+        scrollView.setOnTouchListener(swipeListener);
+
+
         return view;
     }
 
@@ -475,6 +500,7 @@ public class singleCoin extends Fragment implements Data, View.OnClickListener {
 
     @Override
     public void onPause() {
+        super.onPause();
         mHandler.removeCallbacks(mStatusChecker);
         super.onDestroy();
     }
@@ -485,5 +511,116 @@ public class singleCoin extends Fragment implements Data, View.OnClickListener {
         super.onResume();
         numCoins = sharedPreference.getCoins(context).size();
     }
+
+
+    class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            try {
+
+                // right to left swipe
+                if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    Toast.makeText(getActivity(), "Left Swipe", Toast.LENGTH_SHORT).show();
+                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                    singleCoin fragment = new singleCoin();
+                    Bundle bundle = new Bundle();
+                    Gson gson = new Gson();
+                    String jsonCoin = gson.toJson(machine.getCoins()[1]);
+                    String jsonMachine = gson.toJson(machine);
+                    bundle.putString("selectedCoin", jsonCoin);
+                    bundle.putString("selectedMachine", jsonMachine);
+                    fragment.setArguments(bundle);
+                    fragmentTransaction.setCustomAnimations(
+                            R.animator.fade_in,
+                            R.animator.fade_out,
+                            R.animator.fade_in,
+                            R.animator.fade_out);
+                    fragmentTransaction.replace(R.id.mainFrag, fragment);
+                    //fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                    //swipeLeft();
+                    return true;
+                } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    Toast.makeText(getActivity(), "Right Swipe", Toast.LENGTH_SHORT).show();
+                    //swipeRight();
+                    return true;
+                }
+            } catch (Exception e) {
+                // nothing
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            return true;
+        }
+
+//        private void swipeRight() {
+//            if (spinningCoinDisplay.getVisibility() == View.VISIBLE) {
+//                slideToRight(spinningCoinDisplay);
+//                slideToRightFromEdge(editCoinDisplay);
+//                mHandler.removeCallbacks(mStatusChecker);
+//            } else {
+//                slideToRight(editCoinDisplay);
+//                slideToRightFromEdge(spinningCoinDisplay);
+//                rotate();
+//            }
+//        }
+//        private void swipeLeft(){
+//            if(spinningCoinDisplay.getVisibility() == View.VISIBLE){
+//                slideToLeft(spinningCoinDisplay);
+//                slideToLeftFromEdge(editCoinDisplay);
+//                mHandler.removeCallbacks(mStatusChecker);
+//            }
+//            else
+//            {
+//                slideToLeft(editCoinDisplay);
+//                slideToLeftFromEdge(spinningCoinDisplay);
+//                rotate();
+//            }
+//        }
+    }
+
+    public void slideToRight(View view) {
+        TranslateAnimation animate = new TranslateAnimation(0, view.getWidth(), 0, 0);
+        animate.setDuration(500);
+        animate.setFillAfter(false);
+        view.startAnimation(animate);
+        view.setVisibility(View.INVISIBLE);
+    }
+
+    public void slideToRightFromEdge(View view) {
+        TranslateAnimation animate = new TranslateAnimation(-view.getWidth(), 0, 0, 0);
+        animate.setDuration(500);
+        animate.setFillAfter(true);
+        view.startAnimation(animate);
+        view.setVisibility(View.VISIBLE);
+    }
+
+    // To animate view slide out from right to left
+    public void slideToLeft(View view) {
+        TranslateAnimation animate = new TranslateAnimation(0, -view.getWidth(), 0, 0);
+        animate.setDuration(500);
+        animate.setFillAfter(false);
+        view.startAnimation(animate);
+        view.setVisibility(View.INVISIBLE);
+    }
+
+    public void slideToLeftFromEdge(View view) {
+        TranslateAnimation animate = new TranslateAnimation(view.getWidth(), 0, 0, 0);
+        animate.setDuration(500);
+        animate.setFillAfter(true);
+        view.startAnimation(animate);
+        view.setVisibility(View.VISIBLE);
+    }
+
+
+
 
 }

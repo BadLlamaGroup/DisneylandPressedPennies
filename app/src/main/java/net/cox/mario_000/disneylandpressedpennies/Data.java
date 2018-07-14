@@ -15,9 +15,12 @@ public interface Data {
     // MAIN STREET COINS
 
     Coin[] pennyArcadeQuarter = new Coin[]{
-            new Coin("Peter Pan - Walt Quote: \"Leave Today\"", "penny_arcade_peter_pan", null),
-            new Coin("Mickey - Walt Quote: \"Do The Impossible\"", "penny_arcade_mickey", null),
-            new Coin("Castle - Walt Quote: \"If You Can Dream It\"", "penny_arcade_castle", null)
+            new Coin("Peter Pan - Walt Quote: \"Leave Today\"", "original", null),
+            new Coin("Mickey - Walt Quote: \"Do The Impossible\"", "updated", null),
+            new Coin("Castle - Walt Quote: \"If You Can Dream It\"", "best", null)
+//            new Coin("Peter Pan - Walt Quote: \"Leave Today\"", "penny_arcade_peter_pan", null),
+            //new Coin("Mickey - Walt Quote: \"Do The Impossible\"", "penny_arcade_mickey", null),
+            //new Coin("Castle - Walt Quote: \"If You Can Dream It\"", "penny_arcade_castle", null)
     };
     Coin[] pennyArcade2Penny = new Coin[]{
             new Coin("Main Street Electrical Parade America", "penny_arcade_2_america", null),

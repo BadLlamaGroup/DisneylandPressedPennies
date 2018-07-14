@@ -521,12 +521,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.setCheckedItem(menuItemId);
             alert("Exit?");
         } else if (id == R.id.nav_maps) {
-//            if (inv.hasPurchase("premium")) {
             menuItemId = R.id.nav_maps;
             fragment = new MapsActivity();
-//            } else {
-//                buy();
-//            }
         } else if (id == R.id.nav_coin_book) {
             menuItemId = R.id.nav_coin_book;
             fragment = new CoinBookDetail();
@@ -568,6 +564,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         else if (id == R.id.nav_backup){
             fragment = new Backup();
+        }
+        else if (id == R.id.nav_custom_coin) {
+            fragment = new CustomCoinFragment();
         }
 
 

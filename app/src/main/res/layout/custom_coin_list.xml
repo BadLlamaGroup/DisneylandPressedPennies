@@ -173,28 +173,6 @@
             android:padding="5dp"
             android:id="@+id/parkBanner"/>
 
-        <!--<Button-->
-            <!--android:id="@+id/btnParkPennies"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:background="@drawable/border"-->
-            <!--android:paddingStart="5dp"-->
-            <!--android:paddingEnd="5dp"-->
-            <!--android:text="ParkPennies.com"-->
-            <!--android:gravity="center"-->
-            <!--android:textAllCaps="false"/>-->
-
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center_horizontal"-->
-            <!--android:text="Coin images courtesy of ParkPennies. Visit for updates and more."-->
-            <!--android:textColor="@android:color/black"-->
-            <!--android:textAlignment="center"-->
-            <!--android:gravity="center"-->
-            <!--android:padding="5dp"/>-->
-
     </LinearLayout>
 
 

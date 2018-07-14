@@ -12,13 +12,13 @@
         android:background="#000000">
 
         <ImageView
-            android:id="@+id/spinningCoinFront"
+            android:id="@+id/editCoinFront"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitCenter" />
 
         <ImageView
-            android:id="@+id/spinningCoinBack"
+            android:id="@+id/editCoinBack"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
