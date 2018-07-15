@@ -44,12 +44,6 @@ public class DowntownPage extends Fragment implements View.OnClickListener {
         //Link buttons and set on click listener
         ImageButton wodBtn = (ImageButton) myFragmentView.findViewById(R.id.wodBtn);
         wodBtn.setOnClickListener(this);
-        ImageButton annaElsaShopBtn = (ImageButton) myFragmentView.findViewById(R.id.annaElsaShopBtn);
-        annaElsaShopBtn.setOnClickListener(this);
-        ImageButton rainforestBtn = (ImageButton) myFragmentView.findViewById(R.id.rainforestBtn);
-        rainforestBtn.setOnClickListener(this);
-        ImageButton espnBtn = (ImageButton) myFragmentView.findViewById(R.id.espnBtn);
-        espnBtn.setOnClickListener(this);
         ImageButton pinTradersBtn = (ImageButton) myFragmentView.findViewById(R.id.tortillaJoBtn);
         pinTradersBtn.setOnClickListener(this);
         ImageButton wetzelsBtn = (ImageButton) myFragmentView.findViewById(R.id.wetzelsBtn);
@@ -66,16 +60,13 @@ public class DowntownPage extends Fragment implements View.OnClickListener {
         List<Coin> savedCoins = sharedPreference.getCoins(getActivity().getApplicationContext());
 
         TextView txtWod = (TextView) myFragmentView.findViewById(R.id.txt_wod_collected);
-        TextView txtFrozen = (TextView) myFragmentView.findViewById(R.id.txt_frozen_collected);
         TextView txtWetzels = (TextView) myFragmentView.findViewById(R.id.txt_wetzels_collected);
         TextView txtPin = (TextView) myFragmentView.findViewById(R.id.txt_pin_collected);
-        TextView txtRainforest = (TextView) myFragmentView.findViewById(R.id.txt_rainforest_collected);
-        TextView txtEspn = (TextView) myFragmentView.findViewById(R.id.txt_espn_collected);
         TextView txtDisneyHotel = (TextView) myFragmentView.findViewById(R.id.txt_disneyHotel_collected);
         TextView txtGrandCal = (TextView) myFragmentView.findViewById(R.id.txt_grandCal_collected);
         TextView txtPierHotel = (TextView) myFragmentView.findViewById(R.id.txt_pierHotel_collected);
 
-        TextView[] list = new TextView[] {txtWod, txtFrozen, txtWetzels, txtPin, txtRainforest, txtEspn, txtDisneyHotel, txtGrandCal, txtPierHotel};
+        TextView[] list = new TextView[] {txtWod, txtWetzels, txtPin, txtDisneyHotel, txtGrandCal, txtPierHotel};
 
 
         int collectedInLand;

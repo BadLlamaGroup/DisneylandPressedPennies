@@ -196,12 +196,22 @@ public class CustomCoinFragment extends Fragment {
             }
         });
 
+        txtDateCollected.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new DatePickerDialog(getActivity(), onDateSetListener, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
         onDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                txtDateCollected.setText(dateFormat.format(myCalendar.getTime()));
             }
 
         };
@@ -277,11 +287,18 @@ public class CustomCoinFragment extends Fragment {
             // Set data
             editTitle.setText(savedCoin.getTitleCoin());
             editNotes.setText(savedCoin.getNotes());
+            myCalendar.setTime(savedCoin.getDateCollected());
             txtDateCollected.setText(dateFormat.format(savedCoin.getDateCollected()));
 
+            // Set spinners
+            int coinPos = coinTypeAdapter.getPosition(savedCoin.getCoinType());
+            coinTypeSpinner.setSelection(coinPos);
+            int parkPos = parkAdapter.getPosition(savedCoin.getCoinPark());
+            parkSpinner.setSelection(parkPos);
+
+            // Set images
             String root = Environment.getExternalStorageDirectory().toString();
             File dir = new File(root + "/Pressed Coins at Disneyland/Coins");
-
             Bitmap frontCoin = BitmapFactory.decodeFile(dir + "/" + savedCoin.getCoinFrontImg());
             spinningCoinFront.setImageBitmap(frontCoin);
             editCoinFront.setImageBitmap(frontCoin);
@@ -292,6 +309,7 @@ public class CustomCoinFragment extends Fragment {
             editCoinBack.setImageBitmap(backCoin);
             backImageName = savedCoin.getCoinBackImg();
 
+            // Set buttons
             btnSave.setText("Update");
             btnDelete.setText("Delete");
 
@@ -299,8 +317,8 @@ public class CustomCoinFragment extends Fragment {
             rotate();
         }else{
             // Load default images
-            int resId = view.getContext().getResources().getIdentifier("bazaar_1_jungle_boat", "drawable", view.getContext().getPackageName());
-            int resId2 = view.getContext().getResources().getIdentifier("bazaar_2_backstamp", "drawable", view.getContext().getPackageName());
+            int resId = view.getContext().getResources().getIdentifier("new_penny", "drawable", view.getContext().getPackageName());
+            int resId2 = view.getContext().getResources().getIdentifier("new_penny_back", "drawable", view.getContext().getPackageName());
 
             img.loadBitmap(resId, getResources(), 200, 300, spinningCoinFront, 0);
             img.loadBitmap(resId2, getResources(), 200, 300, spinningCoinBack, 0);
@@ -318,20 +336,6 @@ public class CustomCoinFragment extends Fragment {
             spinningCoinDisplay.setVisibility(View.INVISIBLE);
             editCoinDisplay.setVisibility(View.VISIBLE);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         return view;
     }
@@ -455,24 +459,29 @@ public class CustomCoinFragment extends Fragment {
     }
 
     private void renameImages(){
-        String root = Environment.getExternalStorageDirectory().toString();
-        File dir = new File(root + "/Pressed Coins at Disneyland/Coins/");
-        File frontFrom = new File(dir,frontImageName);
-        String newFrontImage =  editTitle.getText().toString().trim().replaceAll(" ", "_").toLowerCase();
-        File frontTo = new File(dir,newFrontImage + "_front.png");
-        if(frontFrom.renameTo(frontTo))
-        {
-            Toast.makeText(getActivity(), "Renamed front", Toast.LENGTH_SHORT).show();
-            frontImageName = frontTo.getName();
-        }
+        try {
+            String root = Environment.getExternalStorageDirectory().toString();
+            File dir = new File(root + "/Pressed Coins at Disneyland/Coins/");
+            File frontFrom = new File(dir, frontImageName);
+            String newFrontImage = editTitle.getText().toString().trim().replaceAll(" ", "_").toLowerCase();
+            File frontTo = new File(dir, newFrontImage + "_front.png");
+            if (frontFrom.renameTo(frontTo)) {
+                Toast.makeText(getActivity(), "Renamed front", Toast.LENGTH_SHORT).show();
+                frontImageName = frontTo.getName();
+            }
 
-        File backFrom = new File(dir,backImageName);
-        String newBackImage =  editTitle.getText().toString().trim().replaceAll(" ", "_").toLowerCase();
-        File backTo = new File(dir,newBackImage + "_back.png");
-        if(backFrom.renameTo(backTo))
-        {
-            Toast.makeText(getActivity(), "Renamed back", Toast.LENGTH_SHORT).show();
-            backImageName = backTo.getName();
+            File backFrom = new File(dir, backImageName);
+            String newBackImage = editTitle.getText().toString().trim().replaceAll(" ", "_").toLowerCase();
+            File backTo = new File(dir, newBackImage + "_back.png");
+            if (backFrom.renameTo(backTo)) {
+                Toast.makeText(getActivity(), "Renamed back", Toast.LENGTH_SHORT).show();
+                backImageName = backTo.getName();
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "Error renaming images", Toast.LENGTH_SHORT).show();
+            getFragmentManager().popBackStackImmediate();
         }
     }
 
@@ -480,13 +489,15 @@ public class CustomCoinFragment extends Fragment {
 
         String newTitle = editTitle.getText().toString();
         String newNotes = editNotes.getText().toString();
+        String coinType = coinTypeSpinner.getSelectedItem().toString();
+        String parkSelected = parkSpinner.getSelectedItem().toString();
 
         if(savedCoin != null){
             // UPDATING COIN
             if(savedCoin.getTitleCoin().equals(newTitle) || !nameExists(newTitle)) {
                 sharedPreference.removeCustomCoin(getActivity(), savedCoin);
                 renameImages();
-                savedCoin = new Coin(newTitle, frontImageName, backImageName, "Penny", "Disneyland", newNotes, myCalendar.getTime());
+                savedCoin = new Coin(newTitle, frontImageName, backImageName, coinType, parkSelected, newNotes, myCalendar.getTime());
                 sharedPreference.addCustomCoin(getActivity(), savedCoin);
                 getFragmentManager().popBackStackImmediate();
             }else {
@@ -497,16 +508,12 @@ public class CustomCoinFragment extends Fragment {
         }else{
             // NEW COIN
             renameImages();
-            newCustomCoin = new Coin(newTitle, frontImageName, backImageName, "Penny", "Disneyland", editNotes.getText().toString(), myCalendar.getTime());
+            newCustomCoin = new Coin(newTitle, frontImageName, backImageName, coinType, parkSelected, newNotes, myCalendar.getTime());
             if(!nameExists(newTitle)){
                 sharedPreference.addCustomCoin(getActivity(), newCustomCoin);
                 getFragmentManager().popBackStackImmediate();
             }
         }
-
-        Toast.makeText(getActivity(), String.valueOf(sharedPreference.getCustomCoins(getActivity().getApplicationContext()).size()), Toast.LENGTH_SHORT).show();
-
-        Toast.makeText(getActivity(), coinTypeSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
     }
 
     private final Runnable mStatusChecker = new Runnable() {
@@ -559,16 +566,16 @@ public class CustomCoinFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 Uri resultUri = result.getUri();
                 try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), resultUri);
-                    Bitmap newBitmap = CropImage.toOvalBitmap(bitmap);
-                    Bitmap b = Bitmap.createBitmap(400, 600, Bitmap.Config.ARGB_8888);
+                    Bitmap originalBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), resultUri);
+                    Bitmap newBitmap = CropImage.toOvalBitmap(originalBitmap);
+                    Bitmap holderBitmap = Bitmap.createBitmap(400, 600, Bitmap.Config.ARGB_8888);
 
-                    Bitmap bmOverlay = Bitmap.createBitmap(b.getWidth(), b.getHeight(), b.getConfig());
-                    Canvas canvas = new Canvas(bmOverlay);
-                    canvas.drawBitmap(b, new Matrix(), null);
-                    canvas.drawBitmap(newBitmap, (b.getWidth() - newBitmap.getWidth()) / 2, (b.getHeight() - newBitmap.getHeight()) / 2, null);
+                    Bitmap finishedBitmap = Bitmap.createBitmap(holderBitmap.getWidth(), holderBitmap.getHeight(), holderBitmap.getConfig());
+                    Canvas canvas = new Canvas(finishedBitmap);
+                    canvas.drawBitmap(holderBitmap, new Matrix(), null);
+                    canvas.drawBitmap(newBitmap, (holderBitmap.getWidth() - newBitmap.getWidth()) / 2, (holderBitmap.getHeight() - newBitmap.getHeight()) / 2, null);
 
-                    SaveImage(bmOverlay);
+                    SaveImage(finishedBitmap);
 
                 }
                 catch (IOException e)
@@ -582,7 +589,6 @@ public class CustomCoinFragment extends Fragment {
     }
 
     private void SaveImage(Bitmap finalBitmap) {
-
         String root = Environment.getExternalStorageDirectory().toString();
         File dir = new File(root + "/Pressed Coins at Disneyland/Coins");
         dir.mkdirs();
@@ -702,7 +708,6 @@ public class CustomCoinFragment extends Fragment {
         view.setVisibility(View.VISIBLE);
     }
 
-    // To animate view slide out from right to left
     public void slideToLeft(View view) {
         TranslateAnimation animate = new TranslateAnimation(0, -view.getWidth(), 0, 0);
         animate.setDuration(500);
