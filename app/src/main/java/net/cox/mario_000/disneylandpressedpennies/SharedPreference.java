@@ -19,6 +19,7 @@ public class SharedPreference {
     private static final String PREFS_NAME = "Coin_App";
     private static final String OWNED_COINS = "Have_Coin";
     private static final String WANT_COINS = "Want_Coin";
+    private static final String CUSTOM_COINS = "Custom_Coin";
 
     public SharedPreference() {
         super();
@@ -111,6 +112,54 @@ public class SharedPreference {
 
         if (settings.contains(WANT_COINS)) {
             String jsonFavorites = settings.getString(WANT_COINS, null);
+            Gson gson = new Gson();
+            Coin[] collectedCoins = gson.fromJson(jsonFavorites, Coin[].class);
+            coins = Arrays.asList(collectedCoins);
+            coins = new ArrayList<>(coins);
+        } else
+            return new ArrayList<>();
+
+        return coins;
+    }
+
+    // Save custom coins
+    public void saveCustomCoins(Context context, List<Coin> coins) {
+        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME,
+                Context.MODE_PRIVATE);
+        Editor editor = settings.edit();
+        Gson gson = new Gson();
+        String jsonCoins = gson.toJson(coins);
+        editor.putString(CUSTOM_COINS, jsonCoins);
+        editor.apply();
+    }
+
+    // Add coin to list
+    public void addCustomCoin(Context context, Coin coin) {
+        List<Coin> customCoins = getCustomCoins(context);
+        customCoins.add(coin);
+        saveCustomCoins(context, customCoins);
+    }
+
+    // Remove coin from list
+    public void removeCustomCoin(Context context, Coin coin) {
+        List<Coin> customCoins = getCustomCoins(context);
+        if (customCoins != null) {
+            for (int i = customCoins.size() - 1; i >= 0; i--) {
+                if (customCoins.get(i).getTitleCoin().equals(coin.getTitleCoin())) {
+                    customCoins.remove(i);
+                }
+            }
+            saveCustomCoins(context, customCoins);
+        }
+    }
+
+    public List<Coin> getCustomCoins(Context context) {
+        List<Coin> coins;
+        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME,
+                Context.MODE_PRIVATE);
+
+        if (settings.contains(CUSTOM_COINS)) {
+            String jsonFavorites = settings.getString(CUSTOM_COINS, null);
             Gson gson = new Gson();
             Coin[] collectedCoins = gson.fromJson(jsonFavorites, Coin[].class);
             coins = Arrays.asList(collectedCoins);
