@@ -27,6 +27,13 @@
         <item>Quarter</item>
     </string-array>
 
+    <string-array name="Park">
+        <item>Disneyland</item>
+        <item>Downtown Disney</item>
+        <item>California Adventure</item>
+        <item>Other</item>
+    </string-array>
+
     <string name="about">The purpose of Pressed Coins at Disneyland is to assist you in keeping track of the coins you have collected. It
         will also help locate machines and guide you to them. \nThis app will help keep your collection organized and easy to identify which coins are still needed.
         This will eliminate the need to bring your whole collection with you to the park.</string>

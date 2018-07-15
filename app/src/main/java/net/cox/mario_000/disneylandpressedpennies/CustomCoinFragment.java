@@ -57,6 +57,7 @@ import java.util.Locale;
 import java.util.Random;
 
 import static android.app.Activity.RESULT_OK;
+import static net.cox.mario_000.disneylandpressedpennies.MainActivity.img;
 
 /**
  * Created by mario_000 on 7/1/2018.
@@ -64,38 +65,51 @@ import static android.app.Activity.RESULT_OK;
 
 public class CustomCoinFragment extends Fragment {
     // Views
-    private Tracker mTracker;
+
+    // Images
     private ImageView spinningCoinFront;
     private ImageView spinningCoinBack;
     private ImageView editCoinFront;
     private ImageView editCoinBack;
-    private EditText editTitle;
-    private TextView txtDateCollected;
-    private EditText editNotes;
-    private Button btnSave;
-    private Button btnDelete;
-    private ConstraintLayout editCoinDisplay;
-    private ConstraintLayout spinningCoinDisplay;
     private String frontImageName;
     private String backImageName;
     private String selectedSide;
-    private Spinner coinTypeSpinner;
+
+    // EditTexts
+    private EditText editTitle;
+    private EditText editNotes;
+
+    // Calendar
+    private TextView txtDateCollected;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
-    DatePickerDialog.OnDateSetListener onDateSetListener;
-    Calendar myCalendar;
-    private Context context;
-    Coin newCustomCoin;
+    private DatePickerDialog.OnDateSetListener onDateSetListener;
+    private Calendar myCalendar;
+
+    // Buttons
+    private Button btnSave;
+    private Button btnDelete;
+
+    // Spinners
+    private Spinner coinTypeSpinner;
+    private Spinner parkSpinner;
+
+    // Coins
+    private Coin newCustomCoin;
     private Coin savedCoin;
+
+    // References
+    private final SharedPreference sharedPreference = new SharedPreference();
+    private Context context;
+    private Tracker mTracker;
     private ScrollView customCoinScrollview;
 
-
-    private final SharedPreference sharedPreference = new SharedPreference();
-
-
+    // Swipe
     private static final int SWIPE_MIN_DISTANCE = 100;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
     private GestureDetector gestureDetector;
-    View.OnTouchListener swipeListener;
+    private View.OnTouchListener swipeListener;
+    private ConstraintLayout editCoinDisplay;
+    private ConstraintLayout spinningCoinDisplay;
 
     // Rotation animation
     private AnimatorSet mSetRightOut;
@@ -123,6 +137,7 @@ public class CustomCoinFragment extends Fragment {
 
         isStoragePermissionGranted();
 
+        // Link views
         spinningCoinFront = view.findViewById(R.id.spinningCoinFront);
         spinningCoinBack = view.findViewById(R.id.spinningCoinBack);
         editCoinFront = view.findViewById(R.id.editCoinFront);
@@ -135,8 +150,8 @@ public class CustomCoinFragment extends Fragment {
         editCoinDisplay = view.findViewById(R.id.editCoinDisplay);
         spinningCoinDisplay = view.findViewById(R.id.spinningCoinDisplay);
         coinTypeSpinner = view.findViewById(R.id.type_picker);
+        parkSpinner = view.findViewById(R.id.park_picker);
         customCoinScrollview = view.findViewById(R.id.custom_coin_fields);
-
 
         InputFilter filter = new InputFilter() {
             public CharSequence filter(CharSequence source, int start, int end,
@@ -152,20 +167,14 @@ public class CustomCoinFragment extends Fragment {
 
         editTitle.setFilters(new InputFilter[]{filter});
 
+        // Listeners
+
         editTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 editTitle.setTextColor(Color.BLACK);
             }
         });
-
-        // Get calendar
-        myCalendar = Calendar.getInstance();
-
-        // Start rotation of coin
-        mHandler = new Handler();
-
-        txtDateCollected.setText(dateFormat.format(myCalendar.getTime()));
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,68 +206,11 @@ public class CustomCoinFragment extends Fragment {
 
         };
 
-
-
-        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.Coin_Type, R.layout.spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        coinTypeSpinner.setAdapter(adapter);
-
-
-
-        Bundle extras = getArguments();
-        if (extras != null) {
-            Gson gson = new Gson();
-            String jsonCoin = extras.getString("selectedCoin");
-            savedCoin = gson.fromJson(jsonCoin, Coin.class);
-
-            // Display machine name in nav bar
-            getActivity().setTitle(savedCoin.getTitleCoin());
-
-            // Set data
-            editTitle.setText(savedCoin.getTitleCoin());
-            editNotes.setText(savedCoin.getNotes());
-            txtDateCollected.setText(dateFormat.format(savedCoin.getDateCollected()));
-
-            String root = Environment.getExternalStorageDirectory().toString();
-            File dir = new File(root + "/Pressed Coins at Disneyland/Coins");
-
-            Bitmap frontCoin = BitmapFactory.decodeFile(dir + "/" + savedCoin.getCoinFrontImg());
-            spinningCoinFront.setImageBitmap(frontCoin);
-            editCoinFront.setImageBitmap(frontCoin);
-            frontImageName = savedCoin.getCoinFrontImg();
-
-            Bitmap backCoin = BitmapFactory.decodeFile(dir + "/" + savedCoin.getCoinBackImg());
-            spinningCoinBack.setImageBitmap(backCoin);
-            editCoinBack.setImageBitmap(backCoin);
-            backImageName = savedCoin.getCoinBackImg();
-
-
-            btnSave.setText("Update");
-            btnDelete.setText("Delete");
-        }
-
-
-
-        /*int resId = view.getContext().getResources().getIdentifier("bazaar_1_jungle_boat", "drawable", view.getContext().getPackageName());
-        int resId2 = view.getContext().getResources().getIdentifier("bazaar_2_backstamp", "drawable", view.getContext().getPackageName());
-
-        img.loadBitmap(resId, getResources(), 800, 800, spinningCoinFront, 0);*/
-
-
-        // Set animations
-        mSetRightOut = (AnimatorSet) AnimatorInflater.loadAnimator(view.getContext(), R.animator.flip1);
-        mSetLeftIn = (AnimatorSet) AnimatorInflater.loadAnimator(view.getContext(), R.animator.flip2);
-
-        // Set camera distance
-        int distance = 8000;
-        float scale = getResources().getDisplayMetrics().density * distance;
-        spinningCoinFront.setCameraDistance(scale);
-        spinningCoinBack.setCameraDistance(scale);
-
-
         // Gesture detection
         gestureDetector = new GestureDetector(getActivity(), new MyGestureDetector());
+
         swipeListener = new View.OnTouchListener() {
+            @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if((!gestureDetector.onTouchEvent(event) && event.getAction() == MotionEvent.ACTION_UP) && (v instanceof Button || v instanceof ImageView)){
                     switch (v.getId()){
@@ -279,9 +231,7 @@ public class CustomCoinFragment extends Fragment {
             }
         };
 
-// Set listeners for coin
-
-
+        // Set listeners for coin
         editCoinDisplay.setOnTouchListener(swipeListener);
         spinningCoinDisplay.setOnTouchListener(swipeListener);
         spinningCoinFront.setOnTouchListener(swipeListener);
@@ -289,7 +239,99 @@ public class CustomCoinFragment extends Fragment {
         editCoinFront.setOnTouchListener(swipeListener);
         editCoinBack.setOnTouchListener(swipeListener);
 
-        rotate();
+        // Get calendar
+        myCalendar = Calendar.getInstance();
+
+        // Start rotation of coin
+        mHandler = new Handler();
+
+        // Set animations
+        mSetRightOut = (AnimatorSet) AnimatorInflater.loadAnimator(view.getContext(), R.animator.flip1);
+        mSetLeftIn = (AnimatorSet) AnimatorInflater.loadAnimator(view.getContext(), R.animator.flip2);
+
+        // Set camera distance
+        int distance = 8000;
+        float scale = getResources().getDisplayMetrics().density * distance;
+        spinningCoinFront.setCameraDistance(scale);
+        spinningCoinBack.setCameraDistance(scale);
+
+        // Set adapters
+        final ArrayAdapter<CharSequence> coinTypeAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.Coin_Type, R.layout.spinner_item);
+        coinTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        coinTypeSpinner.setAdapter(coinTypeAdapter);
+
+        final ArrayAdapter<CharSequence> parkAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.Park, R.layout.spinner_item);
+        parkAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        parkSpinner.setAdapter(parkAdapter);
+
+        // Set coin info
+        Bundle extras = getArguments();
+        if (extras != null) {
+            Gson gson = new Gson();
+            String jsonCoin = extras.getString("selectedCoin");
+            savedCoin = gson.fromJson(jsonCoin, Coin.class);
+
+            // Display coin name in nav bar
+            getActivity().setTitle(savedCoin.getTitleCoin());
+
+            // Set data
+            editTitle.setText(savedCoin.getTitleCoin());
+            editNotes.setText(savedCoin.getNotes());
+            txtDateCollected.setText(dateFormat.format(savedCoin.getDateCollected()));
+
+            String root = Environment.getExternalStorageDirectory().toString();
+            File dir = new File(root + "/Pressed Coins at Disneyland/Coins");
+
+            Bitmap frontCoin = BitmapFactory.decodeFile(dir + "/" + savedCoin.getCoinFrontImg());
+            spinningCoinFront.setImageBitmap(frontCoin);
+            editCoinFront.setImageBitmap(frontCoin);
+            frontImageName = savedCoin.getCoinFrontImg();
+
+            Bitmap backCoin = BitmapFactory.decodeFile(dir + "/" + savedCoin.getCoinBackImg());
+            spinningCoinBack.setImageBitmap(backCoin);
+            editCoinBack.setImageBitmap(backCoin);
+            backImageName = savedCoin.getCoinBackImg();
+
+            btnSave.setText("Update");
+            btnDelete.setText("Delete");
+
+            // Begin rotation
+            rotate();
+        }else{
+            // Load default images
+            int resId = view.getContext().getResources().getIdentifier("bazaar_1_jungle_boat", "drawable", view.getContext().getPackageName());
+            int resId2 = view.getContext().getResources().getIdentifier("bazaar_2_backstamp", "drawable", view.getContext().getPackageName());
+
+            img.loadBitmap(resId, getResources(), 200, 300, spinningCoinFront, 0);
+            img.loadBitmap(resId2, getResources(), 200, 300, spinningCoinBack, 0);
+            img.loadBitmap(resId, getResources(), 200, 300, editCoinFront, 0);
+            img.loadBitmap(resId2, getResources(), 200, 300, editCoinBack, 0);
+
+            // Set button text
+            btnSave.setText("Save");
+            btnDelete.setText("Cancel");
+
+            // Set date to current date
+            txtDateCollected.setText(dateFormat.format(myCalendar.getTime()));
+
+            // Set view to edit
+            spinningCoinDisplay.setVisibility(View.INVISIBLE);
+            editCoinDisplay.setVisibility(View.VISIBLE);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         return view;
     }
@@ -344,9 +386,9 @@ public class CustomCoinFragment extends Fragment {
         removeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         removeDialog.setCancelable(false);
         TextView description = removeDialog.findViewById(R.id.txt_dia);
-        TextView coinName = removeDialog.findViewById(R.id.txt_coin);
+        TextView warningMsg = removeDialog.findViewById(R.id.txt_coin);
         description.setText("Are you sure you wish to cancel?");
-        coinName.setText(editTitle.getText());
+        warningMsg.setText("You will lose all changes for this coin.");
         // Link buttons
         Button noBtn = removeDialog.findViewById(R.id.btn_no);
         Button overwriteBtn = removeDialog.findViewById(R.id.btn_yes);
@@ -437,13 +479,14 @@ public class CustomCoinFragment extends Fragment {
     private void saveCoin(){
 
         String newTitle = editTitle.getText().toString();
+        String newNotes = editNotes.getText().toString();
 
         if(savedCoin != null){
             // UPDATING COIN
             if(savedCoin.getTitleCoin().equals(newTitle) || !nameExists(newTitle)) {
                 sharedPreference.removeCustomCoin(getActivity(), savedCoin);
                 renameImages();
-                savedCoin = new Coin(newTitle, frontImageName, backImageName, editNotes.getText().toString(), myCalendar.getTime());
+                savedCoin = new Coin(newTitle, frontImageName, backImageName, "Penny", "Disneyland", newNotes, myCalendar.getTime());
                 sharedPreference.addCustomCoin(getActivity(), savedCoin);
                 getFragmentManager().popBackStackImmediate();
             }else {
@@ -454,7 +497,7 @@ public class CustomCoinFragment extends Fragment {
         }else{
             // NEW COIN
             renameImages();
-            newCustomCoin = new Coin(newTitle, frontImageName, backImageName, editNotes.getText().toString(), myCalendar.getTime());
+            newCustomCoin = new Coin(newTitle, frontImageName, backImageName, "Penny", "Disneyland", editNotes.getText().toString(), myCalendar.getTime());
             if(!nameExists(newTitle)){
                 sharedPreference.addCustomCoin(getActivity(), newCustomCoin);
                 getFragmentManager().popBackStackImmediate();
@@ -595,11 +638,9 @@ public class CustomCoinFragment extends Fragment {
 
                 // right to left swipe
                 if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    Toast.makeText(getActivity(), "Left Swipe", Toast.LENGTH_SHORT).show();
                     swipeLeft();
                     return true;
                 } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    Toast.makeText(getActivity(), "Right Swipe", Toast.LENGTH_SHORT).show();
                     swipeRight();
                     return true;
                 }

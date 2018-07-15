@@ -12,6 +12,8 @@ public class Coin implements Serializable {
     private String titleCoin;
     private String coinFrontImg;
     private String coinBackImg;
+    private String coinType;
+    private String coinPark;
     private String notes;
     private Date dateCollected;
 
@@ -21,10 +23,12 @@ public class Coin implements Serializable {
         this.dateCollected = dateCollected;
     }
 
-    protected Coin(String titleCoin, String front, String back, String notes, Date dateCollected) {
+    protected Coin(String titleCoin, String front, String back, String type, String park, String notes, Date dateCollected) {
         this.titleCoin = titleCoin;
         coinFrontImg = front;
         coinBackImg = back;
+        coinType = type;
+        coinPark = park;
         this.notes = notes;
         this.dateCollected = dateCollected;
     }
@@ -51,6 +55,22 @@ public class Coin implements Serializable {
 
     public void setTitleCoin(String newTitle) {
         this.titleCoin = newTitle;
+    }
+
+    public String getCoinType() {
+        return coinType;
+    }
+
+    public void setCoinType(String coinType) {
+        this.coinType = coinType;
+    }
+
+    public String getCoinPark() {
+        return coinPark;
+    }
+
+    public void setCoinPark(String coinPark) {
+        this.coinPark = coinPark;
     }
 
     public String getNotes() {
