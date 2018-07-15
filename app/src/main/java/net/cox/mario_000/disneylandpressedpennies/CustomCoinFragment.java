@@ -36,12 +36,14 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.google.gson.Gson;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -55,7 +57,6 @@ import java.util.Locale;
 import java.util.Random;
 
 import static android.app.Activity.RESULT_OK;
-import static net.cox.mario_000.disneylandpressedpennies.MainActivity.img;
 
 /**
  * Created by mario_000 on 7/1/2018.
@@ -83,7 +84,9 @@ public class CustomCoinFragment extends Fragment {
     DatePickerDialog.OnDateSetListener onDateSetListener;
     Calendar myCalendar;
     private Context context;
-    Coin customCoin;
+    Coin newCustomCoin;
+    private Coin savedCoin;
+    private ScrollView customCoinScrollview;
 
 
     private final SharedPreference sharedPreference = new SharedPreference();
@@ -132,6 +135,7 @@ public class CustomCoinFragment extends Fragment {
         editCoinDisplay = view.findViewById(R.id.editCoinDisplay);
         spinningCoinDisplay = view.findViewById(R.id.spinningCoinDisplay);
         coinTypeSpinner = view.findViewById(R.id.type_picker);
+        customCoinScrollview = view.findViewById(R.id.custom_coin_fields);
 
 
         InputFilter filter = new InputFilter() {
@@ -147,6 +151,13 @@ public class CustomCoinFragment extends Fragment {
         };
 
         editTitle.setFilters(new InputFilter[]{filter});
+
+        editTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editTitle.setTextColor(Color.BLACK);
+            }
+        });
 
         // Get calendar
         myCalendar = Calendar.getInstance();
@@ -165,6 +176,16 @@ public class CustomCoinFragment extends Fragment {
             }
         });
 
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(savedCoin != null){
+                    removeSavedCoinDialog();
+                }else{
+                    cancelDialog();
+                }
+            }
+        });
 
         onDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -172,17 +193,6 @@ public class CustomCoinFragment extends Fragment {
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                // Update coin date info
-                /*sharedPreference.removeCoin(getActivity().getApplicationContext(), coin);
-                if (haveCoinBox.isChecked()) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Date Updated", Toast.LENGTH_SHORT).show();
-                    coin.setDateCollected(myCalendar.getTime());
-                    sharedPreference.addCoin(getActivity().getApplicationContext(), coin);
-                    txtDate.setText(dateFormat.format(myCalendar.getTime()));
-                } else {
-                    Toast.makeText(getActivity().getApplicationContext(), "Date Selected", Toast.LENGTH_SHORT).show();
-                    haveCoinBox.setChecked(true);
-                }*/
             }
 
         };
@@ -193,35 +203,46 @@ public class CustomCoinFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         coinTypeSpinner.setAdapter(adapter);
 
-        int resId = view.getContext().getResources().getIdentifier("bazaar_1_jungle_boat", "drawable", view.getContext().getPackageName());
+
+
+        Bundle extras = getArguments();
+        if (extras != null) {
+            Gson gson = new Gson();
+            String jsonCoin = extras.getString("selectedCoin");
+            savedCoin = gson.fromJson(jsonCoin, Coin.class);
+
+            // Display machine name in nav bar
+            getActivity().setTitle(savedCoin.getTitleCoin());
+
+            // Set data
+            editTitle.setText(savedCoin.getTitleCoin());
+            editNotes.setText(savedCoin.getNotes());
+            txtDateCollected.setText(dateFormat.format(savedCoin.getDateCollected()));
+
+            String root = Environment.getExternalStorageDirectory().toString();
+            File dir = new File(root + "/Pressed Coins at Disneyland/Coins");
+
+            Bitmap frontCoin = BitmapFactory.decodeFile(dir + "/" + savedCoin.getCoinFrontImg());
+            spinningCoinFront.setImageBitmap(frontCoin);
+            editCoinFront.setImageBitmap(frontCoin);
+            frontImageName = savedCoin.getCoinFrontImg();
+
+            Bitmap backCoin = BitmapFactory.decodeFile(dir + "/" + savedCoin.getCoinBackImg());
+            spinningCoinBack.setImageBitmap(backCoin);
+            editCoinBack.setImageBitmap(backCoin);
+            backImageName = savedCoin.getCoinBackImg();
+
+
+            btnSave.setText("Update");
+            btnDelete.setText("Delete");
+        }
+
+
+
+        /*int resId = view.getContext().getResources().getIdentifier("bazaar_1_jungle_boat", "drawable", view.getContext().getPackageName());
         int resId2 = view.getContext().getResources().getIdentifier("bazaar_2_backstamp", "drawable", view.getContext().getPackageName());
 
-        img.loadBitmap(resId, getResources(), 800, 800, spinningCoinFront, 0);
-        BitmapFactory.Options dimensions = new BitmapFactory.Options();
-        dimensions.inJustDecodeBounds = true;
-        Bitmap mBitmap = BitmapFactory.decodeResource(getActivity().getResources(), resId, dimensions);
-        int height = dimensions.outHeight;
-        int width = dimensions.outWidth;
-
-        //Set orientation based on coin direction
-        if (width > height) {
-            Bitmap mBitmap2 = BitmapFactory.decodeResource(getActivity().getResources(), resId2);
-            if (mBitmap2 == null) {
-                int resId3 = view.getContext().getResources().getIdentifier("new_searching", "drawable", view.getContext().getPackageName());
-                mBitmap2 = BitmapFactory.decodeResource(getActivity().getResources(), resId3);
-            }
-            if (mBitmap2.getWidth() < mBitmap2.getHeight()) {
-                Matrix matrix = new Matrix();
-                matrix.postRotate(90);
-                Bitmap bitmap = Bitmap.createBitmap(mBitmap2, 0, 0, mBitmap2.getWidth(), mBitmap2.getHeight(), matrix, true);
-                spinningCoinBack.setImageBitmap(bitmap);
-            } else {
-                img.loadBitmap(resId2, getResources(), 800, 800, spinningCoinBack, resId);
-            }
-
-        } else {
-            img.loadBitmap(resId2, getResources(), 800, 800, spinningCoinBack, resId);
-        }
+        img.loadBitmap(resId, getResources(), 800, 800, spinningCoinFront, 0);*/
 
 
         // Set animations
@@ -273,7 +294,49 @@ public class CustomCoinFragment extends Fragment {
         return view;
     }
 
-    public void showOverwriteDialog() {
+    public void removeSavedCoinDialog() {
+        final Dialog removeDialog = new Dialog(context, R.style.CustomDialog);
+        // Set up dialog window
+        removeDialog.setContentView(R.layout.coin_remove_dialog);
+        removeDialog.setTitle("Title...");
+        removeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        removeDialog.setCancelable(false);
+        TextView coinName = removeDialog.findViewById(R.id.txt_coin);
+        coinName.setText(savedCoin.getTitleCoin());
+        // Link buttons
+        Button noBtn = removeDialog.findViewById(R.id.btn_no);
+        Button overwriteBtn = removeDialog.findViewById(R.id.btn_yes);
+
+        // Listeners for buttons
+        noBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                removeDialog.dismiss();
+            }
+        });
+
+        overwriteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(nameExists(savedCoin.getTitleCoin())){
+                    sharedPreference.removeCustomCoin(getActivity(), savedCoin);
+                    getFragmentManager().popBackStackImmediate();
+                }
+
+                /*mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Coin Removed")
+                        .setAction("Removed")
+                        .setLabel(coin.getTitleCoin())
+                        .setValue(1)
+                        .build());*/
+                removeDialog.dismiss();
+            }
+        });
+
+        removeDialog.show();
+    }
+
+    public void cancelDialog() {
         final Dialog removeDialog = new Dialog(context, R.style.CustomDialog);
         // Set up dialog window
         removeDialog.setContentView(R.layout.coin_remove_dialog);
@@ -282,8 +345,7 @@ public class CustomCoinFragment extends Fragment {
         removeDialog.setCancelable(false);
         TextView description = removeDialog.findViewById(R.id.txt_dia);
         TextView coinName = removeDialog.findViewById(R.id.txt_coin);
-        description.setText("This coin already exists.\n Would you like to update it?");
-        description.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        description.setText("Are you sure you wish to cancel?");
         coinName.setText(editTitle.getText());
         // Link buttons
         Button noBtn = removeDialog.findViewById(R.id.btn_no);
@@ -293,7 +355,6 @@ public class CustomCoinFragment extends Fragment {
         noBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editTitle.getText().clear();
                 removeDialog.dismiss();
             }
         });
@@ -301,8 +362,7 @@ public class CustomCoinFragment extends Fragment {
         overwriteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sharedPreference.removeCustomCoin(getActivity(), customCoin);
-                sharedPreference.addCustomCoin(getActivity(), customCoin);
+                getFragmentManager().popBackStackImmediate();
                 /*mTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("Coin Removed")
                         .setAction("Removed")
@@ -326,25 +386,13 @@ public class CustomCoinFragment extends Fragment {
         }else if(editTitle.getText().toString().equals("")){
             Toast.makeText(getActivity(), "Please enter a coin name...", Toast.LENGTH_SHORT).show();
             return false;
+        }else if(nameExists(editTitle.getText().toString()) && savedCoin == null){
+            Toast.makeText(getActivity(), "Coin already exists...", Toast.LENGTH_SHORT).show();
+            editTitle.setTextColor(getResources().getColor(R.color.colorRed));
+            customCoinScrollview.fullScroll(ScrollView.FOCUS_UP);
+            return false;
         }
         return true;
-    }
-
-    // Check if coin is in collected coins
-    private boolean checkCoin(Coin checkCoin) {
-        boolean check = false;
-        // Get collected coins list
-        List<Coin> coins = sharedPreference.getCustomCoins(getActivity().getApplicationContext());
-        if (coins != null) {
-            for (Coin coin : coins) {
-                // Check if coin matches coin already collected
-                if (String.valueOf(coin.getTitleCoin()).equals(String.valueOf(checkCoin.getTitleCoin()))) {
-                    check = true;
-                    break;
-                }
-            }
-        }
-        return check;
     }
 
     // Check if coin is in collected coins
@@ -364,7 +412,7 @@ public class CustomCoinFragment extends Fragment {
         return check;
     }
 
-    private void saveCoin(){
+    private void renameImages(){
         String root = Environment.getExternalStorageDirectory().toString();
         File dir = new File(root + "/Pressed Coins at Disneyland/Coins/");
         File frontFrom = new File(dir,frontImageName);
@@ -375,6 +423,7 @@ public class CustomCoinFragment extends Fragment {
             Toast.makeText(getActivity(), "Renamed front", Toast.LENGTH_SHORT).show();
             frontImageName = frontTo.getName();
         }
+
         File backFrom = new File(dir,backImageName);
         String newBackImage =  editTitle.getText().toString().trim().replaceAll(" ", "_").toLowerCase();
         File backTo = new File(dir,newBackImage + "_back.png");
@@ -383,21 +432,38 @@ public class CustomCoinFragment extends Fragment {
             Toast.makeText(getActivity(), "Renamed back", Toast.LENGTH_SHORT).show();
             backImageName = backTo.getName();
         }
+    }
 
-        customCoin = new Coin(editTitle.getText().toString(), frontTo.getName(), backTo.getName(), editNotes.getText().toString(), myCalendar.getTime());
-        if(checkCoin(customCoin)){
-            showOverwriteDialog();
+    private void saveCoin(){
+
+        String newTitle = editTitle.getText().toString();
+
+        if(savedCoin != null){
+            // UPDATING COIN
+            if(savedCoin.getTitleCoin().equals(newTitle) || !nameExists(newTitle)) {
+                sharedPreference.removeCustomCoin(getActivity(), savedCoin);
+                renameImages();
+                savedCoin = new Coin(newTitle, frontImageName, backImageName, editNotes.getText().toString(), myCalendar.getTime());
+                sharedPreference.addCustomCoin(getActivity(), savedCoin);
+                getFragmentManager().popBackStackImmediate();
+            }else {
+                Toast.makeText(getActivity(), "Coin already exists...", Toast.LENGTH_SHORT).show();
+                editTitle.setTextColor(getResources().getColor(R.color.colorRed));
+                customCoinScrollview.fullScroll(ScrollView.FOCUS_UP);
+            }
         }else{
-            sharedPreference.addCustomCoin(getActivity(), customCoin);
+            // NEW COIN
+            renameImages();
+            newCustomCoin = new Coin(newTitle, frontImageName, backImageName, editNotes.getText().toString(), myCalendar.getTime());
+            if(!nameExists(newTitle)){
+                sharedPreference.addCustomCoin(getActivity(), newCustomCoin);
+                getFragmentManager().popBackStackImmediate();
+            }
         }
 
-
         Toast.makeText(getActivity(), String.valueOf(sharedPreference.getCustomCoins(getActivity().getApplicationContext()).size()), Toast.LENGTH_SHORT).show();
-        //Toast.makeText(getActivity(), backImageName, Toast.LENGTH_SHORT).show();
-        /*Toast.makeText(getActivity(), editTitle.getText().toString(), Toast.LENGTH_SHORT).show();
+
         Toast.makeText(getActivity(), coinTypeSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(getActivity(), txtDateCollected.getText(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(getActivity(), editNotes.getText().toString(), Toast.LENGTH_SHORT).show();*/
     }
 
     private final Runnable mStatusChecker = new Runnable() {
@@ -460,14 +526,6 @@ public class CustomCoinFragment extends Fragment {
                     canvas.drawBitmap(newBitmap, (b.getWidth() - newBitmap.getWidth()) / 2, (b.getHeight() - newBitmap.getHeight()) / 2, null);
 
                     SaveImage(bmOverlay);
-
-
-//                    Coin[] b = new Coin[]{
-//                            new Coin("Minnie & Mickey Happy Holidays 2017", "penny_arcade_3_mickey_2017", null)};
-//                    Machine a = new Machine("Main Street", "Peter Pan", "Quarter", null, "image", null, b, null);
-//                    List<Coin> c = Arrays.asList(a.getCoins());
-//                    Coin d = new Coin("Minnie & Mickey Happy Holidays 2017", "penny_arcade_3_mickey_2017", null);
-//                    c.add(d);
 
                 }
                 catch (IOException e)

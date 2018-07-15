@@ -34,7 +34,6 @@ import com.github.jinatonic.confetti.confetto.Confetto;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -106,16 +105,18 @@ public class MainPage extends Fragment implements View.OnClickListener {
         pictureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isStoragePermissionGranted();
-                //dispatchTakePictureIntent();
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                CustomCoinList fragment = new CustomCoinList();
 
-                CropImage.activity()
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .setRequestedSize(290,520)
-                        .setAspectRatio(29,52)
-                        .setCropShape(CropImageView.CropShape.OVAL)
-                        .setAutoZoomEnabled(true)
-                        .start(getContext(), MainPage.this);
+                fragmentTransaction.setCustomAnimations(
+                        R.animator.fade_in,
+                        R.animator.fade_out,
+                        R.animator.fade_in,
+                        R.animator.fade_out);
+
+                fragmentTransaction.replace(R.id.mainFrag, fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }
         });
 
