@@ -336,6 +336,12 @@ public interface Data {
             new Coin("Violet and Dash", "knicks_knacks_violet_dash", null)
     };
 
+    Coin[] bingBongPenny = new Coin[]{
+            new Coin("Joy", "bing_bong_joy", null),
+            new Coin("Bing Bong", "bing_bong_bing_bong", null),
+            new Coin("Anger", "bing_bong_anger", null)
+    };
+
     // PARADISE PIER -- RETIRED
 
     Coin[] retiredTreasuresPenny = new Coin[]{
@@ -552,8 +558,9 @@ public interface Data {
     };
 
     Machine[] pixarPierCoins = new Machine[]{
-            new Machine("Pixar Pier", "Knick's Knacks", "Penny", "knicks_knacks_mac", "pixar_backstamp", "knicks_knacks_preview", knicksKnacksPenny, new LatLng(33.805332, -117.920737))
-            };
+            new Machine("Pixar Pier", "Knick's Knacks", "Penny", "knicks_knacks_mac", "pixar_backstamp", "knicks_knacks_preview", knicksKnacksPenny, new LatLng(33.805332, -117.920737)),
+            new Machine("Pixar Pier", "Bing Bong's Sweet Stuff", "Penny", "bing_bong_mac", "pixar_backstamp", "bing_bong_preview", bingBongPenny, new LatLng(33.804927, -117.922604))
+    };
 
     // DOWNTOWN DISNEY
 
