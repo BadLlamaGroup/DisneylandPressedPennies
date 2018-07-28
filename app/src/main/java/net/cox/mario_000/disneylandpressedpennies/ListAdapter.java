@@ -40,7 +40,6 @@ public class ListAdapter extends ArrayAdapter<Coin> {
         this.mResource = resource;
         this.tempCoins = coins;
         this.sharedPreference = new SharedPreference();
-        //machines = sharedPreference.getMachines(context);
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -83,8 +82,7 @@ public class ListAdapter extends ArrayAdapter<Coin> {
                 holder.imageView.setOnClickListener(PopupListener);
 
                 //Set which row was clicked
-                Integer rowPos = position;
-                holder.imageView.setTag(rowPos);
+                holder.imageView.setTag( position );
 
                 // Find machine that coin belongs to
                 Machine mac = find(coin);
@@ -125,7 +123,7 @@ public class ListAdapter extends ArrayAdapter<Coin> {
         public void onClick(View v) {
             //Get which row was clicked
             Integer viewPos = (Integer) v.getTag();
-            Intent i = new Intent(context, bigImage.class);
+            Intent i = new Intent(context, BigImage.class);
             Coin coin = (Coin) tempCoins.get(viewPos);
             machine = find(coin);
             i.putExtra("frontImg", coin.getCoinFrontImg());

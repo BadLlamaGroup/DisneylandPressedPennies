@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -26,6 +25,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,11 +44,13 @@ import android.widget.Toast;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -57,15 +59,13 @@ import java.util.Locale;
 import java.util.Random;
 
 import static android.app.Activity.RESULT_OK;
-import static net.cox.mario_000.disneylandpressedpennies.MainActivity.img;
 
 /**
  * Created by mario_000 on 7/1/2018.
  */
 
-public class CustomCoinFragment extends Fragment {
-    // Views
-
+public class CustomCoinFragment extends Fragment
+{
     // Images
     private ImageView spinningCoinFront;
     private ImageView spinningCoinBack;
@@ -81,7 +81,7 @@ public class CustomCoinFragment extends Fragment {
 
     // Calendar
     private TextView txtDateCollected;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
+    private SimpleDateFormat dateFormat = new SimpleDateFormat( "MMMM dd, yyyy", Locale.US );
     private DatePickerDialog.OnDateSetListener onDateSetListener;
     private Calendar myCalendar;
 
@@ -118,46 +118,53 @@ public class CustomCoinFragment extends Fragment {
     private Handler mHandler;
     private boolean mIsBackVisible = false;
 
-    @Override
-    public void onResume() {
 
+    @Override
+    public void onResume()
+    {
         super.onResume();
-        mTracker.setScreenName("Page - Custom Coin");
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        mTracker.setScreenName( "Page - Custom Coin" );
+        mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.custom_coin_new_coin, container, false);
-        getActivity().setTitle("Custom Coin");
+    public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState )
+    {
+        View view = inflater.inflate( R.layout.custom_coin_new_coin, container, false );
+        getActivity().setTitle( "Custom Coin" );
         context = view.getContext();
 
-        MainActivity application = (MainActivity) getActivity();
+        MainActivity application = ( MainActivity ) getActivity();
         mTracker = application.getDefaultTracker();
 
         isStoragePermissionGranted();
 
         // Link views
-        spinningCoinFront = view.findViewById(R.id.spinningCoinFront);
-        spinningCoinBack = view.findViewById(R.id.spinningCoinBack);
-        editCoinFront = view.findViewById(R.id.editCoinFront);
-        editCoinBack = view.findViewById(R.id.editCoinBack);
-        editTitle = view.findViewById(R.id.edit_title);
-        txtDateCollected = view.findViewById(R.id.txtDateCollected);
-        editNotes = view.findViewById(R.id.txt_notes);
-        btnSave = view.findViewById(R.id.btn_save_coin);
-        btnDelete = view.findViewById(R.id.btn_delete_coin);
-        editCoinDisplay = view.findViewById(R.id.editCoinDisplay);
-        spinningCoinDisplay = view.findViewById(R.id.spinningCoinDisplay);
-        coinTypeSpinner = view.findViewById(R.id.type_picker);
-        parkSpinner = view.findViewById(R.id.park_picker);
-        customCoinScrollview = view.findViewById(R.id.custom_coin_fields);
+        spinningCoinFront = view.findViewById( R.id.spinningCoinFront );
+        spinningCoinBack = view.findViewById( R.id.spinningCoinBack );
+        editCoinFront = view.findViewById( R.id.editCoinFront );
+        editCoinBack = view.findViewById( R.id.editCoinBack );
+        editTitle = view.findViewById( R.id.edit_title );
+        txtDateCollected = view.findViewById( R.id.txtDateCollected );
+        editNotes = view.findViewById( R.id.txt_notes );
+        btnSave = view.findViewById( R.id.btn_save_coin );
+        btnDelete = view.findViewById( R.id.btn_delete_coin );
+        editCoinDisplay = view.findViewById( R.id.editCoinDisplay );
+        spinningCoinDisplay = view.findViewById( R.id.spinningCoinDisplay );
+        coinTypeSpinner = view.findViewById( R.id.type_picker );
+        parkSpinner = view.findViewById( R.id.park_picker );
+        customCoinScrollview = view.findViewById( R.id.custom_coin_fields );
 
-        InputFilter filter = new InputFilter() {
-            public CharSequence filter(CharSequence source, int start, int end,
-                                       Spanned dest, int dstart, int dend) {
-                for (int i = start; i < end; i++) {
-                    if (!Character.isLetterOrDigit(source.charAt(i)) && !Character.isSpaceChar(source.charAt(i))) {
+        InputFilter filter = new InputFilter()
+        {
+            public CharSequence filter( CharSequence source, int start, int end,
+                                        Spanned dest, int dstart, int dend
+            )
+            {
+                for ( int i = start; i < end; i++ )
+                {
+                    if ( !Character.isLetterOrDigit( source.charAt( i ) ) && !Character.isSpaceChar( source.charAt( i ) ) )
+                    {
                         return "";
                     }
                 }
@@ -165,65 +172,97 @@ public class CustomCoinFragment extends Fragment {
             }
         };
 
-        editTitle.setFilters(new InputFilter[]{filter});
+        editTitle.setFilters( new InputFilter[]{ filter } );
 
         // Listeners
 
-        editTitle.setOnClickListener(new View.OnClickListener() {
+        editTitle.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                editTitle.setTextColor(Color.BLACK);
+            public void onClick( View view )
+            {
+                editTitle.setTextColor( Color.BLACK );
             }
-        });
+        } );
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
+        btnSave.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                if(checkCoinInfo()){
+            public void onClick( View view )
+            {
+                if ( checkCoinInfo() )
+                {
                     saveCoin();
+                    // Remove old images
+                    removeOldCoinImages();
                 }
             }
-        });
+        } );
 
-        btnDelete.setOnClickListener(new View.OnClickListener() {
+        btnDelete.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                if(savedCoin != null){
+            public void onClick( View view )
+            {
+                if ( savedCoin != null )
+                {
                     removeSavedCoinDialog();
-                }else{
+                } else
+                {
                     cancelDialog();
                 }
             }
-        });
+        } );
 
-        txtDateCollected.setOnClickListener(new View.OnClickListener() {
+        // Handle back press action when action mode is on.
+        view.setFocusableInTouchMode(true);
+        view.requestFocus();
+        view.setOnKeyListener(new View.OnKeyListener() {
             @Override
-            public void onClick(View view) {
-                new DatePickerDialog(getActivity(), onDateSetListener, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN ) {
+                    cancelDialog();
+                }
+                return true;
             }
         });
 
-        onDateSetListener = new DatePickerDialog.OnDateSetListener() {
+        txtDateCollected.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                txtDateCollected.setText(dateFormat.format(myCalendar.getTime()));
+            public void onClick( View view )
+            {
+                new DatePickerDialog( getActivity(), onDateSetListener, myCalendar
+                        .get( Calendar.YEAR ), myCalendar.get( Calendar.MONTH ),
+                        myCalendar.get( Calendar.DAY_OF_MONTH ) ).show();
+            }
+        } );
+
+        onDateSetListener = new DatePickerDialog.OnDateSetListener()
+        {
+            @Override
+            public void onDateSet( DatePicker view, int year, int monthOfYear, int dayOfMonth )
+            {
+                myCalendar.set( Calendar.YEAR, year );
+                myCalendar.set( Calendar.MONTH, monthOfYear );
+                myCalendar.set( Calendar.DAY_OF_MONTH, dayOfMonth );
+                txtDateCollected.setText( dateFormat.format( myCalendar.getTime() ) );
             }
 
         };
 
         // Gesture detection
-        gestureDetector = new GestureDetector(getActivity(), new MyGestureDetector());
+        gestureDetector = new GestureDetector( getActivity(), new MyGestureDetector() );
 
-        swipeListener = new View.OnTouchListener() {
+        swipeListener = new View.OnTouchListener()
+        {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if((!gestureDetector.onTouchEvent(event) && event.getAction() == MotionEvent.ACTION_UP) && (v instanceof Button || v instanceof ImageView)){
-                    switch (v.getId()){
+            public boolean onTouch( View v, MotionEvent event )
+            {
+                if ( ( !gestureDetector.onTouchEvent( event ) && event.getAction() == MotionEvent.ACTION_UP ) && ( v instanceof Button || v instanceof ImageView ) )
+                {
+                    switch ( v.getId() )
+                    {
                         case R.id.editCoinFront:
                             selectedSide = "Front";
                             takePicture();
@@ -233,7 +272,7 @@ public class CustomCoinFragment extends Fragment {
                             takePicture();
                             break;
                         case R.id.spinningCoinBack:
-                            Toast.makeText(getActivity(), "spinningCoinBack", Toast.LENGTH_SHORT).show();
+                            Toast.makeText( getActivity(), "spinningCoinBack", Toast.LENGTH_SHORT ).show();
                             break;
                     }
                 }
@@ -242,12 +281,12 @@ public class CustomCoinFragment extends Fragment {
         };
 
         // Set listeners for coin
-        editCoinDisplay.setOnTouchListener(swipeListener);
-        spinningCoinDisplay.setOnTouchListener(swipeListener);
-        spinningCoinFront.setOnTouchListener(swipeListener);
-        spinningCoinBack.setOnTouchListener(swipeListener);
-        editCoinFront.setOnTouchListener(swipeListener);
-        editCoinBack.setOnTouchListener(swipeListener);
+        editCoinDisplay.setOnTouchListener( swipeListener );
+        spinningCoinDisplay.setOnTouchListener( swipeListener );
+        spinningCoinFront.setOnTouchListener( swipeListener );
+        spinningCoinBack.setOnTouchListener( swipeListener );
+        editCoinFront.setOnTouchListener( swipeListener );
+        editCoinBack.setOnTouchListener( swipeListener );
 
         // Get calendar
         myCalendar = Calendar.getInstance();
@@ -256,116 +295,134 @@ public class CustomCoinFragment extends Fragment {
         mHandler = new Handler();
 
         // Set animations
-        mSetRightOut = (AnimatorSet) AnimatorInflater.loadAnimator(view.getContext(), R.animator.flip1);
-        mSetLeftIn = (AnimatorSet) AnimatorInflater.loadAnimator(view.getContext(), R.animator.flip2);
+        mSetRightOut = ( AnimatorSet ) AnimatorInflater.loadAnimator( view.getContext(), R.animator.flip1 );
+        mSetLeftIn = ( AnimatorSet ) AnimatorInflater.loadAnimator( view.getContext(), R.animator.flip2 );
 
         // Set camera distance
         int distance = 8000;
         float scale = getResources().getDisplayMetrics().density * distance;
-        spinningCoinFront.setCameraDistance(scale);
-        spinningCoinBack.setCameraDistance(scale);
+        spinningCoinFront.setCameraDistance( scale );
+        spinningCoinBack.setCameraDistance( scale );
 
         // Set adapters
-        final ArrayAdapter<CharSequence> coinTypeAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.Coin_Type, R.layout.spinner_item);
-        coinTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        coinTypeSpinner.setAdapter(coinTypeAdapter);
+        final ArrayAdapter< CharSequence > coinTypeAdapter = ArrayAdapter.createFromResource( getActivity(), R.array.Coin_Type, R.layout.spinner_item );
+        coinTypeAdapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
+        coinTypeSpinner.setAdapter( coinTypeAdapter );
 
-        final ArrayAdapter<CharSequence> parkAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.Park, R.layout.spinner_item);
-        parkAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        parkSpinner.setAdapter(parkAdapter);
+        final ArrayAdapter< CharSequence > parkAdapter = ArrayAdapter.createFromResource( getActivity(), R.array.Park, R.layout.spinner_item );
+        parkAdapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
+        parkSpinner.setAdapter( parkAdapter );
 
         // Set coin info
         Bundle extras = getArguments();
-        if (extras != null) {
+        if ( extras != null )
+        {
             Gson gson = new Gson();
-            String jsonCoin = extras.getString("selectedCoin");
-            savedCoin = gson.fromJson(jsonCoin, Coin.class);
+            String jsonCoin = extras.getString( "selectedCoin" );
+            savedCoin = gson.fromJson( jsonCoin, Coin.class );
 
             // Display coin name in nav bar
-            getActivity().setTitle(savedCoin.getTitleCoin());
+            getActivity().setTitle( savedCoin.getTitleCoin() );
 
             // Set data
-            editTitle.setText(savedCoin.getTitleCoin());
-            editNotes.setText(savedCoin.getNotes());
-            myCalendar.setTime(savedCoin.getDateCollected());
-            txtDateCollected.setText(dateFormat.format(savedCoin.getDateCollected()));
+            editTitle.setText( savedCoin.getTitleCoin() );
+            editNotes.setText( savedCoin.getNotes() );
+            myCalendar.setTime( savedCoin.getDateCollected() );
+            txtDateCollected.setText( dateFormat.format( savedCoin.getDateCollected() ) );
 
             // Set spinners
-            int coinPos = coinTypeAdapter.getPosition(savedCoin.getCoinType());
-            coinTypeSpinner.setSelection(coinPos);
-            int parkPos = parkAdapter.getPosition(savedCoin.getCoinPark());
-            parkSpinner.setSelection(parkPos);
+            int coinPos = coinTypeAdapter.getPosition( savedCoin.getCoinType() );
+            coinTypeSpinner.setSelection( coinPos );
+            int parkPos = parkAdapter.getPosition( savedCoin.getCoinPark() );
+            parkSpinner.setSelection( parkPos );
+
+            // Set filepath
+            String root = Environment.getExternalStorageDirectory().toString();
+            File dir = new File( root + "/Pressed Coins at Disneyland/Coins" );
 
             // Set images
-            String root = Environment.getExternalStorageDirectory().toString();
-            File dir = new File(root + "/Pressed Coins at Disneyland/Coins");
-            Bitmap frontCoin = BitmapFactory.decodeFile(dir + "/" + savedCoin.getCoinFrontImg());
-            spinningCoinFront.setImageBitmap(frontCoin);
-            editCoinFront.setImageBitmap(frontCoin);
+            Uri frontImage = Uri.fromFile( new File( dir + "/" + savedCoin.getCoinFrontImg() ) );
+            Picasso.get().load( frontImage ).error( R.drawable.new_penny ).fit().into( spinningCoinFront );
+            Picasso.get().load( frontImage ).error( R.drawable.new_penny ).fit().into( editCoinFront );
             frontImageName = savedCoin.getCoinFrontImg();
 
-            Bitmap backCoin = BitmapFactory.decodeFile(dir + "/" + savedCoin.getCoinBackImg());
-            spinningCoinBack.setImageBitmap(backCoin);
-            editCoinBack.setImageBitmap(backCoin);
+            Uri backImage = Uri.fromFile( new File( dir + "/" + savedCoin.getCoinBackImg() ) );
+            Picasso.get().load( backImage ).error( R.drawable.new_penny ).fit().into( spinningCoinBack );
+            Picasso.get().load( backImage ).error( R.drawable.new_penny ).fit().into( editCoinBack );
             backImageName = savedCoin.getCoinBackImg();
 
             // Set buttons
-            btnSave.setText("Update");
-            btnDelete.setText("Delete");
+            btnSave.setText( "Update" );
+            btnDelete.setText( "Delete" );
 
             // Begin rotation
-            rotate();
-        }else{
-            // Load default images
-            int resId = view.getContext().getResources().getIdentifier("new_penny", "drawable", view.getContext().getPackageName());
-            int resId2 = view.getContext().getResources().getIdentifier("new_penny_back", "drawable", view.getContext().getPackageName());
+            Handler handler = new Handler();
+            handler.postDelayed( new Runnable()
+            {
+                public void run()
+                {
+                    rotate();
+                }
+            }, 500 );
 
-            img.loadBitmap(resId, getResources(), 200, 300, spinningCoinFront, 0);
-            img.loadBitmap(resId2, getResources(), 200, 300, spinningCoinBack, 0);
-            img.loadBitmap(resId, getResources(), 200, 300, editCoinFront, 0);
-            img.loadBitmap(resId2, getResources(), 200, 300, editCoinBack, 0);
+        } else
+        {
+            // Load default images
+            int resId = view.getContext().getResources().getIdentifier( "new_penny", "drawable", view.getContext().getPackageName() );
+            int resId2 = view.getContext().getResources().getIdentifier( "new_penny_back", "drawable", view.getContext().getPackageName() );
+
+            Picasso.get().load( resId ).resize( 200, 300 ).into( spinningCoinFront );
+            Picasso.get().load( resId ).resize( 200, 300 ).into( editCoinFront );
+            Picasso.get().load( resId2 ).resize( 200, 300 ).into( spinningCoinBack );
+            Picasso.get().load( resId2 ).resize( 200, 300 ).into( editCoinBack );
 
             // Set button text
-            btnSave.setText("Save");
-            btnDelete.setText("Cancel");
+            btnSave.setText( "Save" );
+            btnDelete.setText( "Cancel" );
 
             // Set date to current date
-            txtDateCollected.setText(dateFormat.format(myCalendar.getTime()));
+            txtDateCollected.setText( dateFormat.format( myCalendar.getTime() ) );
 
             // Set view to edit
-            spinningCoinDisplay.setVisibility(View.INVISIBLE);
-            editCoinDisplay.setVisibility(View.VISIBLE);
+            spinningCoinDisplay.setVisibility( View.INVISIBLE );
+            editCoinDisplay.setVisibility( View.VISIBLE );
         }
 
         return view;
     }
 
-    public void removeSavedCoinDialog() {
-        final Dialog removeDialog = new Dialog(context, R.style.CustomDialog);
+    public void removeSavedCoinDialog()
+    {
+        final Dialog removeDialog = new Dialog( context, R.style.CustomDialog );
         // Set up dialog window
-        removeDialog.setContentView(R.layout.coin_remove_dialog);
-        removeDialog.setTitle("Title...");
-        removeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        removeDialog.setCancelable(false);
-        TextView coinName = removeDialog.findViewById(R.id.txt_coin);
-        coinName.setText(savedCoin.getTitleCoin());
+        removeDialog.setContentView( R.layout.coin_remove_dialog );
+        removeDialog.getWindow().setBackgroundDrawable( new ColorDrawable( Color.TRANSPARENT ) );
+        removeDialog.setCancelable( false );
+        TextView coinName = removeDialog.findViewById( R.id.txt_coin );
+        coinName.setText( savedCoin.getTitleCoin() );
         // Link buttons
-        Button noBtn = removeDialog.findViewById(R.id.btn_no);
-        Button overwriteBtn = removeDialog.findViewById(R.id.btn_yes);
+        Button noBtn = removeDialog.findViewById( R.id.btn_no );
+        Button overwriteBtn = removeDialog.findViewById( R.id.btn_yes );
 
         // Listeners for buttons
-        noBtn.setOnClickListener(new View.OnClickListener() {
+        noBtn.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick( View view )
+            {
                 removeDialog.dismiss();
             }
-        });
+        } );
 
-        overwriteBtn.setOnClickListener(new View.OnClickListener() {
+        overwriteBtn.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                if(nameExists(savedCoin.getTitleCoin())){
-                    sharedPreference.removeCustomCoin(getActivity(), savedCoin);
+            public void onClick( View view )
+            {
+                if ( nameExists( savedCoin.getTitleCoin() ) )
+                {
+                    sharedPreference.removeCustomCoin( getActivity(), savedCoin );
+                    deleteCoinImages();
                     getFragmentManager().popBackStackImmediate();
                 }
 
@@ -377,37 +434,44 @@ public class CustomCoinFragment extends Fragment {
                         .build());*/
                 removeDialog.dismiss();
             }
-        });
+        } );
 
         removeDialog.show();
     }
 
-    public void cancelDialog() {
-        final Dialog removeDialog = new Dialog(context, R.style.CustomDialog);
+    public void cancelDialog()
+    {
+        final Dialog removeDialog = new Dialog( context, R.style.CustomDialog );
         // Set up dialog window
-        removeDialog.setContentView(R.layout.coin_remove_dialog);
-        removeDialog.setTitle("Title...");
-        removeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        removeDialog.setCancelable(false);
-        TextView description = removeDialog.findViewById(R.id.txt_dia);
-        TextView warningMsg = removeDialog.findViewById(R.id.txt_coin);
-        description.setText("Are you sure you wish to cancel?");
-        warningMsg.setText("You will lose all changes for this coin.");
+        removeDialog.setContentView( R.layout.coin_remove_dialog );
+        removeDialog.setTitle( "Title..." );
+        removeDialog.getWindow().setBackgroundDrawable( new ColorDrawable( Color.TRANSPARENT ) );
+        removeDialog.setCancelable( false );
+        TextView description = removeDialog.findViewById( R.id.txt_dia );
+        TextView warningMsg = removeDialog.findViewById( R.id.txt_coin );
+        description.setText( "Are you sure you wish to cancel?" );
+        warningMsg.setText( "You will lose all changes for this coin." );
         // Link buttons
-        Button noBtn = removeDialog.findViewById(R.id.btn_no);
-        Button overwriteBtn = removeDialog.findViewById(R.id.btn_yes);
+        Button noBtn = removeDialog.findViewById( R.id.btn_no );
+        Button overwriteBtn = removeDialog.findViewById( R.id.btn_yes );
 
         // Listeners for buttons
-        noBtn.setOnClickListener(new View.OnClickListener() {
+        noBtn.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick( View view )
+            {
                 removeDialog.dismiss();
             }
-        });
+        } );
 
-        overwriteBtn.setOnClickListener(new View.OnClickListener() {
+        overwriteBtn.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick( View view )
+            {
+                // Remove old images
+                removeOldCoinImages();
                 getFragmentManager().popBackStackImmediate();
                 /*mTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("Coin Removed")
@@ -417,39 +481,71 @@ public class CustomCoinFragment extends Fragment {
                         .build());*/
                 removeDialog.dismiss();
             }
-        });
+        } );
 
         removeDialog.show();
     }
 
-    private boolean checkCoinInfo(){
-        if(frontImageName == null) {
-            Toast.makeText(getActivity(), "Please select an image for the front...", Toast.LENGTH_SHORT).show();
+    private void removeOldCoinImages()
+    {
+        String root = Environment.getExternalStorageDirectory().toString();
+        File dir = new File( root + "/Pressed Coins at Disneyland/Coins" );
+        final File[] files = dir.listFiles( new FilenameFilter()
+        {
+            @Override
+            public boolean accept( final File dir,
+                                   final String name
+            )
+            {
+                return name.matches( "Image.*\\.png" );
+            }
+        } );
+        for ( final File file : files )
+        {
+            if ( !file.delete() )
+            {
+                System.err.println( "Can't remove " + file.getAbsolutePath() );
+            }
+        }
+    }
+
+    private boolean checkCoinInfo()
+    {
+        if ( frontImageName == null )
+        {
+            Toast.makeText( getActivity(), "Please select an image for the front...", Toast.LENGTH_SHORT ).show();
             return false;
-        } else if(backImageName == null){
-            Toast.makeText(getActivity(), "Please select an image for the back...", Toast.LENGTH_SHORT).show();
+        } else if ( backImageName == null )
+        {
+            Toast.makeText( getActivity(), "Please select an image for the back...", Toast.LENGTH_SHORT ).show();
             return false;
-        }else if(editTitle.getText().toString().equals("")){
-            Toast.makeText(getActivity(), "Please enter a coin name...", Toast.LENGTH_SHORT).show();
+        } else if ( editTitle.getText().toString().equals( "" ) )
+        {
+            Toast.makeText( getActivity(), "Please enter a coin name...", Toast.LENGTH_SHORT ).show();
             return false;
-        }else if(nameExists(editTitle.getText().toString()) && savedCoin == null){
-            Toast.makeText(getActivity(), "Coin already exists...", Toast.LENGTH_SHORT).show();
-            editTitle.setTextColor(getResources().getColor(R.color.colorRed));
-            customCoinScrollview.fullScroll(ScrollView.FOCUS_UP);
+        } else if ( nameExists( editTitle.getText().toString() ) && savedCoin == null )
+        {
+            Toast.makeText( getActivity(), "Coin already exists...", Toast.LENGTH_SHORT ).show();
+            editTitle.setTextColor( getResources().getColor( R.color.colorRed ) );
+            customCoinScrollview.fullScroll( ScrollView.FOCUS_UP );
             return false;
         }
         return true;
     }
 
     // Check if coin is in collected coins
-    private boolean nameExists(String checkName) {
+    private boolean nameExists( String checkName )
+    {
         boolean check = false;
         // Get collected coins list
-        List<Coin> coins = sharedPreference.getCustomCoins(getActivity().getApplicationContext());
-        if (coins != null) {
-            for (Coin coin : coins) {
+        List< Coin > coins = sharedPreference.getCustomCoins( getActivity().getApplicationContext() );
+        if ( coins != null )
+        {
+            for ( Coin coin : coins )
+            {
                 // Check if coin matches coin already collected
-                if (String.valueOf(coin.getTitleCoin()).equals(checkName)) {
+                if ( String.valueOf( coin.getTitleCoin() ).equals( checkName ) )
+                {
                     check = true;
                     break;
                 }
@@ -458,270 +554,354 @@ public class CustomCoinFragment extends Fragment {
         return check;
     }
 
-    private void renameImages(){
-        try {
+    private void renameImages()
+    {
+        try
+        {
             String root = Environment.getExternalStorageDirectory().toString();
-            File dir = new File(root + "/Pressed Coins at Disneyland/Coins/");
-            File frontFrom = new File(dir, frontImageName);
-            String newFrontImage = editTitle.getText().toString().trim().replaceAll(" ", "_").toLowerCase();
-            File frontTo = new File(dir, newFrontImage + "_front.png");
-            if (frontFrom.renameTo(frontTo)) {
-                Toast.makeText(getActivity(), "Renamed front", Toast.LENGTH_SHORT).show();
+            File dir = new File( root + "/Pressed Coins at Disneyland/Coins/" );
+            File frontFrom = new File( dir, frontImageName );
+            String newFrontImage = editTitle.getText().toString().trim().replaceAll( " ", "_" ).toLowerCase();
+            File frontTo = new File( dir, newFrontImage + "_front.png" );
+            if ( frontFrom.renameTo( frontTo ) )
+            {
                 frontImageName = frontTo.getName();
             }
 
-            File backFrom = new File(dir, backImageName);
-            String newBackImage = editTitle.getText().toString().trim().replaceAll(" ", "_").toLowerCase();
-            File backTo = new File(dir, newBackImage + "_back.png");
-            if (backFrom.renameTo(backTo)) {
-                Toast.makeText(getActivity(), "Renamed back", Toast.LENGTH_SHORT).show();
+            File backFrom = new File( dir, backImageName );
+            String newBackImage = editTitle.getText().toString().trim().replaceAll( " ", "_" ).toLowerCase();
+            File backTo = new File( dir, newBackImage + "_back.png" );
+            if ( backFrom.renameTo( backTo ) )
+            {
                 backImageName = backTo.getName();
             }
-        }
-        catch (Exception e){
+        } catch ( Exception e )
+        {
             e.printStackTrace();
-            Toast.makeText(context, "Error renaming images", Toast.LENGTH_SHORT).show();
+            Toast.makeText( context, "Error renaming images", Toast.LENGTH_SHORT ).show();
             getFragmentManager().popBackStackImmediate();
         }
     }
 
-    private void saveCoin(){
+    private void deleteCoinImages()
+    {
+        try
+        {
+            String root = Environment.getExternalStorageDirectory().toString();
+            File dir = new File( root + "/Pressed Coins at Disneyland/Coins/" );
+            File frontImage = new File( dir, frontImageName );
+            frontImage.delete();
+
+            File backImage = new File( dir, backImageName );
+            backImage.delete();
+        } catch ( Exception e )
+        {
+            e.printStackTrace();
+            Toast.makeText( context, "Error deleting images", Toast.LENGTH_SHORT ).show();
+            getFragmentManager().popBackStackImmediate();
+        }
+    }
+
+    private void saveCoin()
+    {
 
         String newTitle = editTitle.getText().toString();
         String newNotes = editNotes.getText().toString();
         String coinType = coinTypeSpinner.getSelectedItem().toString();
         String parkSelected = parkSpinner.getSelectedItem().toString();
 
-        if(savedCoin != null){
+        if ( savedCoin != null )
+        {
             // UPDATING COIN
-            if(savedCoin.getTitleCoin().equals(newTitle) || !nameExists(newTitle)) {
-                sharedPreference.removeCustomCoin(getActivity(), savedCoin);
+            if ( savedCoin.getTitleCoin().equals( newTitle ) || !nameExists( newTitle ) )
+            {
+                sharedPreference.removeCustomCoin( getActivity(), savedCoin );
                 renameImages();
-                savedCoin = new Coin(newTitle, frontImageName, backImageName, coinType, parkSelected, newNotes, myCalendar.getTime());
-                sharedPreference.addCustomCoin(getActivity(), savedCoin);
+                savedCoin = new Coin( newTitle, frontImageName, backImageName, coinType, parkSelected, newNotes, myCalendar.getTime() );
+                sharedPreference.addCustomCoin( getActivity(), savedCoin );
                 getFragmentManager().popBackStackImmediate();
-            }else {
-                Toast.makeText(getActivity(), "Coin already exists...", Toast.LENGTH_SHORT).show();
-                editTitle.setTextColor(getResources().getColor(R.color.colorRed));
-                customCoinScrollview.fullScroll(ScrollView.FOCUS_UP);
+            } else
+            {
+                Toast.makeText( getActivity(), "Coin already exists...", Toast.LENGTH_SHORT ).show();
+                editTitle.setTextColor( getResources().getColor( R.color.colorRed ) );
+                customCoinScrollview.fullScroll( ScrollView.FOCUS_UP );
             }
-        }else{
+        } else
+        {
             // NEW COIN
             renameImages();
-            newCustomCoin = new Coin(newTitle, frontImageName, backImageName, coinType, parkSelected, newNotes, myCalendar.getTime());
-            if(!nameExists(newTitle)){
-                sharedPreference.addCustomCoin(getActivity(), newCustomCoin);
+            newCustomCoin = new Coin( newTitle, frontImageName, backImageName, coinType, parkSelected, newNotes, myCalendar.getTime() );
+            if ( !nameExists( newTitle ) )
+            {
+                sharedPreference.addCustomCoin( getActivity(), newCustomCoin );
                 getFragmentManager().popBackStackImmediate();
             }
         }
     }
 
-    private final Runnable mStatusChecker = new Runnable() {
+    private final Runnable mStatusChecker = new Runnable()
+    {
         @Override
-        public void run() {
-            try {
+        public void run()
+        {
+            try
+            {
                 flipCoin();
-            } finally {
-                mHandler.postDelayed(mStatusChecker, mInterval);
+            } finally
+            {
+                mHandler.postDelayed( mStatusChecker, mInterval );
             }
         }
     };
 
-    private void rotate() {
+    private void rotate()
+    {
         mStatusChecker.run();
     }
 
-    private void flipCoin() {
-        spinningCoinBack.setVisibility(View.VISIBLE);
-        if (!mIsBackVisible) {
-            mSetRightOut.setTarget(spinningCoinFront);
-            mSetLeftIn.setTarget(spinningCoinBack);
+    private void flipCoin()
+    {
+        spinningCoinBack.setVisibility( View.VISIBLE );
+        if ( !mIsBackVisible )
+        {
+            mSetRightOut.setTarget( spinningCoinFront );
+            mSetLeftIn.setTarget( spinningCoinBack );
             mSetRightOut.start();
             mSetLeftIn.start();
             mIsBackVisible = true;
-        } else {
-            mSetRightOut.setTarget(spinningCoinBack);
-            mSetLeftIn.setTarget(spinningCoinFront);
+        } else
+        {
+            mSetRightOut.setTarget( spinningCoinBack );
+            mSetLeftIn.setTarget( spinningCoinFront );
             mSetRightOut.start();
             mSetLeftIn.start();
             mIsBackVisible = false;
         }
     }
 
-    public void takePicture() {
+    public void takePicture()
+    {
         CropImage.activity()
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .setRequestedSize(290,520)
-                .setMinCropResultSize(290,520)
-                .setAspectRatio(29,52)
-                .setCropShape(CropImageView.CropShape.OVAL)
-                .setAutoZoomEnabled(true)
-                .start(getActivity(), this);
+                .setGuidelines( CropImageView.Guidelines.ON )
+                .setRequestedSize( 290, 520 )
+                .setMinCropResultSize( 290, 520 )
+                .setAspectRatio( 29, 52 )
+                .setCropShape( CropImageView.CropShape.OVAL )
+                .setAutoZoomEnabled( true )
+                .start( getActivity(), this );
     }
 
-    public void onActivityResult(int requestCode,
-                                 int resultCode, Intent data) {
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
+    public void onActivityResult( int requestCode,
+                                  int resultCode, Intent data
+    )
+    {
+        if ( requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE )
+        {
+            CropImage.ActivityResult result = CropImage.getActivityResult( data );
+            if ( resultCode == RESULT_OK )
+            {
                 Uri resultUri = result.getUri();
-                try {
-                    Bitmap originalBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), resultUri);
-                    Bitmap newBitmap = CropImage.toOvalBitmap(originalBitmap);
-                    Bitmap holderBitmap = Bitmap.createBitmap(400, 600, Bitmap.Config.ARGB_8888);
+                try
+                {
+                    Bitmap originalBitmap = MediaStore.Images.Media.getBitmap( getActivity().getContentResolver(), resultUri );
+                    Bitmap newBitmap = CropImage.toOvalBitmap( originalBitmap );
+                    Bitmap holderBitmap = Bitmap.createBitmap( 400, 600, Bitmap.Config.ARGB_8888 );
 
-                    Bitmap finishedBitmap = Bitmap.createBitmap(holderBitmap.getWidth(), holderBitmap.getHeight(), holderBitmap.getConfig());
-                    Canvas canvas = new Canvas(finishedBitmap);
-                    canvas.drawBitmap(holderBitmap, new Matrix(), null);
-                    canvas.drawBitmap(newBitmap, (holderBitmap.getWidth() - newBitmap.getWidth()) / 2, (holderBitmap.getHeight() - newBitmap.getHeight()) / 2, null);
+                    Bitmap finishedBitmap = Bitmap.createBitmap( holderBitmap.getWidth(), holderBitmap.getHeight(), holderBitmap.getConfig() );
+                    Canvas canvas = new Canvas( finishedBitmap );
+                    canvas.drawBitmap( holderBitmap, new Matrix(), null );
+                    canvas.drawBitmap( newBitmap, ( holderBitmap.getWidth() - newBitmap.getWidth() ) / 2, ( holderBitmap.getHeight() - newBitmap.getHeight() ) / 2, null );
 
-                    SaveImage(finishedBitmap);
+                    SaveImage( finishedBitmap );
 
-                }
-                catch (IOException e)
+                } catch ( IOException e )
                 {
                     e.printStackTrace();
                 }
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+            } else if ( resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE )
+            {
                 Exception error = result.getError();
             }
         }
     }
 
-    private void SaveImage(Bitmap finalBitmap) {
+    private void SaveImage( Bitmap finalBitmap )
+    {
         String root = Environment.getExternalStorageDirectory().toString();
-        File dir = new File(root + "/Pressed Coins at Disneyland/Coins");
+        File dir = new File( root + "/Pressed Coins at Disneyland/Coins" );
         dir.mkdirs();
         Random generator = new Random();
         int n = 10000;
-        n = generator.nextInt(n);
-        String fname = "Image-"+ n +".png";
-        File file = new File (dir, fname);
-        if(selectedSide.equals("Front")){
+        n = generator.nextInt( n );
+        String fname = "Image-" + n + ".png";
+        File file = new File( dir, fname );
+        if ( selectedSide.equals( "Front" ) )
+        {
             frontImageName = fname;
-        } else {
+        } else
+        {
             backImageName = fname;
         }
-        if (file.exists ()) file.delete ();
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+        if ( file.exists() ) file.delete();
+        try
+        {
+            FileOutputStream out = new FileOutputStream( file );
+            finalBitmap.compress( Bitmap.CompressFormat.PNG, 100, out );
             out.flush();
             out.close();
-            if(selectedSide.equals("Front")){
-                editCoinFront.setImageBitmap(finalBitmap);
-                spinningCoinFront.setImageBitmap(finalBitmap);
-            } else {
-                editCoinBack.setImageBitmap(finalBitmap);
-                spinningCoinBack.setImageBitmap(finalBitmap);
+            if ( selectedSide.equals( "Front" ) )
+            {
+                editCoinFront.setImageBitmap( finalBitmap );
+                spinningCoinFront.setImageBitmap( finalBitmap );
+            } else
+            {
+                editCoinBack.setImageBitmap( finalBitmap );
+                spinningCoinBack.setImageBitmap( finalBitmap );
             }
 
-        } catch (Exception e) {
+        } catch ( Exception e )
+        {
             e.printStackTrace();
         }
     }
 
-    public void isStoragePermissionGranted() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                FragmentCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+    public void isStoragePermissionGranted()
+    {
+        if ( Build.VERSION.SDK_INT >= 23 )
+        {
+            if ( ContextCompat.checkSelfPermission( getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE ) != PackageManager.PERMISSION_GRANTED )
+            {
+                FragmentCompat.requestPermissions( this, new String[]{ android.Manifest.permission.WRITE_EXTERNAL_STORAGE }, 1 );
             }
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+    public void onRequestPermissionsResult( int requestCode, String[] permissions, int[] grantResults )
+    {
+        super.onRequestPermissionsResult( requestCode, permissions, grantResults );
+        if ( grantResults[ 0 ] != PackageManager.PERMISSION_GRANTED )
+        {
             getFragmentManager().popBackStackImmediate();
         }
     }
 
-    class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
+    class MyGestureDetector extends GestureDetector.SimpleOnGestureListener
+    {
         @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            try {
+        public boolean onFling( MotionEvent e1, MotionEvent e2, float velocityX, float velocityY )
+        {
+            try
+            {
 
                 // right to left swipe
-                if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                if ( e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs( velocityX ) > SWIPE_THRESHOLD_VELOCITY )
+                {
                     swipeLeft();
                     return true;
-                } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                } else if ( e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs( velocityX ) > SWIPE_THRESHOLD_VELOCITY )
+                {
                     swipeRight();
                     return true;
                 }
-            } catch (Exception e) {
+            } catch ( Exception e )
+            {
                 // nothing
             }
             return false;
         }
 
         @Override
-        public boolean onDown(MotionEvent e) {
+        public boolean onDown( MotionEvent e )
+        {
             return true;
         }
 
         @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
+        public boolean onSingleTapConfirmed( MotionEvent e )
+        {
             return true;
         }
 
-        private void swipeRight() {
-            if (spinningCoinDisplay.getVisibility() == View.VISIBLE) {
-                slideToRight(spinningCoinDisplay);
-                slideToRightFromEdge(editCoinDisplay);
-                mHandler.removeCallbacks(mStatusChecker);
-            } else {
-                slideToRight(editCoinDisplay);
-                slideToRightFromEdge(spinningCoinDisplay);
-                rotate();
+        private void swipeRight()
+        {
+            if ( spinningCoinDisplay.getVisibility() == View.VISIBLE )
+            {
+                slideToRight( spinningCoinDisplay );
+                slideToRightFromEdge( editCoinDisplay );
+                mHandler.removeCallbacks( mStatusChecker );
+            } else
+            {
+                slideToRight( editCoinDisplay );
+                slideToRightFromEdge( spinningCoinDisplay );
+                Handler handler = new Handler();
+                handler.postDelayed( new Runnable()
+                {
+                    public void run()
+                    {
+                        rotate();
+                    }
+                }, 500 );
             }
         }
-        private void swipeLeft(){
-            if(spinningCoinDisplay.getVisibility() == View.VISIBLE){
-                    slideToLeft(spinningCoinDisplay);
-                    slideToLeftFromEdge(editCoinDisplay);
-                    mHandler.removeCallbacks(mStatusChecker);
-                }
-                else
+
+        private void swipeLeft()
+        {
+            if ( spinningCoinDisplay.getVisibility() == View.VISIBLE )
+            {
+                slideToLeft( spinningCoinDisplay );
+                slideToLeftFromEdge( editCoinDisplay );
+                mHandler.removeCallbacks( mStatusChecker );
+            } else
+            {
+                slideToLeft( editCoinDisplay );
+                slideToLeftFromEdge( spinningCoinDisplay );
+                Handler handler = new Handler();
+                handler.postDelayed( new Runnable()
                 {
-                    slideToLeft(editCoinDisplay);
-                    slideToLeftFromEdge(spinningCoinDisplay);
-                    rotate();
-                }
+                    public void run()
+                    {
+                        rotate();
+                    }
+                }, 500 );
+            }
         }
     }
 
-    public void slideToRight(View view) {
-        TranslateAnimation animate = new TranslateAnimation(0, view.getWidth(), 0, 0);
-        animate.setDuration(500);
-        animate.setFillAfter(false);
-        view.startAnimation(animate);
-        view.setVisibility(View.INVISIBLE);
+    public void slideToRight( View view )
+    {
+        TranslateAnimation animate = new TranslateAnimation( 0, view.getWidth(), 0, 0 );
+        animate.setDuration( 500 );
+        animate.setFillAfter( false );
+        view.startAnimation( animate );
+        view.setVisibility( View.INVISIBLE );
     }
 
-    public void slideToRightFromEdge(View view) {
-        TranslateAnimation animate = new TranslateAnimation(-view.getWidth(), 0, 0, 0);
-        animate.setDuration(500);
-        animate.setFillAfter(true);
-        view.startAnimation(animate);
-        view.setVisibility(View.VISIBLE);
+    public void slideToRightFromEdge( View view )
+    {
+        TranslateAnimation animate = new TranslateAnimation( -view.getWidth(), 0, 0, 0 );
+        animate.setDuration( 500 );
+        animate.setFillAfter( true );
+        view.startAnimation( animate );
+        view.setVisibility( View.VISIBLE );
     }
 
-    public void slideToLeft(View view) {
-        TranslateAnimation animate = new TranslateAnimation(0, -view.getWidth(), 0, 0);
-        animate.setDuration(500);
-        animate.setFillAfter(false);
-        view.startAnimation(animate);
-        view.setVisibility(View.INVISIBLE);
+    public void slideToLeft( View view )
+    {
+        TranslateAnimation animate = new TranslateAnimation( 0, -view.getWidth(), 0, 0 );
+        animate.setDuration( 500 );
+        animate.setFillAfter( false );
+        view.startAnimation( animate );
+        view.setVisibility( View.INVISIBLE );
     }
 
-    public void slideToLeftFromEdge(View view) {
-        TranslateAnimation animate = new TranslateAnimation(view.getWidth(), 0, 0, 0);
-        animate.setDuration(500);
-        animate.setFillAfter(true);
-        view.startAnimation(animate);
-        view.setVisibility(View.VISIBLE);
+    public void slideToLeftFromEdge( View view )
+    {
+        TranslateAnimation animate = new TranslateAnimation( view.getWidth(), 0, 0, 0 );
+        animate.setDuration( 500 );
+        animate.setFillAfter( true );
+        view.startAnimation( animate );
+        view.setVisibility( View.VISIBLE );
     }
 
 }

@@ -491,7 +491,7 @@ public class singleCoin extends Fragment implements Data, View.OnClickListener {
     @Override
     public void onClick(View v) {
         //Get which row was clicked
-        Intent i = new Intent(v.getContext(), bigImage.class);
+        Intent i = new Intent(v.getContext(), BigImage.class);
         i.putExtra("frontImg", coin.getCoinFrontImg());
         i.putExtra("backImg", machine.getBackstampImg());
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

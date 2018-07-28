@@ -113,7 +113,7 @@ public class wantListAdapter extends ArrayAdapter<Coin> {
         public void onClick(View v) {
             //Get which row was clicked
             Integer viewPos = (Integer) v.getTag();
-            Intent i = new Intent(context, bigImage.class);
+            Intent i = new Intent(context, BigImage.class);
             Coin coin = (Coin) tempCoins.get(viewPos);
             machine = find(coin);
             i.putExtra("frontImg", coin.getCoinFrontImg());

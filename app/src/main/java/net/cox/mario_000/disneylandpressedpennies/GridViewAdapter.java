@@ -63,8 +63,10 @@ public class GridViewAdapter extends BaseDynamicGridAdapter {
                 matrix.postRotate(90);
                 Bitmap bitmap2 = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
                 letterText.setImageBitmap(bitmap2);
+                //Picasso.get().load(resId).rotate(90).into(letterText);
             } else {
                 letterText.setImageBitmap(mBitmap);
+                //Picasso.get().load(resId).into(letterText);
             }
         }
     }

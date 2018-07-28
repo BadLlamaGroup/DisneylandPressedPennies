@@ -615,7 +615,7 @@ public interface Data {
 
 
     Machine[][] disneyMachines = new Machine[][]{
-        mainCoins, tomorrowCoins, fantasyCoins, toontownCoins, frontierCoins, adventureCoins, critterCountryCoins, newOrleansCoins
+            mainCoins, tomorrowCoins, fantasyCoins, toontownCoins, frontierCoins, adventureCoins, critterCountryCoins, newOrleansCoins
     };
 
     Machine[][] calMachines = new Machine[][]{

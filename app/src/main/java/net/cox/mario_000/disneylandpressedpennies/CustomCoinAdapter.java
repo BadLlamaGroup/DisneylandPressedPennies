@@ -1,6 +1,12 @@
 package net.cox.mario_000.disneylandpressedpennies;
 
+import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,137 +15,187 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Locale;
+import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
-import static net.cox.mario_000.disneylandpressedpennies.MainActivity.img;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.TreeSet;
 
 /**
  * Created by mario_000 on 7/14/2018.
  */
 
-public class CustomCoinAdapter extends ArrayAdapter<Coin> implements View.OnClickListener{
-
+public class CustomCoinAdapter extends ArrayAdapter< Coin > implements View.OnClickListener
+{
+    // References
     private final Context context;
     private final int mResource;
-    private final Coin[] customCoins;
-    private final SharedPreference sharedPreference;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
+    private LayoutInflater inflater;
 
-    public CustomCoinAdapter(Context context, int resource, Coin[] coins) {
-        super(context, resource, coins);
+    // Data
+    private final ArrayList customCoins;
+    private CoinHolder holder;
+    private TreeSet< Integer > mSeparatorsSet = new TreeSet<>();
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat( "MMMM dd, yyyy", Locale.US );
+
+    // Adapter types
+    private static final int TYPE_ITEM = 0;
+    private static final int TYPE_SEPARATOR = 1;
+
+    public CustomCoinAdapter( Context context, int resource, ArrayList coins )
+    {
+        super( context, resource, coins );
         this.context = context;
         this.mResource = resource;
         this.customCoins = coins;
-        sharedPreference = new SharedPreference();
+        inflater = ( LayoutInflater ) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
     }
 
     @Override
-    public View getView(final int position, View row, ViewGroup parent) {
+    public View getView( final int position, View row, ViewGroup parent )
+    {
+        int type = getItemViewType( position );
 
-        final CoinHolder holder;
-        // Get collected coins list
-        List<Coin> savedCoins = sharedPreference.getCustomCoins(getContext());
-        if (row == null) {
-            // Set up layout for row
-            LayoutInflater inflater = LayoutInflater.from(context);
-            row = inflater.inflate(mResource, parent, false);
+        switch ( type )
+        {
+            case TYPE_ITEM:
+                // Set up layout for row
+                row = inflater.inflate( R.layout.row, parent, false );
 
-            //Link views
-            holder = new CoinHolder();
-            holder.name = row.findViewById(R.id.rowName);
-            holder.description = row.findViewById(R.id.rowDescription);
-            holder.collected = row.findViewById(R.id.rowCollected);
-            holder.imageView = row.findViewById(R.id.imgCoin);
+                //Link views
+                holder = new CoinHolder();
+                holder.name = row.findViewById( R.id.rowName );
+                holder.description = row.findViewById( R.id.rowDescription );
+                holder.collected = row.findViewById( R.id.rowCollected );
+                holder.imageView = row.findViewById( R.id.imgCoin );
+                row.setTag(holder);
 
-            //Set position of row
-            row.setTag(holder);
-        } else {
-            //Get position of row
-            holder = (CoinHolder) row.getTag();
-        }
-        // Get single coin
-        Coin coin = customCoins[position];
-        Coin tempCoin = coin;
+                //Set which row was clicked
+                holder.imageView.setTag( position );
 
-        // Check if coin is collected
-        for (Coin c : savedCoins){
-            if(c.equals(coin)){
-                tempCoin = savedCoins.get(savedCoins.indexOf(c));
-            }
-        }
+                // Get single coin
+                final Coin savedCoin = ( Coin ) customCoins.get( position );
 
-        //Set image and resId
-        int resId = context.getResources().getIdentifier(coin.getCoinFrontImg(), "drawable", context.getPackageName());
-        img.loadBitmap(resId, context.getResources(), 100, 200, holder.imageView, 0);
-        holder.imageView.setOnClickListener(this);
+                // Set image
+                String root = Environment.getExternalStorageDirectory().toString();
+                File dir = new File( root + "/Pressed Coins at Disneyland/Coins" );
+                Uri frontImage = Uri.fromFile( new File( dir + "/" + savedCoin.getCoinFrontImg() ) );
+                Picasso.get().load( frontImage ).error( R.drawable.new_penny ).fit().into( holder.imageView );
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                holder.name.setSelected(true); // Make text scroll
-            }
-        }, 1500);
+                // Set data
+                holder.description.setText( savedCoin.getCoinPark() );
+                holder.name.setText( String.valueOf( savedCoin.getTitleCoin() ) );
+                if ( savedCoin.getDateCollected() != null )
+                {
+                    holder.collected.setText( String.format( "Collected: %s", dateFormat.format( savedCoin.getDateCollected() ) ) );
+                }
 
+                // Set big image listener
+                holder.imageView.setOnClickListener( this );
 
-        //Set which row was clicked
-        Integer rowPos = position;
-        holder.imageView.setTag(rowPos);
+                // Make text scroll
+                Handler handler = new Handler();
+                handler.postDelayed( new Runnable()
+                {
+                    public void run()
+                    {
+                        holder.name.setSelected( true );
+                    }
+                }, 1500 );
 
-        //Set text values for row
-        holder.name.setText(String.valueOf(coin.getTitleCoin()));
-        if(tempCoin.getDateCollected() != null){
-            holder.collected.setText("Collected: " + dateFormat.format(tempCoin.getDateCollected()));
-        }
-        else{
-            if(checkWant(coin)){
-                holder.collected.setText("Want It");
-            }else{
-                holder.collected.setText("Not yet collected");
-            }
+                // Set detail listener
+                row.setOnClickListener( new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick( View view )
+                    {
+                        view.setTag( position );
 
+                        FragmentTransaction fragmentTransaction = ( ( Activity ) context ).getFragmentManager().beginTransaction();
+                        CustomCoinFragment fragment = new CustomCoinFragment();
+                        Bundle bundle = new Bundle();
+                        Gson gson = new Gson();
+                        String jsonCoin = gson.toJson( savedCoin );
+                        bundle.putString( "selectedCoin", jsonCoin );
+                        fragment.setArguments( bundle );
+                        fragmentTransaction.setCustomAnimations(
+                                R.animator.fade_in,
+                                R.animator.fade_out,
+                                R.animator.fade_in,
+                                R.animator.fade_out );
+                        fragmentTransaction.replace( R.id.mainFrag, fragment );
+                        fragmentTransaction.addToBackStack( null );
+                        fragmentTransaction.commit();
+                    }
+                } );
+
+                return row;
+
+            case TYPE_SEPARATOR:
+                ListAdapter.ViewHolder sep = new ListAdapter.ViewHolder();
+                row = inflater.inflate( R.layout.header, parent, false );
+                sep.separator = row.findViewById( R.id.separator );
+                row.setTag( sep );
+
+                if ( position == 0 || mSeparatorsSet.contains( position ) )
+                {
+                    sep.separator.setText( customCoins.get( position ).toString() );
+                }
+                return row;
         }
 
         return row;
     }
-    // Check if coin is in collected coins
-    private boolean checkWant(Coin checkCoin) {
-        boolean check = false;
-        // Get collected coins list
-        List<Coin> wantCoins = sharedPreference.getWantedCoins(getContext());
-
-        if (wantCoins != null) {
-            for (Coin coin : wantCoins) {
-                // Check if coin matches coin already collected
-                if (String.valueOf(coin.getTitleCoin()).equals(String.valueOf(checkCoin.getTitleCoin()))) {
-                    check = true;
-                    //collectedDate = coin.getDateCollected();
-                    break;
-                }
-            }
-        }
-        return check;
-    }
 
     @Override
-    public void onClick(View v) {
+    public void onClick( View v )
+    {
         //Get which row was clicked
-        /*Integer viewPos = (Integer) v.getTag();
-        Coin coin = customCoins[viewPos];
-        Intent i = new Intent(context, bigImage.class);
-        i.putExtra("frontImg", coin.getCoinFrontImg());
-        i.putExtra("backImg", machine.getBackstampImg());
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(i);*/
-
+        Integer viewPos = ( Integer ) v.getTag();
+        Coin coin = ( Coin ) customCoins.get( viewPos );
+        Intent bigIntent = new Intent( context, BigImage.class );
+        bigIntent.putExtra( "frontImg", coin.getCoinFrontImg() );
+        bigIntent.putExtra( "backImg", coin.getCoinBackImg() );
+        bigIntent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+        context.startActivity( bigIntent );
     }
 
-    public Coin[] getCustomCoins() {
+    public ArrayList getCustomCoins()
+    {
         return customCoins;
     }
 
-    private static final class CoinHolder {
+    public void addSeparatorItem( final String item )
+    {
+        customCoins.add( item );
+        // save separator position
+        mSeparatorsSet.add( customCoins.size() - 1 );
+        notifyDataSetChanged();
+    }
+
+    public void removeSeparatorItem()
+    {
+        mSeparatorsSet.clear();
+        notifyDataSetChanged();
+    }
+
+    public boolean duplicateSeparator( final String item )
+    {
+        return customCoins.contains( item );
+    }
+
+
+    @Override
+    public int getItemViewType( int position )
+    {
+        return mSeparatorsSet.contains( position ) ? TYPE_SEPARATOR : TYPE_ITEM;
+    }
+
+    private static final class CoinHolder
+    {
         TextView name;
         TextView description;
         TextView collected;

@@ -13,6 +13,14 @@
         <item>By land</item>
     </string-array>
 
+    <string-array name="Custom_Sort_Type">
+        <item>A-Z</item>
+        <item>Z-A</item>
+        <item>Old-New</item>
+        <item>New-Old</item>
+        <item>By park</item>
+    </string-array>
+
     <string-array name="Email_Subject">
         <item>Feature</item>
         <item>Complaint</item>

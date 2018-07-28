@@ -107,7 +107,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible"/>
 
     </android.support.constraint.ConstraintLayout>
 
@@ -126,6 +127,7 @@
         android:background="#00FFFFFF">
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/custom_coin_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -191,8 +193,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/park_header"
-                app:layout_constraintBottom_toTopOf="@id/divider2"
-                app:layout_constraintHorizontal_bias=".6"/>
+                app:layout_constraintBottom_toTopOf="@id/divider2"/>
 
             <View
                 android:id="@+id/divider2"
@@ -222,12 +223,10 @@
                 android:layout_height="wrap_content"
                 android:dropDownWidth="wrap_content"
                 android:layout_marginTop="5dp"
-                android:gravity="center"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/type_header"
+                app:layout_constraintEnd_toEndOf="@id/type_header"
                 app:layout_constraintTop_toBottomOf="@id/type_header"
-                app:layout_constraintBottom_toTopOf="@id/divider3"
-                app:layout_constraintHorizontal_bias=".55"/>
+                app:layout_constraintBottom_toTopOf="@id/divider3"/>
 
             <View
                 android:id="@+id/divider3"
