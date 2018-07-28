@@ -151,7 +151,8 @@ public class allCoinsAdapter extends ArrayAdapter<Coin> {
                 holder.description.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
                 holder.name.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
                 holder.collected.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
-                holder.collected.setText(dateFormat.format(collectedCoins.get(collectedCoins.indexOf(coin)).getDateCollected()));
+                String date = dateFormat.format(collectedCoins.get(collectedCoins.indexOf(coin)).getDateCollected());
+                holder.collected.setText( String.format( "Collected: %s", date ) );
             }
 
             if (checkWant(coin)) {
