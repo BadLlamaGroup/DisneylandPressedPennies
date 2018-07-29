@@ -126,13 +126,7 @@ public class allCoinsAdapter extends ArrayAdapter<Coin> {
 
 
 
-            if (Arrays.asList(newCoins).contains(mac.getMachineName())) {
-                holder.row_new_bg.setBackgroundColor(Color.CYAN);
-                //holder.description.setTextColor(ContextCompat.getColor(context, R.color.colorOrange));
-                //holder.name.setTextColor(ContextCompat.getColor(context, R.color.colorOrange));
-                //holder.collected.setTextColor(ContextCompat.getColor(context, R.color.colorOrange));
-                holder.new_coins_img.setVisibility(View.VISIBLE);
-            } else if (Arrays.asList(offMachine).contains(mac.getMachineName())) {
+            if (Arrays.asList(offMachine).contains(mac.getMachineName())) {
                 holder.row_new_bg.setBackgroundColor(Color.YELLOW);
                 //holder.description.setTextColor(Color.RED);
                 //holder.name.setTextColor(Color.RED);

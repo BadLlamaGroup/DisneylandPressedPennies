@@ -45,13 +45,15 @@
 
     <string name="whatsnew">
         Machine Update:
-        \n\nCalifornia Adventure:\n-Added \'Knick\'s Knacks\'
-        \n\nNews:\n-Pixar Pier added to app. Make sure to check it out before Pixar Fest ends Sep 03.
+        \n\nCalifornia Adventure:\n-Added \'Bing Bong\'s Sweet Stuff\'
+        \n\nFixes:\n-Coin List now shows Collected before date.
+        \n\nNews:\n-Make sure to check out Pixar Fest before it ends Sep 03.
         \n\nThank you for your continued support.
     </string>
 
     <string-array name="new_coins">
-        <item>Knick's Knacks</item>
+        <item>Knick\'s Knacks</item>
+        <item>Bing Bong\'s Sweet Stuff</item>
 
     </string-array>
 
