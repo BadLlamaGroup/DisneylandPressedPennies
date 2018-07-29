@@ -34,11 +34,11 @@ import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 import static net.cox.mario_000.disneylandpressedpennies.Data.calMachines;
+import static net.cox.mario_000.disneylandpressedpennies.Data.defaultMac;
 import static net.cox.mario_000.disneylandpressedpennies.Data.disneyMachines;
 import static net.cox.mario_000.disneylandpressedpennies.Data.downtownMachines;
 import static net.cox.mario_000.disneylandpressedpennies.Data.retiredMachines;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.find;
-import static net.cox.mario_000.disneylandpressedpennies.MainActivity.numCoins;
 
 /**
  * Created by mario_000 on 7/6/2016.
@@ -46,6 +46,14 @@ import static net.cox.mario_000.disneylandpressedpennies.MainActivity.numCoins;
  */
 public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener
 {
+    private final int SPINNER_A_Z = 0;
+    private final int SPINNER_Z_A = 1;
+    private final int SPINNER_OLD_NEW = 2;
+    private final int SPINNER_NEW_OLD = 3;
+    private final int SPINNER_CUSTOM = 4;
+    private final int SPINNER_LAND = 5;
+    // References
+    private final SharedPreference sharedPreference = new SharedPreference();
     // Views
     private Button displayBtn;
     private TextView coinBookDetailsHeader;
@@ -54,24 +62,15 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
     private GridViewAdapter gridViewAdapter;
     private ListAdapter listAdapter;
     private TextView totalCoins;
-
     // Spinner
     private Spinner sortType = null;
-    private final int SPINNER_A_Z = 0;
-    private final int SPINNER_Z_A = 1;
-    private final int SPINNER_OLD_NEW = 2;
-    private final int SPINNER_NEW_OLD = 3;
-    private final int SPINNER_CUSTOM = 4;
-    private final int SPINNER_LAND = 5;
-
-    // References
-    private final SharedPreference sharedPreference = new SharedPreference();
     private Tracker mTracker;
 
     // Lists
-    private List< Coin > collectedCoins;
-    private List< Coin > customCoinList;
+    private List< Coin > customOrderCoins;
+    private List< Coin > spinnerCustomOrderList;
     private List< Coin > savedCoins;
+    private List< Coin > customCoins;
 
     // Data
     private boolean coinDetailsDisplayed;
@@ -88,8 +87,13 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
         mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
 
         // Get collected coins list and machines
-        collectedCoins = sharedPreference.getCoins( view.getContext() );
+        customOrderCoins = sharedPreference.getCoins( view.getContext() );
+        customCoins = sharedPreference.getCustomCoins( view.getContext() );
         savedCoins = sharedPreference.getCoins( view.getContext() );
+
+        // Add custom coins
+        customOrderCoins.addAll( customCoins );
+        savedCoins.addAll( customCoins );
 
         // Link views
         sortType = view.findViewById( R.id.coinBookSortType );
@@ -99,7 +103,7 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
         totalCoins = view.findViewById( R.id.txt_total );
         gridView = view.findViewById( R.id.dynamic_grid );
 
-        totalCoins.setText( String.valueOf( numCoins ) );
+        totalCoins.setText( String.valueOf( savedCoins.size() ) );
 
         // Set spinner adapter
         ArrayAdapter< CharSequence > adapter = ArrayAdapter.createFromResource( getActivity(),
@@ -114,14 +118,14 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
         if ( spinnerValue != -1 )
         {
             // set the value of the sortType
-            sortType.setSelection( spinnerValue );
+            //sortType.setSelection( spinnerValue );
         }
 
         // Create list adapter for collected coins list
         ArrayList coinDetailList = new ArrayList();
         coinDetailList.addAll( savedCoins );
         listAdapter = new ListAdapter( view.getContext(), R.layout.row, coinDetailList );
-        listFav.setOnItemClickListener( this );
+        //listFav.setOnItemClickListener( this );
         listFav.setAdapter( listAdapter );
 
         // Create gridView adapter
@@ -153,7 +157,7 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
 
                 if ( sortType.getSelectedItemPosition() == SPINNER_CUSTOM )
                 {
-                    args.putSerializable( "ARRAYLIST", ( Serializable ) customCoinList );
+                    args.putSerializable( "ARRAYLIST", ( Serializable ) spinnerCustomOrderList );
                 } else
                 {
                     args.putSerializable( "ARRAYLIST", ( Serializable ) savedCoins );
@@ -180,16 +184,16 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
             public void onActionDrop()
             {
                 gridView.stopEditMode();
-                customCoinList.clear();
+                spinnerCustomOrderList.clear();
                 // Rebuild custom list based on edits
                 for ( int itemPos = 0; itemPos < gridView.getCount(); itemPos++ )
                 {
-                    customCoinList.add( ( Coin ) gridView.getItemAtPosition( itemPos ) );
+                    spinnerCustomOrderList.add( ( Coin ) gridView.getItemAtPosition( itemPos ) );
                 }
                 SharedPreferences settings = getActivity().getSharedPreferences( "File", Context.MODE_PRIVATE );
                 SharedPreferences.Editor editor = settings.edit();
                 Gson gson = new Gson();
-                String jsonCoins = gson.toJson( customCoinList );
+                String jsonCoins = gson.toJson( spinnerCustomOrderList );
                 editor.putString( "custom", jsonCoins );
                 editor.apply();
             }
@@ -246,7 +250,7 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
         {
             displayList();
         }
-        totalCoins.setText( String.valueOf( numCoins ) );
+        totalCoins.setText( String.valueOf( savedCoins.size() ) );
     }
 
     private void displayPictures()
@@ -260,7 +264,7 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
         if ( sortType.getSelectedItemPosition() == SPINNER_CUSTOM )
         {
             gridViewAdapter.clear();
-            gridViewAdapter.add( customCoinList );
+            gridViewAdapter.add( spinnerCustomOrderList );
             gridViewAdapter.notifyDataSetChanged();
         } else
         {
@@ -272,7 +276,7 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
 
     public void updateImages()
     {
-        for ( Coin coin : customCoinList )
+        for ( Coin coin : spinnerCustomOrderList )
         {
             //outerloop:
             for ( Machine[] m : disneyMachines )
@@ -352,7 +356,7 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
             SharedPreferences settings = getActivity().getSharedPreferences( "File", Context.MODE_PRIVATE );
             SharedPreferences.Editor editor = settings.edit();
             Gson gson = new Gson();
-            String jsonCoins = gson.toJson( customCoinList );
+            String jsonCoins = gson.toJson( spinnerCustomOrderList );
             editor.putString( "custom", jsonCoins );
             editor.apply();
         }
@@ -369,7 +373,7 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
         if ( sortType.getSelectedItemPosition() == SPINNER_CUSTOM )
         {
             listAdapter.clear();
-            listAdapter.addAll( customCoinList );
+            listAdapter.addAll( spinnerCustomOrderList );
             listAdapter.notifyDataSetChanged();
         } else
         {
@@ -380,42 +384,61 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onItemClick( AdapterView< ? > parent, View view, int position, long id )
     {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        singleCoin fragment = new singleCoin();
-        Bundle bundle = new Bundle();
+        /*Bundle bundle = new Bundle();
         Gson gson = new Gson();
         String jsonCoin;
         String jsonMachine;
+        Coin coin;
 
         // Get coin information based on sorting method
         if ( listAdapter.getItem( position ) instanceof Coin )
         {
             if ( sortType.getSelectedItemPosition() == SPINNER_CUSTOM )
             {
-                jsonCoin = gson.toJson( customCoinList.get( position ) );
-                jsonMachine = gson.toJson( find( customCoinList.get( position ) ) );
+                coin = spinnerCustomOrderList.get( position );
+                jsonCoin = gson.toJson( spinnerCustomOrderList.get( position ) );
+                jsonMachine = gson.toJson( find( spinnerCustomOrderList.get( position ) ) );
             } else if ( sortType.getSelectedItemPosition() == SPINNER_LAND )
             {
+                coin = listAdapter.getItem( position );
                 jsonCoin = gson.toJson( listAdapter.getItem( position ) );
                 jsonMachine = gson.toJson( find( listAdapter.getItem( position ) ) );
             } else
             {
+                coin = savedCoins.get( position );
                 jsonCoin = gson.toJson( savedCoins.get( position ) );
                 jsonMachine = gson.toJson( find( savedCoins.get( position ) ) );
             }
 
-            bundle.putString( "selectedCoin", jsonCoin );
-            bundle.putString( "selectedMachine", jsonMachine );
-            fragment.setArguments( bundle );
+
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.setCustomAnimations(
                     R.animator.fade_in,
                     R.animator.fade_out,
                     R.animator.fade_in,
                     R.animator.fade_out );
-            fragmentTransaction.replace( R.id.mainFrag, fragment );
+
+            if ( customCoins.contains( coin ) )
+            {
+                CustomCoinFragment fragment = new CustomCoinFragment();
+                bundle.putString( "selectedCoin", jsonCoin );
+                fragment.setArguments( bundle );
+                fragmentTransaction.replace( R.id.mainFrag, fragment );
+
+            } else
+            {
+                singleCoin fragment = new singleCoin();
+                bundle.putString( "selectedCoin", jsonCoin );
+                bundle.putString( "selectedMachine", jsonMachine );
+                fragment.setArguments( bundle );
+                fragmentTransaction.replace( R.id.mainFrag, fragment );
+            }
+
             fragmentTransaction.addToBackStack( null );
             fragmentTransaction.commit();
-        }
+
+
+        }*/
     }
 
     @Override
@@ -465,50 +488,52 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
                 String jsonFavorites = settings.getString( "custom", null );
                 Gson gson = new Gson();
                 Coin[] customCoins = gson.fromJson( jsonFavorites, Coin[].class );
-                customCoinList = Arrays.asList( customCoins );
-                customCoinList = new ArrayList<>( customCoinList );
+                spinnerCustomOrderList = Arrays.asList( customCoins );
+                spinnerCustomOrderList = new ArrayList<>( spinnerCustomOrderList );
 
-                if ( collectedCoins.size() != customCoinList.size() )
+                if ( customOrderCoins.size() != spinnerCustomOrderList.size() )
                 {
-                    for ( int i = collectedCoins.size() - 1; i >= 0; i-- )
+                    for ( int i = customOrderCoins.size() - 1; i >= 0; i-- )
                     {
-                        if ( !customCoinList.contains( collectedCoins.get( i ) ) )
+                        if ( !spinnerCustomOrderList.contains( customOrderCoins.get( i ) ) )
                         {
-                            customCoinList.add( collectedCoins.get( i ) );
+                            spinnerCustomOrderList.add( customOrderCoins.get( i ) );
                         }
                     }
                 }
 
-                for ( int i = 0; i < customCoinList.size(); i++ )
+                for ( int i = 0; i < spinnerCustomOrderList.size(); i++ )
                 {
-                    if ( !collectedCoins.contains( customCoinList.get( i ) ) )
+                    if ( !customOrderCoins.contains( spinnerCustomOrderList.get( i ) ) )
                     {
-                        customCoinList.remove( i );
+                        spinnerCustomOrderList.remove( i );
                     }
                 }
 
                 SharedPreferences.Editor editor = settings.edit();
-                String jsonCoins = gson.toJson( customCoinList );
+                String jsonCoins = gson.toJson( spinnerCustomOrderList );
                 editor.putString( "custom", jsonCoins );
                 editor.apply();
 
                 updateImages();
                 gridViewAdapter.clear();
-                gridViewAdapter.add( customCoinList );
+                gridViewAdapter.add( spinnerCustomOrderList );
                 gridViewAdapter.notifyDataSetChanged();
                 listAdapter.clear();
-                listAdapter.addAll( customCoinList );
+                listAdapter.addAll( spinnerCustomOrderList );
                 listAdapter.notifyDataSetChanged();
             } else
             {
-                customCoinList = new ArrayList<>();
-                customCoinList.addAll( savedCoins );
+                spinnerCustomOrderList = new ArrayList<>();
+                spinnerCustomOrderList.addAll( savedCoins );
             }
         }
 
         if ( pos == SPINNER_LAND )
         {
             listAdapter.clear();
+
+
             // Sort by machine name A-Z
             Collections.sort( savedCoins, new Comparator< Coin >()
             {
@@ -517,7 +542,19 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
                 {
                     Machine mac1 = find( o1 );
                     Machine mac2 = find( o2 );
-                    return mac1.getMachineName().compareTo( mac2.getMachineName() );
+                    if ( mac1 != defaultMac[ 0 ] && mac2 != defaultMac[ 0 ] )
+                    {
+                        return mac1.getMachineName().compareTo( mac2.getMachineName() );
+                    } else if ( mac1 == defaultMac[ 0 ] )
+                    {
+                        return o1.getTitleCoin().compareTo( mac2.getMachineName() );
+                    } else if ( mac2 == defaultMac[ 0 ] )
+                    {
+                        return mac1.getMachineName().compareTo( o2.getTitleCoin() );
+                    } else
+                    {
+                        return o1.getTitleCoin().compareTo( o2.getTitleCoin() );
+                    }
                 }
             } );
 
@@ -529,14 +566,34 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
                 {
                     Machine mac1 = find( o1 );
                     Machine mac2 = find( o2 );
-                    return mac1.getLand().compareTo( mac2.getLand() );
+                    if ( mac1 != defaultMac[ 0 ] && mac2 != defaultMac[ 0 ] )
+                    {
+                        return mac1.getLand().compareTo( mac2.getLand() );
+                    } else if ( mac1 == defaultMac[ 0 ] )
+                    {
+                        return o1.getCoinPark().compareTo( mac2.getLand() );
+                    } else if ( mac2 == defaultMac[ 0 ] )
+                    {
+                        return mac1.getLand().compareTo( o2.getCoinPark() );
+                    } else
+                    {
+                        return o1.getCoinPark().compareTo( o2.getCoinPark() );
+                    }
                 }
             } );
 
             // Add land titles and coins from land
             for ( int i = 0; i < savedCoins.size(); i++ )
             {
-                String land = find( savedCoins.get( i ) ).getLand();
+                String land;
+                if ( customCoins.contains( savedCoins.get( i ) ) )
+                {
+                    land = "Custom Coins";
+                    /*land = savedCoins.get( i ).getCoinPark();*/
+                } else
+                {
+                    land = find( savedCoins.get( i ) ).getLand();
+                }
                 if ( !listAdapter.duplicateSeparator( land ) )
                 {
                     listAdapter.addSeparatorItem( land );
@@ -548,7 +605,6 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
             gridViewAdapter.notifyDataSetChanged();
             listAdapter.notifyDataSetChanged();
         }
-
     }
 
     @Override

@@ -178,6 +178,8 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
             lists.clear();
         }
 
+
+
         // Setup pages with lists of lands
         for ( int i = 0; i < machines.length + 1; i++ )
         {
@@ -197,10 +199,9 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
 
         // Add coins with separators
 
+        // Add custom coins
         tabLayout.getTabAt( j ).setText( "Custom" );
-
         List< Coin > coins = sharedPreference.getCustomCoins( getActivity().getApplicationContext() );
-
         ArrayList customCoinsList = new ArrayList();
         for ( Coin coin : coins )
         {
@@ -209,10 +210,12 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
                 customCoinsList.add( coin );
             }
         }
-        CustomCoinAdapter customCoinAdapter = new CustomCoinAdapter( getActivity(), R.layout.row, customCoinsList );
+
+        ListAdapter customCoinAdapter = new ListAdapter( getActivity(), R.layout.row, customCoinsList );
         lists.get( j ).setAdapter( customCoinAdapter );
         j++;
 
+        // Add normal coins
         for ( Machine[] machine : machines )
         {
             allCoinsAdapter coinAdapter = new allCoinsAdapter( getActivity(), R.layout.row, coinList.get( j ) );

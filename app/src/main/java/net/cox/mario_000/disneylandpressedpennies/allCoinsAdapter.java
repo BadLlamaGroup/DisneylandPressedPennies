@@ -108,19 +108,6 @@ public class allCoinsAdapter extends ArrayAdapter< Coin >
             int resId = context.getResources().getIdentifier( coin.getCoinFrontImg(), "drawable", context.getPackageName() );
             img.loadBitmap( resId, context.getResources(), 100, 140, holder.imageView, 0 );
 
-
-//            DisplayMetrics displayMetrics = new DisplayMetrics();
-//            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-//            Display display = wm.getDefaultDisplay();
-//            display.getMetrics(displayMetrics);
-//            int width = displayMetrics.widthPixels;
-
-//            holder.new_coins_img.getLayoutParams().height = (int) ((width / 4) * .82);
-//            holder.new_coins_img.getLayoutParams().width = (width / 4);
-//
-//            holder.off_mac_img.getLayoutParams().height = (int) ((width / 4) * .82);
-//            holder.off_mac_img.getLayoutParams().width = (width / 4);
-
             img.setToGray( holder.imageView );
 
             Handler handler = new Handler();
@@ -136,16 +123,10 @@ public class allCoinsAdapter extends ArrayAdapter< Coin >
             if ( Arrays.asList( newCoins ).contains( mac.getMachineName() ) )
             {
                 holder.row_new_bg.setBackgroundColor( Color.CYAN );
-                //holder.description.setTextColor(ContextCompat.getColor(context, R.color.colorOrange));
-                //holder.name.setTextColor(ContextCompat.getColor(context, R.color.colorOrange));
-                //holder.collected.setTextColor(ContextCompat.getColor(context, R.color.colorOrange));
                 holder.new_coins_img.setVisibility( View.VISIBLE );
             } else if ( Arrays.asList( offMachine ).contains( mac.getMachineName() ) )
             {
                 holder.row_new_bg.setBackgroundColor( Color.YELLOW );
-                //holder.description.setTextColor(Color.RED);
-                //holder.name.setTextColor(Color.RED);
-                //holder.collected.setTextColor(Color.RED);
                 holder.off_mac_img.setVisibility( View.VISIBLE );
             } else
             {
@@ -162,7 +143,8 @@ public class allCoinsAdapter extends ArrayAdapter< Coin >
                 holder.description.setTextColor( ContextCompat.getColor( context, R.color.colorPrimaryDark ) );
                 holder.name.setTextColor( ContextCompat.getColor( context, R.color.colorPrimaryDark ) );
                 holder.collected.setTextColor( ContextCompat.getColor( context, R.color.colorPrimaryDark ) );
-                holder.collected.setText( dateFormat.format( collectedCoins.get( collectedCoins.indexOf( coin ) ).getDateCollected() ) );
+                String date = dateFormat.format(collectedCoins.get(collectedCoins.indexOf(coin)).getDateCollected());
+                holder.collected.setText( String.format( "Collected: %s", date ) );
             }
 
             if ( checkWant( coin ) )
@@ -276,26 +258,23 @@ public class allCoinsAdapter extends ArrayAdapter< Coin >
         return check;
     }
 
-    private final View.OnClickListener PopupListener = new View.OnClickListener()
-    {
+    private final View.OnClickListener PopupListener = new View.OnClickListener() {
         @Override
-        public void onClick( View v )
-        {
+        public void onClick(View v) {
             //Get which row was clicked
-            Integer viewPos = ( Integer ) v.getTag();
-            Coin coin = ( Coin ) coins.get( viewPos );
-            Intent i = new Intent( context, BigImage.class );
-            i.putExtra( "frontImg", coin.getCoinFrontImg() );
+            Integer viewPos = (Integer) v.getTag();
+            Coin coin = (Coin) coins.get(viewPos);
+            Intent i = new Intent(context, BigImage.class);
+            i.putExtra("frontImg", coin.getCoinFrontImg());
 
-            Machine mac = find( coin );
-            i.putExtra( "backImg", mac.getBackstampImg() );
-            i.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
-            context.startActivity( i );
+            Machine mac = find(coin);
+            i.putExtra("backImg", mac.getBackstampImg());
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(i);
         }
     };
 
-    private static class CoinHolder
-    {
+    private static class CoinHolder {
         TextView name;
         TextView description;
         TextView collected;

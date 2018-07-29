@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,26 +23,26 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TreeSet;
 
+import static net.cox.mario_000.disneylandpressedpennies.MainActivity.COIN_PATH;
+
 /**
  * Created by mario_000 on 7/14/2018.
  */
 
 public class CustomCoinAdapter extends ArrayAdapter< Coin > implements View.OnClickListener
 {
-    // References
-    private final Context context;
-    private final int mResource;
-    private LayoutInflater inflater;
-
-    // Data
-    private final ArrayList customCoins;
-    private CoinHolder holder;
-    private TreeSet< Integer > mSeparatorsSet = new TreeSet<>();
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat( "MMMM dd, yyyy", Locale.US );
-
     // Adapter types
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
+    // References
+    private final Context context;
+    private final int mResource;
+    // Data
+    private final ArrayList customCoins;
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat( "MMMM dd, yyyy", Locale.US );
+    private LayoutInflater inflater;
+    private CoinHolder holder;
+    private TreeSet< Integer > mSeparatorsSet = new TreeSet<>();
 
     public CustomCoinAdapter( Context context, int resource, ArrayList coins )
     {
@@ -71,7 +70,7 @@ public class CustomCoinAdapter extends ArrayAdapter< Coin > implements View.OnCl
                 holder.description = row.findViewById( R.id.rowDescription );
                 holder.collected = row.findViewById( R.id.rowCollected );
                 holder.imageView = row.findViewById( R.id.imgCoin );
-                row.setTag(holder);
+                row.setTag( holder );
 
                 //Set which row was clicked
                 holder.imageView.setTag( position );
@@ -80,9 +79,7 @@ public class CustomCoinAdapter extends ArrayAdapter< Coin > implements View.OnCl
                 final Coin savedCoin = ( Coin ) customCoins.get( position );
 
                 // Set image
-                String root = Environment.getExternalStorageDirectory().toString();
-                File dir = new File( root + "/Pressed Coins at Disneyland/Coins" );
-                Uri frontImage = Uri.fromFile( new File( dir + "/" + savedCoin.getCoinFrontImg() ) );
+                Uri frontImage = Uri.fromFile( new File( COIN_PATH + "/" + savedCoin.getCoinFrontImg() ) );
                 Picasso.get().load( frontImage ).error( R.drawable.new_penny ).fit().into( holder.imageView );
 
                 // Set data

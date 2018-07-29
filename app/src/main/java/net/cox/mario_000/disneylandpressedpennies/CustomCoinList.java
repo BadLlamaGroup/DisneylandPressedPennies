@@ -34,7 +34,7 @@ public class CustomCoinList extends Fragment implements Data, AdapterView.OnItem
      * Description: Fragment for displaying coins in current machine
      */
 
-    private CustomCoinAdapter mCoinAdapter;
+    private ListAdapter mCoinAdapter;
     private SharedPreference sharedPreference = new SharedPreference();
     private ListView listCoins;
     private Tracker mTracker;
@@ -61,7 +61,7 @@ public class CustomCoinList extends Fragment implements Data, AdapterView.OnItem
         CustomCoinFragment fragment = new CustomCoinFragment();
         Bundle bundle = new Bundle();
         Gson gson = new Gson();
-        String jsonCoin = gson.toJson( mCoinAdapter.getCustomCoins().get( position ) );
+        String jsonCoin = gson.toJson( customCoins.get( position ) );
         bundle.putString( "selectedCoin", jsonCoin );
         fragment.setArguments( bundle );
         fragmentTransaction.setCustomAnimations(
@@ -80,11 +80,8 @@ public class CustomCoinList extends Fragment implements Data, AdapterView.OnItem
         // Update coin list
         customCoins = sharedPreference.getCustomCoins( getActivity() );
 
-        // Create coin adapter
+        // Update coin adapter
         mCoinAdapter.notifyDataSetChanged();
-        //mCoinAdapter = new CustomCoinAdapter( getActivity(), R.layout.row, customCoinsList );
-        //listCoins.setAdapter( mCoinAdapter );
-        //listCoins.setOnItemClickListener( this );
         listCoins.setSelection( selection );
         super.onResume();
     }
@@ -129,7 +126,7 @@ public class CustomCoinList extends Fragment implements Data, AdapterView.OnItem
         // Create coin adapter
         customCoinsList.clear();
         customCoinsList.addAll( customCoins );
-        mCoinAdapter = new CustomCoinAdapter( getActivity(), R.layout.row, customCoinsList );
+        mCoinAdapter = new ListAdapter( getActivity(), R.layout.row, customCoinsList );
         listCoins.setAdapter( mCoinAdapter );
         listCoins.setOnItemClickListener( this );
 
