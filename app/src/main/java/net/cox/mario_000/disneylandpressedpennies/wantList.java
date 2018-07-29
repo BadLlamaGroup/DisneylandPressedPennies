@@ -33,7 +33,7 @@ import static net.cox.mario_000.disneylandpressedpennies.MainActivity.find;
 
 public class wantList extends Fragment implements AdapterView.OnItemClickListener {
     private final SharedPreference sharedPreference;
-    private wantListAdapter wantListAdapter;
+    private ListAdapter wantListAdapter;
     private List<Coin> wantCoins;
     private Tracker mTracker;
 
@@ -118,7 +118,7 @@ public class wantList extends Fragment implements AdapterView.OnItemClickListene
         // Create list adapter for collected coins list
         ArrayList arrayList = new ArrayList();
         arrayList.addAll(wantCoins);
-        wantListAdapter = new wantListAdapter(view.getContext(), R.layout.row, arrayList);
+        wantListAdapter = new ListAdapter(view.getContext(), R.layout.row, arrayList);
 
         // Check if variable is linked to view and set adapter
         if (wantList != null) {

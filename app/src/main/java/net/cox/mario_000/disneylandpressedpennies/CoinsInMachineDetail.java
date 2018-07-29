@@ -24,6 +24,9 @@ import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.img;
 
 /**
@@ -31,7 +34,7 @@ import static net.cox.mario_000.disneylandpressedpennies.MainActivity.img;
  * Description: Fragment for displaying coins in current machine
  */
 public class CoinsInMachineDetail extends Fragment implements Data, AdapterView.OnItemClickListener, View.OnClickListener {
-    private CoinAdapter mCoinAdapter = null;
+    private ListAdapter mCoinAdapter = null;
     private Machine machine;
     private ListView listCoins;
     private Tracker mTracker;
@@ -39,7 +42,7 @@ public class CoinsInMachineDetail extends Fragment implements Data, AdapterView.
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        selection = position;
+        /*selection = position;
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         singleCoin fragment = new singleCoin();
         Bundle bundle = new Bundle();
@@ -56,14 +59,18 @@ public class CoinsInMachineDetail extends Fragment implements Data, AdapterView.
                 R.animator.fade_out);
         fragmentTransaction.replace(R.id.mainFrag, fragment);
         fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        fragmentTransaction.commit();*/
     }
 
     @Override
     public void onResume() {
 
         // Create coin adapter
+/*
         mCoinAdapter = new CoinAdapter(getActivity(), R.layout.row, machine.getCoins(), machine);
+*/
+        ArrayList<Coin> coins = new ArrayList<>(Arrays.asList(machine.getCoins()));
+        mCoinAdapter = new ListAdapter(getActivity(), R.layout.row, coins);
         //Check that listCoins is linked to view
         if (listCoins != null) {
             listCoins.setAdapter(mCoinAdapter);
@@ -104,7 +111,8 @@ public class CoinsInMachineDetail extends Fragment implements Data, AdapterView.
             //img.loadBitmap(resId2, getResources(), 300, 160, macPreview, 0);
 
             // Create coin adapter
-            mCoinAdapter = new CoinAdapter(getActivity(), R.layout.row, machine.getCoins(), machine);
+            ArrayList<Coin> coins = new ArrayList<>(Arrays.asList(machine.getCoins()));
+            mCoinAdapter = new ListAdapter(getActivity(), R.layout.row, coins);
 
             //Check that listCoins is linked to view
             if (listCoins != null) {
