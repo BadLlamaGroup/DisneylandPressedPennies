@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +58,7 @@ import static net.cox.mario_000.disneylandpressedpennies.Data.calMachines;
 import static net.cox.mario_000.disneylandpressedpennies.Data.disneyMachines;
 import static net.cox.mario_000.disneylandpressedpennies.Data.downtownMachines;
 import static net.cox.mario_000.disneylandpressedpennies.Data.retiredDisneylandMachines;
+import static net.cox.mario_000.disneylandpressedpennies.MainActivity.COIN_PATH;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.PREFS_NAME;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.numArcCoinsCollected;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.numArcCoinsTotal;
@@ -78,163 +78,186 @@ import static net.cox.mario_000.disneylandpressedpennies.R.id.backupList;
  * Created by mario_000 on 5/10/2017.
  */
 
-public class Backup extends Fragment {
+public class Backup extends Fragment
+{
     private Tracker mTracker;
     private SharedPreference sharedPreference;
     boolean storageApproved;
-    List<Coin> savedCoins;
+    List< Coin > savedCoins;
     LinearLayout backupBtn;
     LinearLayout restoreBtn;
     LinearLayout exportBtn;
     TextView txtCheck;
     MainActivity application;
     public static SharedPreferences pref;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
+    private SimpleDateFormat dateFormat = new SimpleDateFormat( "MMMM dd, yyyy", Locale.US );
 
     @Override
-    public void onResume() {
-        savedCoins = sharedPreference.getCoins(getActivity().getApplicationContext());
-        mTracker.setScreenName("Page - Backup/Restore");
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    public void onResume()
+    {
+        mTracker.setScreenName( "Page - Backup/Restore" );
+        mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
         super.onResume();
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-    }
+    public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState )
+    {
+        super.onCreate( savedInstanceState );
+        View view = inflater.inflate( R.layout.backup, container, false );
+        getActivity().setTitle( "Backup / Restore" );
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.backup, container, false);
-        getActivity().setTitle("Backup / Restore");
-
-        application = (MainActivity) getActivity();
+        application = ( MainActivity ) getActivity();
         mTracker = application.getDefaultTracker();
 
         sharedPreference = new SharedPreference();
-        savedCoins = sharedPreference.getCoins(getActivity().getApplicationContext());
-        pref = application.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        savedCoins = sharedPreference.getCoins( getActivity().getApplicationContext() );
+        pref = application.getApplicationContext().getSharedPreferences( PREFS_NAME, MODE_PRIVATE );
 
 
         isStoragePermissionGranted();
 
-        backupBtn = (LinearLayout) view.findViewById(backupList);
-        restoreBtn = (LinearLayout) view.findViewById(R.id.restoreList);
-        exportBtn = (LinearLayout) view.findViewById(R.id.exportList);
-        txtCheck = (TextView) view.findViewById(R.id.txtResult);
+        backupBtn = view.findViewById( backupList );
+        restoreBtn = view.findViewById( R.id.restoreList );
+        exportBtn = view.findViewById( R.id.exportList );
+        txtCheck = view.findViewById( R.id.txtResult );
 
         checkBackup();
 
-        backupBtn.setOnClickListener(new View.OnClickListener() {
+        backupBtn.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick( View view )
+            {
                 showNoticeDialogBackup();
             }
-        });
+        } );
 
-        restoreBtn.setOnClickListener(new View.OnClickListener() {
+        restoreBtn.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick( View view )
+            {
                 showNoticeDialogRestore();
             }
-        });
+        } );
 
-        exportBtn.setOnClickListener(new View.OnClickListener() {
+        exportBtn.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick( View view )
+            {
                 createandDisplayPdf();
             }
-        });
+        } );
 
         return view;
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy()
+    {
         super.onDestroy();
     }
 
-    public void backupApp() {
+    public void backupApp()
+    {
         ObjectOutputStream output = null;
-        try {
+        try
+        {
             File sdCard = Environment.getExternalStorageDirectory();
             // TODO: 9/20/2017 Check if dir already exists
-            File dir = new File(sdCard.getAbsolutePath() + "/Pressed Coins at Disneyland");
+            File dir = new File( sdCard.getAbsolutePath() + "/Pressed Coins at Disneyland" );
             dir.mkdirs();
-            File file = new File(dir, "coinsBackup.ser");
+            File file = new File( dir, "coinsBackup.ser" );
             // TODO: 9/20/2017 Make file non-editable
-            output = new ObjectOutputStream(new FileOutputStream(file));
-            output.writeObject(pref.getAll());
-            Toast.makeText(getActivity().getApplicationContext(), "Backup created in " + sdCard.getAbsolutePath() + "/Pressed Coins at Disneyland", Toast.LENGTH_LONG).show();
-        } catch (FileNotFoundException e) {
+            output = new ObjectOutputStream( new FileOutputStream( file ) );
+            output.writeObject( pref.getAll() );
+            Toast.makeText( getActivity().getApplicationContext(), "Backup created in " + sdCard.getAbsolutePath() + "/Pressed Coins at Disneyland", Toast.LENGTH_LONG ).show();
+        } catch ( FileNotFoundException e )
+        {
             e.printStackTrace();
-        } catch (IOException e) {
+        } catch ( IOException e )
+        {
             e.printStackTrace();
-        } finally {
-            try {
-                if (output != null) {
+        } finally
+        {
+            try
+            {
+                if ( output != null )
+                {
                     output.flush();
                     output.close();
                 }
-            } catch (IOException ex) {
+            } catch ( IOException ex )
+            {
                 ex.printStackTrace();
             }
         }
         checkBackup();
     }
 
-    @SuppressWarnings({"unchecked"})
-    private void restoreApp() {
+    @SuppressWarnings( { "unchecked" } )
+    private void restoreApp()
+    {
         ObjectInputStream input = null;
-        try {
+        try
+        {
             File sdCard = Environment.getExternalStorageDirectory();
-            File dir = new File(sdCard.getAbsolutePath() + "/Pressed Coins at Disneyland");
+            File dir = new File( sdCard.getAbsolutePath() + "/Pressed Coins at Disneyland" );
             dir.mkdirs();
-            File file = new File(dir, "coinsBackup.ser");
-            input = new ObjectInputStream(new FileInputStream(file));
+            File file = new File( dir, "coinsBackup.ser" );
+            input = new ObjectInputStream( new FileInputStream( file ) );
             SharedPreferences.Editor prefEdit = pref.edit();
             prefEdit.clear();
-            Map<String, ?> entries = (Map<String, ?>) input.readObject();
-            for (Map.Entry<String, ?> entry : entries.entrySet()) {
+            Map< String, ? > entries = ( Map< String, ? > ) input.readObject();
+            for ( Map.Entry< String, ? > entry : entries.entrySet() )
+            {
                 Object v = entry.getValue();
                 String key = entry.getKey();
 
-                if (v instanceof Boolean)
-                    prefEdit.putBoolean(key, ((Boolean) v).booleanValue());
-                else if (v instanceof Float)
-                    prefEdit.putFloat(key, ((Float) v).floatValue());
-                else if (v instanceof Integer)
-                    prefEdit.putInt(key, ((Integer) v).intValue());
-                else if (v instanceof Long)
-                    prefEdit.putLong(key, ((Long) v).longValue());
-                else if (v instanceof String)
-                    prefEdit.putString(key, ((String) v));
+                if ( v instanceof Boolean )
+                    prefEdit.putBoolean( key, ( ( Boolean ) v ).booleanValue() );
+                else if ( v instanceof Float )
+                    prefEdit.putFloat( key, ( ( Float ) v ).floatValue() );
+                else if ( v instanceof Integer )
+                    prefEdit.putInt( key, ( ( Integer ) v ).intValue() );
+                else if ( v instanceof Long )
+                    prefEdit.putLong( key, ( ( Long ) v ).longValue() );
+                else if ( v instanceof String )
+                    prefEdit.putString( key, ( ( String ) v ) );
             }
             prefEdit.apply();
-            Toast.makeText(getActivity().getApplicationContext(), "Coins restored.", Toast.LENGTH_SHORT).show();
-        } catch (FileNotFoundException e) {
+            Toast.makeText( getActivity().getApplicationContext(), "Coins restored.", Toast.LENGTH_SHORT ).show();
+        } catch ( FileNotFoundException e )
+        {
             e.printStackTrace();
-        } catch (IOException e) {
+        } catch ( IOException e )
+        {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch ( ClassNotFoundException e )
+        {
             e.printStackTrace();
-        } finally {
+        } finally
+        {
             updateCoinTotals();
-            try {
-                if (input != null) {
+            try
+            {
+                if ( input != null )
+                {
                     input.close();
                 }
-            } catch (IOException ex) {
+            } catch ( IOException ex )
+            {
                 ex.printStackTrace();
             }
         }
     }
 
-    public void updateCoinTotals() {
+    public void updateCoinTotals()
+    {
         SharedPreference sharedPreference = new SharedPreference();
-        savedCoins = sharedPreference.getCoins(getActivity().getApplication());
+        savedCoins = sharedPreference.getCoins( getActivity().getApplication() );
         numDisneyCoinsTotal = 0;
         numCalCoinsTotal = 0;
         numDowntownCoinsTotal = 0;
@@ -246,22 +269,30 @@ public class Backup extends Fragment {
         numDowntownCoinsCollected = 0;
         numArcCoinsCollected = 0;
         numCoins = 0;
-        for (Machine[] m : disneyMachines) {
-            for (Machine mach : m) {
+        for ( Machine[] m : disneyMachines )
+        {
+            for ( Machine mach : m )
+            {
                 numDisneyCoinsTotal += mach.getCoins().length;
-                for (Coin c : mach.getCoins()) {
-                    if (savedCoins.contains(c)) {
+                for ( Coin c : mach.getCoins() )
+                {
+                    if ( savedCoins.contains( c ) )
+                    {
                         numDisneyCoinsCollected++;
                     }
                 }
             }
         }
 
-        for (Machine[] m : calMachines) {
-            for (Machine mach : m) {
+        for ( Machine[] m : calMachines )
+        {
+            for ( Machine mach : m )
+            {
                 numCalCoinsTotal += mach.getCoins().length;
-                for (Coin c : mach.getCoins()) {
-                    if (savedCoins.contains(c)) {
+                for ( Coin c : mach.getCoins() )
+                {
+                    if ( savedCoins.contains( c ) )
+                    {
                         numCalCoinsCollected++;
                     }
                 }
@@ -269,11 +300,15 @@ public class Backup extends Fragment {
 
         }
 
-        for (Machine[] m : downtownMachines) {
-            for (Machine mach : m) {
+        for ( Machine[] m : downtownMachines )
+        {
+            for ( Machine mach : m )
+            {
                 numDowntownCoinsTotal += mach.getCoins().length;
-                for (Coin c : mach.getCoins()) {
-                    if (savedCoins.contains(c)) {
+                for ( Coin c : mach.getCoins() )
+                {
+                    if ( savedCoins.contains( c ) )
+                    {
                         numDowntownCoinsCollected++;
                     }
                 }
@@ -281,10 +316,13 @@ public class Backup extends Fragment {
 
         }
 
-        for (Machine mach : retiredDisneylandMachines) {
+        for ( Machine mach : retiredDisneylandMachines )
+        {
             numArcCoinsTotal += mach.getCoins().length;
-            for (Coin c : mach.getCoins()) {
-                if (savedCoins.contains(c)) {
+            for ( Coin c : mach.getCoins() )
+            {
+                if ( savedCoins.contains( c ) )
+                {
                     numArcCoinsCollected++;
                 }
             }
@@ -296,73 +334,26 @@ public class Backup extends Fragment {
         numCoinsTotal += numCurrentCoinsTotal + numArcCoinsTotal;
     }
 
-    private void export() {
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) && storageApproved) {
-            //   try {
-            File sdCard = Environment.getExternalStorageDirectory();
-            File dir = new File(sdCard.getAbsolutePath() + "/Pressed Coins at Disneyland");
-            dir.mkdirs();
-            File file2 = new File(dir, "Coin-List.txt");
-            List<Coin> outCoins = sharedPreference.getCoins(getActivity());
-            List<Coin> wantCoins = sharedPreference.getWantedCoins(getActivity());
-            Collections.sort(outCoins, new Comparator<Coin>() {
-                @Override
-                public int compare(Coin c1, Coin c2) {
-                    return c1.getDateCollected().compareTo(c2.getDateCollected());
-                }
-            });
-//                PrintWriter pw = new PrintWriter(new FileOutputStream(file2));
-//                pw.format("Collected Coins:\n\n");
-//                for (Coin coin : outCoins) {
-//                    pw.format("%s %s\n", coin.getTitleCoin(), " --- Date: " + dateFormat.format(coin.getDateCollected()));
-//                }
-//                pw.format("\n\nWanted Coins:\n\n");
-//                for (Coin coin : wantCoins) {
-//                    pw.format("%s\n", coin.getTitleCoin());
-//                }
-//                pw.close();
-            Toast.makeText(getActivity().getApplicationContext(), "Coin list exported.", Toast.LENGTH_SHORT).show();
-            //Intent intent = new Intent(Intent.ACTION_VIEW);
-            //String title = "Test";
-//                Uri path = Uri.fromFile(file2);
-//                Intent intent = new Intent(Intent.ACTION_VIEW);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                intent.setDataAndType(path, "application/text");
-            //createandDisplayPdf();
-//                try {
-//                    startActivity(pdfOpenintent);
-//                }
-//                catch (ActivityNotFoundException e) {
-//
-//                }
-// Create intent to show chooser
-            //Intent chooser = Intent.createChooser(intent, "Test");
-
-// Verify the intent will resolve to at least one activity
-            //   if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-            //      startActivity(chooser);
-            //   }
-            //} catch (Exception e) {
-            //    e.printStackTrace();
-            //}
-
-        }
-    }
-
-    private boolean checkBackup() {
+    private boolean checkBackup()
+    {
 
         boolean backupExists = false;
 
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            try {
-                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Pressed Coins at Disneyland", "coinsBackup.ser");
-                if (file.exists()) {
+        if ( Environment.MEDIA_MOUNTED.equals( Environment.getExternalStorageState() ) )
+        {
+            try
+            {
+                File file = new File( Environment.getExternalStorageDirectory().getAbsolutePath() + "/Pressed Coins at Disneyland", "coinsBackup.ser" );
+                if ( file.exists() )
+                {
                     backupExists = true;
-                    txtCheck.setText("Tap to restore your coins backed up on " + dateFormat.format(file.lastModified()) + ".");
-                } else {
+                    txtCheck.setText( "Tap to restore your coins backed up on " + dateFormat.format( file.lastModified() ) + "." );
+                } else
+                {
                     backupExists = false;
                 }
-            } catch (Exception e) {
+            } catch ( Exception e )
+            {
                 e.printStackTrace();
             }
 
@@ -370,276 +361,420 @@ public class Backup extends Fragment {
         return backupExists;
     }
 
-    public void isStoragePermissionGranted() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                FragmentCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+    public void isStoragePermissionGranted()
+    {
+        if ( Build.VERSION.SDK_INT >= 23 )
+        {
+            if ( ContextCompat.checkSelfPermission( getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE ) != PackageManager.PERMISSION_GRANTED )
+            {
+                FragmentCompat.requestPermissions( this, new String[]{ android.Manifest.permission.WRITE_EXTERNAL_STORAGE }, 1 );
 
-            } else {
+            } else
+            {
                 storageApproved = true;
             }
-        } else {
+        } else
+        {
             storageApproved = true;
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+    public void onRequestPermissionsResult( int requestCode, String[] permissions, int[] grantResults )
+    {
+        super.onRequestPermissionsResult( requestCode, permissions, grantResults );
+        if ( grantResults[ 0 ] == PackageManager.PERMISSION_GRANTED )
+        {
             storageApproved = true;
-        } else {
+        } else
+        {
             getFragmentManager().popBackStackImmediate();
         }
     }
 
     // Method for creating a pdf file from text, saving it then opening it for display
-    public void createandDisplayPdf() {
+    public void createandDisplayPdf()
+    {
         File sdCard = Environment.getExternalStorageDirectory();
-        File dir = new File(sdCard.getAbsolutePath() + "/Pressed Coins at Disneyland");
+        File dir = new File( sdCard.getAbsolutePath() + "/Pressed Coins at Disneyland" );
         dir.mkdir();
 
-        mTracker.send(new HitBuilders.EventBuilder()
-                .setCategory("Export")
-                .setAction("Exported")
-                .setValue(1)
-                .build());
+        mTracker.send( new HitBuilders.EventBuilder()
+                .setCategory( "Export" )
+                .setAction( "Exported" )
+                .setValue( 1 )
+                .build() );
 
-        File myFile = new File(dir, "Coin-list.pdf");
-        Toast.makeText(getActivity(), "Creating PDF...", Toast.LENGTH_SHORT).show();
+        File myFile = new File( dir, "Coin-list.pdf" );
 
-        try {
-            OutputStream output = new FileOutputStream(myFile);
-            Document document = new Document(PageSize.LETTER);
-            PdfWriter.getInstance(document, output);
+        try
+        {
+            // Create document
+            OutputStream output = new FileOutputStream( myFile );
+            Document document = new Document( PageSize.LETTER );
+            PdfWriter.getInstance( document, output );
             document.open();
-            Font font = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD);
-            Paragraph p = new Paragraph("Pressed Coins at Disneyland", font);
-            p.setAlignment(Element.ALIGN_CENTER);
-            document.add(p);
+
+            // Create title
+            Font titleFont = new Font( Font.FontFamily.HELVETICA, 20, Font.BOLD );
+            Paragraph title = new Paragraph( "Pressed Coins at Disneyland", titleFont );
+            title.setAlignment( Element.ALIGN_CENTER );
+            document.add( title );
             document.add( Chunk.NEWLINE );
-            Font font2 = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD);
-            Paragraph p2 = new Paragraph("Collected coins:", font2);
-            document.add(p2);
+
+            // Get coins
+            List< Coin > collectedCoins = sharedPreference.getCoins( getActivity() );
+            List< Coin > wantCoins = sharedPreference.getWantedCoins( getActivity() );
+            List< Coin > customCoins = sharedPreference.getCustomCoins( getActivity() );
+
+            // Prepare collected coins
+            Font coinHeaderFont = new Font( Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD );
+            DottedLineSeparator separator = new DottedLineSeparator();
+            separator.setGap( 7 );
+            separator.setLineWidth( 3 );
+            Chunk linebreak = new Chunk( separator );
+            document.add( linebreak );
             document.add( Chunk.NEWLINE );
-            List<Coin> outCoins = sharedPreference.getCoins(getActivity());
-            List<Coin> wantCoins = sharedPreference.getWantedCoins(getActivity());
-            Collections.sort(outCoins, new Comparator<Coin>() {
+            document.add( new Paragraph( "Collected coins:", coinHeaderFont ) );
+            document.add( linebreak );
+            document.add( Chunk.NEWLINE );
+
+            Collections.sort( collectedCoins, new Comparator< Coin >()
+            {
                 @Override
-                public int compare(Coin c1, Coin c2) {
-                    return c1.getDateCollected().compareTo(c2.getDateCollected());
+                public int compare( Coin c1, Coin c2 )
+                {
+                    return c1.getDateCollected().compareTo( c2.getDateCollected() );
                 }
-            });
-            int count = 0;
-            for (Coin coin : outCoins) {
-                document.add(new Paragraph(coin.getTitleCoin() + " --- Date: " + dateFormat.format(coin.getDateCollected())));
+            } );
+
+            int count = 1;
+            for ( Coin coin : collectedCoins )
+            {
+                if ( count % 6 == 0 )
+                {
+                    document.newPage();
+                }
+
+                document.add( new Paragraph( coin.getTitleCoin() + " --- Date: " + dateFormat.format( coin.getDateCollected() ) ) );
                 Context context = getActivity().getApplicationContext();
-                int imgId = context.getResources().getIdentifier(coin.getCoinFrontImg(), "drawable", context.getPackageName());
-                if(imgId == 0){
-                    imgId = context.getResources().getIdentifier("searching", "drawable", context.getPackageName());
+                int imgId = context.getResources().getIdentifier( coin.getCoinFrontImg(), "drawable", context.getPackageName() );
+                if ( imgId == 0 )
+                {
+                    imgId = context.getResources().getIdentifier( "searching", "drawable", context.getPackageName() );
                 }
                 BitmapFactory.Options dimensions = new BitmapFactory.Options();
                 dimensions.inJustDecodeBounds = true;
-                Bitmap bitDim = BitmapFactory.decodeResource(context.getResources(), imgId, dimensions);
-                Bitmap mBitmap = BitmapFactory.decodeResource(context.getResources(), imgId);
+                Bitmap bitDim = BitmapFactory.decodeResource( context.getResources(), imgId, dimensions );
+                Bitmap mBitmap = BitmapFactory.decodeResource( context.getResources(), imgId );
                 int height = dimensions.outHeight;
                 int width = dimensions.outWidth;
 
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                mBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                Image myImg = Image.getInstance(stream.toByteArray());
-                myImg.setTransparency(new int[]{0x00, 0x10});
-                if (width > height) {
-                    myImg.scaleAbsolute(75f, 50f);
-                } else {
-                    myImg.scaleAbsolute(50f, 75f);
+                mBitmap.compress( Bitmap.CompressFormat.PNG, 100, stream );
+                Image myImg = Image.getInstance( stream.toByteArray() );
+                myImg.setTransparency( new int[]{ 0x00, 0x10 } );
+                if ( width > height )
+                {
+                    myImg.scaleAbsolute( 75f, 50f );
+                } else
+                {
+                    myImg.scaleAbsolute( 50f, 75f );
                 }
 
-                document.add(myImg);
+
+                /*//Bitmap bitDim2 = BitmapFactory.decodeResource( context.getResources(), imgId, dimensions );
+                Bitmap mBitmap2 = BitmapFactory.decodeResource( context.getResources(), imgId2 );
+                int height2 = dimensions.outHeight;
+                int width2 = dimensions.outWidth;
+
+                mBitmap2.compress( Bitmap.CompressFormat.PNG, 100, stream );
+                Image myImg2 = Image.getInstance( stream.toByteArray() );
+                myImg2.setTransparency( new int[]{ 0x00, 0x10 } );
+                if ( width2 > height2 )
+                {
+                    myImg2.scaleAbsolute( 75f, 50f );
+                } else
+                {
+                    myImg2.scaleAbsolute( 50f, 75f );
+                }
+
+                PdfPTable table = new PdfPTable(2);
+                PdfPCell cell = new PdfPCell();
+                Paragraph p = new Paragraph();
+                p.add(new Chunk(myImg, 0, 0));
+                p.add(new Chunk(myImg2, 0, 0));
+                cell.addElement(p);
+                table.addCell(cell);
+                table.addCell(new PdfPCell(new Phrase(coin.getTitleCoin())));
+                document.add(table);*/
+
+                document.add( myImg );
+
                 count++;
-                if(count % 7 == 0){
+            }
+
+            document.newPage();
+            count = 1;
+
+            // Prepare wanted coins
+            if ( wantCoins.size() != 0 )
+            {
+                document.add( linebreak );
+                document.add( Chunk.NEWLINE );
+                document.add( new Paragraph( "Wanted coins:", coinHeaderFont ) );
+                document.add( linebreak );
+                document.add( Chunk.NEWLINE );
+            }
+            for ( Coin coin : wantCoins )
+            {
+                if ( count % 6 == 0 )
+                {
                     document.newPage();
                 }
-            }
-
-            if(wantCoins.size() != 0) {
-                DottedLineSeparator separator = new DottedLineSeparator();
-                separator.setGap(7);
-                separator.setLineWidth(3);
-                Chunk linebreak = new Chunk(separator);
-                document.add(linebreak);
-                document.add(Chunk.NEWLINE);
-                document.add(new Paragraph("Wanted coins:", font2));
-                document.add(Chunk.NEWLINE);
-            }
-            for (Coin coin : wantCoins) {
-                document.add(new Paragraph(coin.getTitleCoin()));
+                document.add( new Paragraph( coin.getTitleCoin() ) );
                 Context context = getActivity().getApplicationContext();
-                int imgId = context.getResources().getIdentifier(coin.getCoinFrontImg(), "drawable", context.getPackageName());
+                int imgId = context.getResources().getIdentifier( coin.getCoinFrontImg(), "drawable", context.getPackageName() );
                 BitmapFactory.Options dimensions = new BitmapFactory.Options();
                 dimensions.inJustDecodeBounds = true;
-                Bitmap bitDim = BitmapFactory.decodeResource(context.getResources(), imgId, dimensions);
-                Bitmap mBitmap = BitmapFactory.decodeResource(context.getResources(), imgId);
+                Bitmap bitDim = BitmapFactory.decodeResource( context.getResources(), imgId, dimensions );
+                Bitmap mBitmap = BitmapFactory.decodeResource( context.getResources(), imgId );
                 int height = dimensions.outHeight;
                 int width = dimensions.outWidth;
 
 
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                mBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                Image myImg = Image.getInstance(stream.toByteArray());
-                myImg.setTransparency(new int[]{0x00, 0x10});
-                if (width > height) {
-                    myImg.scaleAbsolute(75f, 50f);
-                } else {
-                    myImg.scaleAbsolute(50f, 75f);
+                mBitmap.compress( Bitmap.CompressFormat.PNG, 100, stream );
+                Image myImg = Image.getInstance( stream.toByteArray() );
+                myImg.setTransparency( new int[]{ 0x00, 0x10 } );
+                if ( width > height )
+                {
+                    myImg.scaleAbsolute( 75f, 50f );
+                } else
+                {
+                    myImg.scaleAbsolute( 50f, 75f );
                 }
 
-                document.add(myImg);
+                document.add( myImg );
+
                 count++;
-                if(count % 6 == 0){
+            }
+
+            document.newPage();
+            count = 1;
+
+            Collections.sort( customCoins, new Comparator< Coin >()
+            {
+                @Override
+                public int compare( Coin c1, Coin c2 )
+                {
+                    return c1.getDateCollected().compareTo( c2.getDateCollected() );
+                }
+            } );
+
+            // Prepare custom coins
+            if ( customCoins.size() != 0 )
+            {
+                document.add( linebreak );
+                document.add( Chunk.NEWLINE );
+                document.add( new Paragraph( "Custom coins:", coinHeaderFont ) );
+                document.add( linebreak );
+                document.add( Chunk.NEWLINE );
+            }
+            for ( Coin coin : customCoins )
+            {
+                if ( count % 6 == 0 )
+                {
                     document.newPage();
                 }
+
+                document.add( new Paragraph( coin.getTitleCoin() + " --- Date: " + dateFormat.format( coin.getDateCollected() ) ) );
+                String filePath = COIN_PATH + "/" + coin.getCoinFrontImg();
+
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+                Bitmap bitDim = BitmapFactory.decodeFile( filePath, dimensions );
+                Bitmap mBitmap = BitmapFactory.decodeFile( filePath );
+                int height = dimensions.outHeight;
+                int width = dimensions.outWidth;
+
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                mBitmap.compress( Bitmap.CompressFormat.PNG, 100, stream );
+                Image myImg = Image.getInstance( stream.toByteArray() );
+                myImg.setTransparency( new int[]{ 0x00, 0x10 } );
+                if ( width > height )
+                {
+                    myImg.scaleAbsolute( 75f, 50f );
+                } else
+                {
+                    myImg.scaleAbsolute( 50f, 75f );
+                }
+
+                document.add( myImg );
+
+                count++;
             }
 
             document.close();
-            Toast.makeText(getActivity(), "PDF Created", Toast.LENGTH_SHORT).show();
-            showNoticeDialogExport(myFile);
-        } catch (DocumentException e) {
+            Toast.makeText( getActivity(), "PDF Created", Toast.LENGTH_SHORT ).show();
+            showNoticeDialogExport( myFile );
+        } catch ( DocumentException e )
+        {
             e.printStackTrace();
-        } catch (FileNotFoundException e) {
+        } catch ( FileNotFoundException e )
+        {
             e.printStackTrace();
-        } catch (IOException e) {
+        } catch ( IOException e )
+        {
             e.printStackTrace();
         }
     }
 
-    private void viewPdf(File myFile) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        Uri apkURI = FileProvider.getUriForFile(getActivity(), getActivity().getApplicationContext().getPackageName() + ".provider", myFile);
-        intent.setDataAndType(apkURI, "application/pdf");
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+    private void viewPdf( File myFile )
+    {
+        Intent intent = new Intent( Intent.ACTION_VIEW );
+        intent.setDataAndType( Uri.fromFile( myFile ), "application/pdf" );
+        intent.setFlags( Intent.FLAG_ACTIVITY_NO_HISTORY );
 
-        Intent chooser = Intent.createChooser(intent, "Open with:");
+        Intent chooser = Intent.createChooser( intent, "Open with:" );
 
-        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivity(chooser);
-        }else{
-            Toast.makeText(getActivity(), "PDF Reader not installed...", Toast.LENGTH_LONG).show();
-            Intent goToMarket = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://search?q=PDF"));
-            startActivity(goToMarket);
+        if ( intent.resolveActivity( getActivity().getPackageManager() ) != null )
+        {
+            startActivity( chooser );
+        } else
+        {
+            Toast.makeText( getActivity(), "PDF Reader not installed...", Toast.LENGTH_LONG ).show();
+            Intent goToMarket = new Intent( Intent.ACTION_VIEW ).setData( Uri.parse( "market://search?q=PDF" ) );
+            startActivity( goToMarket );
         }
     }
 
-    public void showNoticeDialogBackup() {
-        final Dialog removeDialog = new Dialog(getActivity(), R.style.CustomDialog);
+    public void showNoticeDialogBackup()
+    {
+        final Dialog removeDialog = new Dialog( getActivity(), R.style.CustomDialog );
         // Set up dialog window
-        removeDialog.setContentView(R.layout.backup_restore_dialog);
-        removeDialog.setTitle("Title...");
-        removeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        removeDialog.setCancelable(false);
-        TextView txtOption = (TextView) removeDialog.findViewById(R.id.txt_option);
+        removeDialog.setContentView( R.layout.backup_restore_dialog );
+        removeDialog.setTitle( "Title..." );
+        removeDialog.getWindow().setBackgroundDrawable( new ColorDrawable( Color.TRANSPARENT ) );
+        removeDialog.setCancelable( false );
+        TextView txtOption = removeDialog.findViewById( R.id.txt_option );
         // Link buttons
-        Button noBtn = (Button) removeDialog.findViewById(R.id.btn_no);
-        Button backupBtn = (Button) removeDialog.findViewById(R.id.btn_yes);
+        Button noBtn = removeDialog.findViewById( R.id.btn_no );
+        Button backupBtn = removeDialog.findViewById( R.id.btn_yes );
 
-            txtOption.setText("Are you sure you want to backup?");
+        txtOption.setText( "Are you sure you want to backup?" );
 
         // Listeners for buttons
-        noBtn.setOnClickListener(new View.OnClickListener() {
+        noBtn.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick( View view )
+            {
                 removeDialog.dismiss();
             }
-        });
+        } );
 
-        backupBtn.setOnClickListener(new View.OnClickListener() {
+        backupBtn.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                    backupApp();
-                    mTracker.send(new HitBuilders.EventBuilder()
-                            .setCategory("Backup/Restore")
-                            .setAction("Backed up")
-                            .setValue(1)
-                            .build());
+            public void onClick( View view )
+            {
+                backupApp();
+                mTracker.send( new HitBuilders.EventBuilder()
+                        .setCategory( "Backup/Restore" )
+                        .setAction( "Backed up" )
+                        .setValue( 1 )
+                        .build() );
                 removeDialog.dismiss();
             }
-        });
+        } );
 
         removeDialog.show();
     }
 
-    public void showNoticeDialogRestore() {
-        final Dialog removeDialog = new Dialog(getActivity(), R.style.CustomDialog);
+    public void showNoticeDialogRestore()
+    {
+        final Dialog removeDialog = new Dialog( getActivity(), R.style.CustomDialog );
         // Set up dialog window
-        removeDialog.setContentView(R.layout.backup_restore_dialog);
-        removeDialog.setTitle("Title...");
-        removeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        removeDialog.setCancelable(false);
-        TextView txtOption = (TextView) removeDialog.findViewById(R.id.txt_option);
+        removeDialog.setContentView( R.layout.backup_restore_dialog );
+        removeDialog.setTitle( "Title..." );
+        removeDialog.getWindow().setBackgroundDrawable( new ColorDrawable( Color.TRANSPARENT ) );
+        removeDialog.setCancelable( false );
+        TextView txtOption = removeDialog.findViewById( R.id.txt_option );
         // Link buttons
-        Button noBtn = (Button) removeDialog.findViewById(R.id.btn_no);
-        Button restoreBtn = (Button) removeDialog.findViewById(R.id.btn_yes);
+        Button noBtn = removeDialog.findViewById( R.id.btn_no );
+        Button restoreBtn = removeDialog.findViewById( R.id.btn_yes );
 
-        txtOption.setText("Are you sure you want to restore?");
+        txtOption.setText( "Are you sure you want to restore?" );
 
         // Listeners for buttons
-        noBtn.setOnClickListener(new View.OnClickListener() {
+        noBtn.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick( View view )
+            {
                 removeDialog.dismiss();
             }
-        });
+        } );
 
-        restoreBtn.setOnClickListener(new View.OnClickListener() {
+        restoreBtn.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                    restoreApp();
-                    mTracker.send(new HitBuilders.EventBuilder()
-                            .setCategory("Backup/Restore")
-                            .setAction("Restored")
-                            .setValue(1)
-                            .build());
+            public void onClick( View view )
+            {
+                restoreApp();
+                mTracker.send( new HitBuilders.EventBuilder()
+                        .setCategory( "Backup/Restore" )
+                        .setAction( "Restored" )
+                        .setValue( 1 )
+                        .build() );
                 removeDialog.dismiss();
             }
-        });
+        } );
 
         removeDialog.show();
     }
 
-    public void showNoticeDialogExport(final File myFile) {
-        final Dialog removeDialog = new Dialog(getActivity(), R.style.CustomDialog);
+    public void showNoticeDialogExport( final File myFile )
+    {
+        final Dialog removeDialog = new Dialog( getActivity(), R.style.CustomDialog );
         // Set up dialog window
-        removeDialog.setContentView(R.layout.backup_restore_dialog);
-        removeDialog.setTitle("Title...");
-        removeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        removeDialog.setCancelable(false);
-        TextView txtOption = (TextView) removeDialog.findViewById(R.id.txt_option);
+        removeDialog.setContentView( R.layout.backup_restore_dialog );
+        removeDialog.setTitle( "Title..." );
+        removeDialog.getWindow().setBackgroundDrawable( new ColorDrawable( Color.TRANSPARENT ) );
+        removeDialog.setCancelable( false );
+        TextView txtOption = removeDialog.findViewById( R.id.txt_option );
         // Link buttons
-        Button noBtn = (Button) removeDialog.findViewById(R.id.btn_no);
-        Button exportBtn = (Button) removeDialog.findViewById(R.id.btn_yes);
+        Button noBtn = removeDialog.findViewById( R.id.btn_no );
+        Button exportBtn = removeDialog.findViewById( R.id.btn_yes );
 
-        txtOption.setText("Would you like to view the PDF?");
+        txtOption.setText( "Would you like to view the PDF?" );
 
         // Listeners for buttons
-        noBtn.setOnClickListener(new View.OnClickListener() {
+        noBtn.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick( View view )
+            {
                 removeDialog.dismiss();
             }
-        });
+        } );
 
-        exportBtn.setOnClickListener(new View.OnClickListener() {
+        exportBtn.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                viewPdf(myFile);
-                mTracker.send(new HitBuilders.EventBuilder()
-                        .setCategory("Export")
-                        .setAction("Viewed")
-                        .setValue(1)
-                        .build());
+            public void onClick( View view )
+            {
+                viewPdf( myFile );
+                mTracker.send( new HitBuilders.EventBuilder()
+                        .setCategory( "Export" )
+                        .setAction( "Viewed" )
+                        .setValue( 1 )
+                        .build() );
                 removeDialog.dismiss();
             }
-        });
+        } );
 
         removeDialog.show();
     }

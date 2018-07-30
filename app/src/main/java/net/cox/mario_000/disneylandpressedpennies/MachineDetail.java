@@ -136,21 +136,6 @@ public class MachineDetail extends Fragment implements Data, AdapterView.OnItemC
                     tempCoins = worldDisneyCoins;
                     landTitle = "World of Disney";
                     break;
-                case R.id.annaElsaShopBtn:
-                    logoImg = "frozen_shop";
-                    tempCoins = annaElsaShopCoins;
-                    landTitle = "Anna & Elsa's Boutique";
-                    break;
-                case R.id.rainforestBtn:
-                    logoImg = "rainforest_cafe";
-                    tempCoins = rainforestCoins;
-                    landTitle = "Rainforest Cafe";
-                    break;
-                case R.id.espnBtn:
-                    logoImg = "espn";
-                    tempCoins = espnCoins;
-                    landTitle = "ESPN Zone";
-                    break;
                 case R.id.tortillaJoBtn:
                     logoImg = "tortilla_jo";
                     tempCoins = tortillaCoins;

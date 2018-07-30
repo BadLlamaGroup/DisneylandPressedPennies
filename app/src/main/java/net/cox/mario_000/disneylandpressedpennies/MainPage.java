@@ -39,120 +39,124 @@ import static net.cox.mario_000.disneylandpressedpennies.MainActivity.numDowntow
  * Created by mario_000 on 7/11/2016.
  * Description: Main page for app
  */
-public class MainPage extends Fragment implements View.OnClickListener {
+public class MainPage extends Fragment implements View.OnClickListener
+{
     TextView total;
     TextView disneyCollected;
     TextView calCollected;
     TextView downtownCollected;
-    List<Coin> savedCoins;
+    List< Coin > savedCoins;
     SharedPreference sharedPreference;
     int numClicked;
     MainActivity application;
     private Tracker mTracker;
 
-
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
-        savedCoins = sharedPreference.getCoins(getActivity().getApplicationContext());
+        savedCoins = sharedPreference.getCoins( getActivity().getApplicationContext() );
         numCurrentCoinsCollected = savedCoins.size() - numArcCoinsCollected;
-        total.setText(numCurrentCoinsCollected + " / " + numCurrentCoinsTotal);
-        disneyCollected.setText(numDisneyCoinsCollected + " / " + numDisneyCoinsTotal);
-        calCollected.setText(numCalCoinsCollected + " / " + numCalCoinsTotal);
-        downtownCollected.setText(numDowntownCoinsCollected + " / " + numDowntownCoinsTotal);
+        total.setText( numCurrentCoinsCollected + " / " + numCurrentCoinsTotal );
+        disneyCollected.setText( numDisneyCoinsCollected + " / " + numDisneyCoinsTotal );
+        calCollected.setText( numCalCoinsCollected + " / " + numCalCoinsTotal );
+        downtownCollected.setText( numDowntownCoinsCollected + " / " + numDowntownCoinsTotal );
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,final ViewGroup container, Bundle savedInstanceState) {
-        View myFragmentView = inflater.inflate(R.layout.main_page, container, false);
-        getActivity().setTitle("Main Page");
+    public View onCreateView( LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState )
+    {
+        View myFragmentView = inflater.inflate( R.layout.main_page, container, false );
+        getActivity().setTitle( "Main Page" );
 
         //Link buttons and set on click listener
-        total = (TextView) myFragmentView.findViewById(R.id.txt_total_collected);
-        disneyCollected = (TextView) myFragmentView.findViewById(R.id.txt_disney_collected);
-        calCollected = (TextView) myFragmentView.findViewById(R.id.txt_cal_collected);
-        downtownCollected = (TextView) myFragmentView.findViewById(R.id.txt_downtown_collected);
+        total = ( TextView ) myFragmentView.findViewById( R.id.txt_total_collected );
+        disneyCollected = ( TextView ) myFragmentView.findViewById( R.id.txt_disney_collected );
+        calCollected = ( TextView ) myFragmentView.findViewById( R.id.txt_cal_collected );
+        downtownCollected = ( TextView ) myFragmentView.findViewById( R.id.txt_downtown_collected );
 
+        LinearLayout disneyLayout = ( LinearLayout ) myFragmentView.findViewById( R.id.disneyMain );
+        disneyLayout.setOnClickListener( this );
 
-        LinearLayout disneyLayout = (LinearLayout) myFragmentView.findViewById(R.id.disneyMain);
-        disneyLayout.setOnClickListener(this);
+        LinearLayout californiaLayout = ( LinearLayout ) myFragmentView.findViewById( R.id.californiaMain );
+        californiaLayout.setOnClickListener( this );
 
-        LinearLayout californiaLayout = (LinearLayout) myFragmentView.findViewById(R.id.californiaMain);
-        californiaLayout.setOnClickListener(this);
-
-        LinearLayout downtownLayout = (LinearLayout) myFragmentView.findViewById(R.id.downtownMain);
-        downtownLayout.setOnClickListener(this);
+        LinearLayout downtownLayout = ( LinearLayout ) myFragmentView.findViewById( R.id.downtownMain );
+        downtownLayout.setOnClickListener( this );
 
         sharedPreference = new SharedPreference();
-        savedCoins = sharedPreference.getCoins(getActivity().getApplicationContext());
+        savedCoins = sharedPreference.getCoins( getActivity().getApplicationContext() );
         numCurrentCoinsCollected = savedCoins.size() - numArcCoinsCollected;
 
-        total.setText(numCurrentCoinsCollected + " / " + numCurrentCoinsTotal);
-        disneyCollected.setText(numDisneyCoinsCollected + " / " + numDisneyCoinsTotal);
-        calCollected.setText(numCalCoinsCollected + " / " + numCalCoinsTotal);
-        downtownCollected.setText(numDowntownCoinsCollected + " / " + numDowntownCoinsTotal);
+        total.setText( numCurrentCoinsCollected + " / " + numCurrentCoinsTotal );
+        disneyCollected.setText( numDisneyCoinsCollected + " / " + numDisneyCoinsTotal );
+        calCollected.setText( numCalCoinsCollected + " / " + numCalCoinsTotal );
+        downtownCollected.setText( numDowntownCoinsCollected + " / " + numDowntownCoinsTotal );
 
 
-        View v = myFragmentView.findViewById(R.id.txtName);
+        View v = myFragmentView.findViewById( R.id.txtName );
         numClicked = 0;
 
-        v.setOnClickListener(new View.OnClickListener() {
+        v.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                if(numClicked == 2){
-                    application = (MainActivity) getActivity();
+            public void onClick( View view )
+            {
+                if ( numClicked == 2 )
+                {
+                    application = ( MainActivity ) getActivity();
                     mTracker = application.getDefaultTracker();
-                    mTracker.send(new HitBuilders.EventBuilder()
-                            .setCategory("Hidden Mickeys")
-                            .setAction("Activated")
-                            .setValue(1)
-                            .build());
-                    Toast.makeText(getActivity().getApplicationContext(), "HIDDEN MICKEYS!!!", Toast.LENGTH_SHORT).show();
-                    final ConfettoGenerator confettoGenerator = new ConfettoGenerator() {
+                    mTracker.send( new HitBuilders.EventBuilder()
+                            .setCategory( "Hidden Mickeys" )
+                            .setAction( "Activated" )
+                            .setValue( 1 )
+                            .build() );
+                    Toast.makeText( getActivity().getApplicationContext(), "HIDDEN MICKEYS!!!", Toast.LENGTH_SHORT ).show();
+                    final ConfettoGenerator confettoGenerator = new ConfettoGenerator()
+                    {
                         @Override
-                        public Confetto generateConfetto(Random random) {
-                            final Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mickey);
-                            return new BitmapConfetto(bitmap);
+                        public Confetto generateConfetto( Random random )
+                        {
+                            final Bitmap bitmap = BitmapFactory.decodeResource( getResources(), R.drawable.mickey );
+                            return new BitmapConfetto( bitmap );
                         }
                     };
-                    final ConfettiSource confettiSource = new ConfettiSource(0, -200, container.getWidth(), -200);
-                    new ConfettiManager(getActivity().getApplicationContext(), confettoGenerator, confettiSource, container)
-                            .setEmissionDuration(6000)
-                            .setEmissionRate(5)
-                            .setVelocityX(0, 50)
-                            .setVelocityY(500)
-                            .setRotationalVelocity(180, 180)
+                    final ConfettiSource confettiSource = new ConfettiSource( 0, -200, container.getWidth(), -200 );
+                    new ConfettiManager( getActivity().getApplicationContext(), confettoGenerator, confettiSource, container )
+                            .setEmissionDuration( 6000 )
+                            .setEmissionRate( 5 )
+                            .setVelocityX( 0, 50 )
+                            .setVelocityY( 500 )
+                            .setRotationalVelocity( 180, 180 )
                             .animate();
                     numClicked = 0;
-                }else{
-                    Toast.makeText(getActivity().getApplicationContext(), "Only " + (2 - numClicked) + " more click(s)!", Toast.LENGTH_SHORT).show();
+                } else
+                {
+                    Toast.makeText( getActivity().getApplicationContext(), "Only " + ( 2 - numClicked ) + " more click(s)!", Toast.LENGTH_SHORT ).show();
                     numClicked++;
-
                 }
-
             }
-        });
-
+        } );
 
         return myFragmentView;
     }
 
-
-
     @Override
-    public void onClick(View v) {
+    public void onClick( View v )
+    {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         int land = v.getId();
         Fragment fragment = new Fragment();
-        switch (land) {
-            case (R.id.disneyMain):
+        switch ( land )
+        {
+            case ( R.id.disneyMain ):
                 fragment = new DisneyPage();
                 break;
-            case (R.id.californiaMain):
+            case ( R.id.californiaMain ):
                 fragment = new CaliforniaPage();
                 break;
-            case (R.id.downtownMain):
+            case ( R.id.downtownMain ):
                 fragment = new DowntownPage();
                 break;
         }
@@ -160,9 +164,9 @@ public class MainPage extends Fragment implements View.OnClickListener {
                 R.animator.fade_in,
                 R.animator.fade_out,
                 R.animator.fade_in,
-                R.animator.fade_out);
-        fragmentTransaction.replace(R.id.mainFrag, fragment);
-        fragmentTransaction.addToBackStack(null);
+                R.animator.fade_out );
+        fragmentTransaction.replace( R.id.mainFrag, fragment );
+        fragmentTransaction.addToBackStack( null );
         fragmentTransaction.commit();
     }
 }

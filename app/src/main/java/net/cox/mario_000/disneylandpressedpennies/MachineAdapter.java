@@ -134,7 +134,7 @@ public class MachineAdapter extends ArrayAdapter<Machine> implements View.OnClic
         //Get which row was clicked
         Integer viewPos = (Integer) v.getTag();
         Machine machine = machines[viewPos];
-        Intent i = new Intent(getContext(), bigImage.class);
+        Intent i = new Intent(getContext(), BigImage.class);
         i.putExtra("frontImg", machine.getMachineImg());
         i.putExtra("backImg", machine.getMachineImg());
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -34,21 +34,33 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:text="@string/tutorial"
             android:textColor="@android:color/black" />
 
-
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="HAVE FUN AND GOOD LUCK!"
+            android:textSize="14sp"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="15dp"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+
+        <Button
             android:id="@+id/btnTutorialExit"
-            android:text="Got it"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"
-            android:background="@drawable/outline"/>
+            android:background="@drawable/outline"
+            android:text="Got it" />
 
     </LinearLayout>
 </ScrollView>

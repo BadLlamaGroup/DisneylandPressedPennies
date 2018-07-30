@@ -10,7 +10,15 @@
         <item>Old-New</item>
         <item>New-Old</item>
         <item>Custom</item>
-        <item>By land</item>
+        <item>Land</item>
+    </string-array>
+
+    <string-array name="Custom_Sort_Type">
+        <item>A-Z</item>
+        <item>Z-A</item>
+        <item>Old-New</item>
+        <item>New-Old</item>
+        <item>Park</item>
     </string-array>
 
     <string-array name="Email_Subject">
@@ -18,6 +26,20 @@
         <item>Complaint</item>
         <item>Machine Change</item>
         <item>Ideas</item>
+    </string-array>
+
+    <string-array name="Coin_Type">
+        <item>Penny</item>
+        <item>Nickel</item>
+        <item>Dime</item>
+        <item>Quarter</item>
+    </string-array>
+
+    <string-array name="Park">
+        <item>Disneyland</item>
+        <item>Downtown Disney</item>
+        <item>California Adventure</item>
+        <item>Other</item>
     </string-array>
 
     <string name="about">The purpose of Pressed Coins at Disneyland is to assist you in keeping track of the coins you have collected. It
@@ -41,7 +63,13 @@
         \n\n<b>Map:</b>\nThis displays an integrated Google Map with a marker at each machine location. When you click on a marker a window will appear with the machine name.
         You can click on the name and it will open the details of that machine.\n\n<b>Search:</b>\nLet\'s you search the coin database for a certain Character or anything you would like a coin to feature. Enter your search term and it will display all coins
         including your search term with a count of how many were found. From here you can access any coin like normal.\n\n<b>Email developer:</b>\nOpen the menu bar on the top left and select E-Mail. Any and all feedback is welcomed and will be reviewed quickly. So if you
-        have any questions, ideas, comments, or improvements please don\'t hesitate to contact me.\n\n<b>Backup/Restore:</b>\nClick Backup to backup your current collection. Click Restore to restore your backup. Click Export to export your current collection to a PDF.\n</string>
+        have any questions, ideas, comments, or improvements please don\'t hesitate to contact me.\n\n<b>Backup/Restore:</b>\nClick Backup to backup your current collection. Click Restore to restore your backup. Click Export to export your current collection to a PDF.\n\n<b>Custom Coin List:</b>\nClick
+        Custom Coin List to open a separate page to manage your very own custom coins. Click sort to choose a sorting method for your coins.
+        Click add coin to open a new page to create a new coin. This page will also keep track of how many custom coins you have.\n\n<b>Adding Custom Coin:</b>\nClick
+        add coin in Custom Coin List to open this page. Click on an image to choose a picture for your coin, the sides are labeled above each image.
+        You may take a new picture with the camera or choose one from your device. After that, you will enter a name for your new coin. Below that,
+        you can choose between the three lands or choose other. You can also select the coin type and the date you collected it. You may also enter
+        any notes you have on that particular coin. Lastly, you can always edit any custom coin you have saved.\n</string>
 
     <string name="whatsnew">
         Machine Update:

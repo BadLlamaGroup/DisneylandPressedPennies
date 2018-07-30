@@ -1,7 +1,6 @@
 package net.cox.mario_000.disneylandpressedpennies;
 
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -20,11 +19,9 @@ import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
-
-import static net.cox.mario_000.disneylandpressedpennies.MainActivity.find;
+import java.util.List;
 
 /**
  * Created by mario_000 on 2/15/2017.
@@ -32,8 +29,10 @@ import static net.cox.mario_000.disneylandpressedpennies.MainActivity.find;
 
 public class search extends Fragment implements Data, AdapterView.OnItemClickListener {
     private ListView l;
-    ArrayList<Coin> foundCoins;
-    CoinAdapter mCoinAdapter;
+    ArrayList foundCoins;
+    List< Coin > customCoins;
+    private final SharedPreference sharedPreference = new SharedPreference();
+    ListAdapter mCoinAdapter;
     Parcelable state;
     TextView numFound;
     TextView noResults;
@@ -78,6 +77,10 @@ public class search extends Fragment implements Data, AdapterView.OnItemClickLis
         numFound = (TextView) view.findViewById(R.id.numFound);
         noResults = (TextView) view.findViewById(R.id.noneFound);
 
+
+        customCoins = sharedPreference.getCustomCoins( view.getContext() );
+
+
         l.setOnItemClickListener(this);
         final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -108,13 +111,13 @@ public class search extends Fragment implements Data, AdapterView.OnItemClickLis
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String s = e.getText().toString();
+                String searchKey = e.getText().toString();
                 foundCoins = new ArrayList<>();
 
                 for (Machine[] macs : disneyMachines) {
                     for (Machine mac : macs) {
                         for (Coin c : mac.getCoins()) {
-                            if (c.getTitleCoin().toLowerCase().contains(s.toLowerCase())) {
+                            if (c.getTitleCoin().toLowerCase().contains(searchKey.toLowerCase())) {
                                 foundCoins.add(c);
                             }
                         }
@@ -123,7 +126,7 @@ public class search extends Fragment implements Data, AdapterView.OnItemClickLis
                 for (Machine[] macs : calMachines) {
                     for (Machine mac : macs) {
                         for (Coin c : mac.getCoins()) {
-                            if (c.getTitleCoin().toLowerCase().contains(s.toLowerCase())) {
+                            if (c.getTitleCoin().toLowerCase().contains(searchKey.toLowerCase())) {
                                 foundCoins.add(c);
                             }
                         }
@@ -132,7 +135,7 @@ public class search extends Fragment implements Data, AdapterView.OnItemClickLis
                 for (Machine[] macs : downtownMachines) {
                     for (Machine mac : macs) {
                         for (Coin c : mac.getCoins()) {
-                            if (c.getTitleCoin().toLowerCase().contains(s.toLowerCase())) {
+                            if (c.getTitleCoin().toLowerCase().contains(searchKey.toLowerCase())) {
                                 foundCoins.add(c);
                             }
                         }
@@ -141,10 +144,17 @@ public class search extends Fragment implements Data, AdapterView.OnItemClickLis
                 for (Machine[] macs : retiredMachines) {
                     for (Machine mac : macs) {
                         for (Coin c : mac.getCoins()) {
-                            if (c.getTitleCoin().toLowerCase().contains(s.toLowerCase())) {
+                            if (c.getTitleCoin().toLowerCase().contains(searchKey.toLowerCase())) {
                                 foundCoins.add(c);
                             }
                         }
+                    }
+                }
+
+                for( Coin coin : customCoins )
+                {
+                    if (coin.getTitleCoin().toLowerCase().contains(searchKey.toLowerCase())) {
+                        foundCoins.add(coin);
                     }
                 }
 
@@ -155,7 +165,7 @@ public class search extends Fragment implements Data, AdapterView.OnItemClickLis
                 }else {
                     l.setVisibility(View.VISIBLE);
                     noResults.setVisibility(View.INVISIBLE);
-                    mCoinAdapter = new CoinAdapter(getActivity(), R.layout.row, foundCoins.toArray(new Coin[foundCoins.size()]), null);
+                    mCoinAdapter = new ListAdapter(getActivity(), R.layout.row, foundCoins);
                     l.setAdapter(mCoinAdapter);
                 }
                 inputMethodManager.hideSoftInputFromWindow(e.getWindowToken(), 0);
@@ -180,7 +190,7 @@ public class search extends Fragment implements Data, AdapterView.OnItemClickLis
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        /*FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         singleCoin fragment = new singleCoin();
         Bundle bundle = new Bundle();
         Gson gson = new Gson();
@@ -199,6 +209,6 @@ public class search extends Fragment implements Data, AdapterView.OnItemClickLis
         //fragmentTransaction.add(R.id.mainFrag, fragment);
         fragmentTransaction.replace(R.id.mainFrag, fragment);
         fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        fragmentTransaction.commit();*/
     }
 }

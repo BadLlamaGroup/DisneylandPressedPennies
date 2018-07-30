@@ -5,25 +5,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="0dp">
-
-    <RelativeLayout
+        <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#000000">
 
         <ImageView
-            android:id="@+id/spinningCoinFront"
+            android:id="@+id/editCoinFront"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitCenter" />
 
         <ImageView
-            android:id="@+id/spinningCoinBack"
+            android:id="@+id/editCoinBack"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
             android:visibility="invisible" />
-
     </RelativeLayout>
-
 </LinearLayout>

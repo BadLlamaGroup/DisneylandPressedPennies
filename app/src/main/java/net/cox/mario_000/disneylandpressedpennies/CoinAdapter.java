@@ -133,7 +133,7 @@ public class CoinAdapter extends ArrayAdapter<Coin> implements View.OnClickListe
         //Get which row was clicked
         Integer viewPos = (Integer) v.getTag();
         Coin coin = coinsInMachine[viewPos];
-        Intent i = new Intent(context, bigImage.class);
+        Intent i = new Intent(context, BigImage.class);
         i.putExtra("frontImg", coin.getCoinFrontImg());
         i.putExtra("backImg", machine.getBackstampImg());
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

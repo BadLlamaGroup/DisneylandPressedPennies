@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -24,52 +23,33 @@ import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.img;
 
 /**
  * Created by mario_000 on 6/25/2016.
  * Description: Fragment for displaying coins in current machine
  */
-public class CoinsInMachineDetail extends Fragment implements Data, AdapterView.OnItemClickListener, View.OnClickListener {
-    private CoinAdapter mCoinAdapter = null;
+public class CoinsInMachineDetail extends Fragment implements Data, View.OnClickListener {
+    private ListAdapter mCoinAdapter = null;
     private Machine machine;
     private ListView listCoins;
     private Tracker mTracker;
     private int selection = 0;
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        selection = position;
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        singleCoin fragment = new singleCoin();
-        Bundle bundle = new Bundle();
-        Gson gson = new Gson();
-        String jsonCoin = gson.toJson(mCoinAdapter.getCoinsInMachine()[position]);
-        String jsonMachine = gson.toJson(machine);
-        bundle.putString("selectedCoin", jsonCoin);
-        bundle.putString("selectedMachine", jsonMachine);
-        fragment.setArguments(bundle);
-        fragmentTransaction.setCustomAnimations(
-                R.animator.fade_in,
-                R.animator.fade_out,
-                R.animator.fade_in,
-                R.animator.fade_out);
-        //fragmentTransaction.hide(this);
-        //fragmentTransaction.add(R.id.mainFrag, fragment);
-        fragmentTransaction.replace(R.id.mainFrag, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
+
 
     @Override
     public void onResume() {
 
         // Create coin adapter
-        mCoinAdapter = new CoinAdapter(getActivity(), R.layout.row, machine.getCoins(), machine);
+        ArrayList<Coin> coins = new ArrayList<>( Arrays.asList(machine.getCoins()));
+        mCoinAdapter = new ListAdapter(getActivity(), R.layout.row, coins);
         //Check that listCoins is linked to view
         if (listCoins != null) {
             listCoins.setAdapter(mCoinAdapter);
-            listCoins.setOnItemClickListener(this);
             listCoins.setSelection(selection);
         }
         super.onResume();
@@ -84,8 +64,8 @@ public class CoinsInMachineDetail extends Fragment implements Data, AdapterView.
         mTracker = application.getDefaultTracker();
 
         // Link views to variables
-        listCoins = (ListView) view.findViewById(R.id.listCoinsInMachine);
-        final ImageView coinPreview = (ImageView) view.findViewById(R.id.coinPreview);
+        listCoins = view.findViewById(R.id.listCoinsInMachine);
+        final ImageView coinPreview = view.findViewById(R.id.coinPreview);
         //final ImageView macPreview = (ImageView) view.findViewById(R.id.macPreview);
 
         Bundle extras = getArguments();
@@ -96,8 +76,6 @@ public class CoinsInMachineDetail extends Fragment implements Data, AdapterView.
             machine = gson.fromJson(jsonMachine, Machine.class);
             getActivity().setTitle(machine.getMachineName());
 
-
-
             // Get resId for image from machine
             int resId = getActivity().getResources().getIdentifier(machine.getCoinPreviewImg(), "drawable", getActivity().getPackageName());
             int resId2 = getActivity().getResources().getIdentifier(machine.getMachineImg(), "drawable", getActivity().getPackageName());
@@ -106,19 +84,19 @@ public class CoinsInMachineDetail extends Fragment implements Data, AdapterView.
             //img.loadBitmap(resId2, getResources(), 300, 160, macPreview, 0);
 
             // Create coin adapter
-            mCoinAdapter = new CoinAdapter(getActivity(), R.layout.row, machine.getCoins(), machine);
+            ArrayList<Coin> coins = new ArrayList<>(Arrays.asList(machine.getCoins()));
+            mCoinAdapter = new ListAdapter(getActivity(), R.layout.row, coins);
 
             //Check that listCoins is linked to view
             if (listCoins != null) {
                 listCoins.setAdapter(mCoinAdapter);
-                listCoins.setOnItemClickListener(this);
             }
         }
 
-        LinearLayout btn = (LinearLayout) view.findViewById(R.id.linNav);
+        LinearLayout btn = view.findViewById(R.id.linNav);
         btn.setOnClickListener(this);
         // TODO: 7/27/2016 Report machine missing function
-        LinearLayout showOnMap = (LinearLayout) view.findViewById(R.id.linMap);
+        LinearLayout showOnMap = view.findViewById(R.id.linMap);
         showOnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,7 +123,7 @@ public class CoinsInMachineDetail extends Fragment implements Data, AdapterView.
             }
         });
 
-        TextView txtParkBanner = (TextView) view.findViewById(R.id.parkBanner);
+        TextView txtParkBanner = view.findViewById(R.id.parkBanner);
         txtParkBanner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

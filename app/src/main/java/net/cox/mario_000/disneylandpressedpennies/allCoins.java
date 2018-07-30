@@ -22,13 +22,15 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Vector;
 
+import static net.cox.mario_000.disneylandpressedpennies.MainActivity.CALIFORNIA_ADVENTURE;
+import static net.cox.mario_000.disneylandpressedpennies.MainActivity.DISNEYLAND;
+import static net.cox.mario_000.disneylandpressedpennies.MainActivity.DOWNTOWN_DISNEY;
+import static net.cox.mario_000.disneylandpressedpennies.MainActivity.RETIRED;
 import static net.cox.mario_000.disneylandpressedpennies.R.id.view_pager;
 
 
@@ -37,145 +39,169 @@ import static net.cox.mario_000.disneylandpressedpennies.R.id.view_pager;
  * Description: Fragment for displaying all coins from all machines for each park.
  */
 
-public class allCoins extends Fragment implements Data, View.OnClickListener {
-
+public class allCoins extends Fragment implements Data, View.OnClickListener
+{
     FloatingActionMenu materialDesignFAM;
     FloatingActionButton disneylandFAB, californiaFAB, downtownFAB, retiredFAB;
     ViewPager viewPager;
     TabLayout tabLayout;
-    Vector<View> pages;
-    List<ListView> lists;
+    Vector< View > pages;
+    List< ListView > lists;
     Parcelable state;
     Machine[][] mach;
     int pos;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
     private Tracker mTracker;
+    private final SharedPreference sharedPreference = new SharedPreference();
+    private String selectedLand;
+
 
 
     @Override
-    public void onStop() {
+    public void onStop()
+    {
         pos = tabLayout.getSelectedTabPosition();
-        ListView l = (ListView) pages.get(pos);
+        ListView l = ( ListView ) pages.get( pos );
         state = l.onSaveInstanceState();
         super.onStop();
     }
 
 
     @Override
-    public void onResume() {
-        if(mach != null){
-            setLand(mach);
+    public void onResume()
+    {
+        if ( mach != null )
+        {
+            setLand( mach );
         }
-        if(state != null) {
-            TabLayout.Tab tab = tabLayout.getTabAt(pos);
+        if ( state != null )
+        {
+            TabLayout.Tab tab = tabLayout.getTabAt( pos );
             tab.select();
-            ListView l = (ListView) pages.get(pos);
-            l.onRestoreInstanceState(state);
+            ListView l = ( ListView ) pages.get( pos );
+            l.onRestoreInstanceState( state );
         }
-        mTracker.setScreenName("Page - Coin List");
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        mTracker.setScreenName( "Page - Coin List" );
+        mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
         super.onResume();
     }
 
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.all_coins, container, false);
+    public View onCreateView( LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState )
+    {
+        super.onCreate( savedInstanceState );
+        View view = inflater.inflate( R.layout.all_coins, container, false );
 
-        MainActivity application = (MainActivity) getActivity();
+        MainActivity application = ( MainActivity ) getActivity();
         mTracker = application.getDefaultTracker();
 
 
-        viewPager = (ViewPager) view.findViewById(view_pager);
-        tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
-        materialDesignFAM = (FloatingActionMenu) view.findViewById(R.id.fab_menu);
-        disneylandFAB = (FloatingActionButton) view.findViewById(R.id.californiaFAB);
-        californiaFAB = (FloatingActionButton) view.findViewById(R.id.disneylandFAB);
-        downtownFAB = (FloatingActionButton) view.findViewById(R.id.downtownFAB);
-        retiredFAB = (FloatingActionButton) view.findViewById(R.id.retiredFAB);
+        viewPager = view.findViewById( view_pager );
+        tabLayout = view.findViewById( R.id.tab_layout );
+        materialDesignFAM = view.findViewById( R.id.fab_menu );
+        disneylandFAB = view.findViewById( R.id.californiaFAB );
+        californiaFAB = view.findViewById( R.id.disneylandFAB );
+        downtownFAB = view.findViewById( R.id.downtownFAB );
+        retiredFAB = view.findViewById( R.id.retiredFAB );
 
         pages = new Vector<>();
         lists = new ArrayList<>();
 
-        materialDesignFAM.setClosedOnTouchOutside(true);
+        materialDesignFAM.setClosedOnTouchOutside( true );
 
-        disneylandFAB.setOnClickListener(this);
-        californiaFAB.setOnClickListener(this);
-        downtownFAB.setOnClickListener(this);
-        retiredFAB.setOnClickListener(this);
+        disneylandFAB.setOnClickListener( this );
+        californiaFAB.setOnClickListener( this );
+        downtownFAB.setOnClickListener( this );
+        retiredFAB.setOnClickListener( this );
 
-        disneylandFAB.setShowShadow(false);
-        californiaFAB.setShowShadow(false);
-        downtownFAB.setShowShadow(false);
-        retiredFAB.setShowShadow(false);
+        disneylandFAB.setShowShadow( false );
+        californiaFAB.setShowShadow( false );
+        downtownFAB.setShowShadow( false );
+        retiredFAB.setShowShadow( false );
 
         //Default land
-
-        //setLand(disneyMachines);
         Bundle args = getArguments();
-        String land = args.getString("land");
-        switch (land){
-            case "Disneyland":
-                setLand(disneyMachines);
+        String land = args.getString( "land" );
+        switch ( land )
+        {
+            case DISNEYLAND:
+                setLand( disneyMachines );
                 break;
-            case "California Adventure":
-                setLand(calMachines);
+            case CALIFORNIA_ADVENTURE:
+                setLand( calMachines );
                 break;
-            case "Downtown Disney":
-                setLand(downtownMachines);
+            case DOWNTOWN_DISNEY:
+                setLand( downtownMachines );
                 break;
-            case "Retired":
-                setLand(retiredMachines);
+            case RETIRED:
+                setLand( retiredMachines );
             default:
-                setLand(disneyMachines);
+                setLand( disneyMachines );
         }
 
+        tabLayout.setTabGravity( TabLayout.MODE_SCROLLABLE );
+        viewPager.addOnPageChangeListener( new TabLayout.TabLayoutOnPageChangeListener( tabLayout ) );
+        viewPager.setOffscreenPageLimit( 10 );
 
-        tabLayout.setTabGravity(TabLayout.MODE_SCROLLABLE);
-
-        // adding functionality to tab and viewpager to manage each other when a page is changed or when a tab is selected
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        viewPager.setOffscreenPageLimit(10);
-
-
-        TextView txtParkBanner = (TextView) view.findViewById(R.id.parkBanner);
-        txtParkBanner.setOnClickListener(new View.OnClickListener() {
+        TextView txtParkBanner = view.findViewById( R.id.parkBanner );
+        txtParkBanner.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick( View view )
+            {
                 String url = "http://www.parkpennies.com";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-
+                Intent i = new Intent( Intent.ACTION_VIEW );
+                i.setData( Uri.parse( url ) );
+                startActivity( i );
             }
-        });
+        } );
 
         return view;
     }
 
-    public void setLand(Machine[][] machines){
-        final ArrayList<ArrayList> coinList = new ArrayList<>();
+    public void setLand( Machine[][] machines )
+    {
+        int addCustomPage = 1;
+        // Select land
+        if(machines == disneyMachines){
+            selectedLand = DISNEYLAND;
+        }
+        else if(machines == calMachines){
+            selectedLand = CALIFORNIA_ADVENTURE;
+        }
+        else if(machines == downtownMachines){
+            selectedLand = DOWNTOWN_DISNEY;
+        }
+        else if( machines == retiredMachines )
+        {
+            selectedLand = RETIRED;
+            addCustomPage = 0;
+        }
+
+        final ArrayList< ArrayList > coinList = new ArrayList<>();
+        getActivity().setTitle(selectedLand);
 
         // Clear previous list
-        if(pages != null && lists != null) {
+        if ( pages != null && lists != null )
+        {
             pages.clear();
             lists.clear();
         }
 
         // Setup pages with lists of lands
-        for (int i = 0; i < machines.length; i++) {
-            coinList.add(new ArrayList<>());
-            lists.add(new ListView(getActivity()));
-            lists.get(i).setDivider(ContextCompat.getDrawable(getActivity(), R.drawable.gradient));
-            lists.get(i).setDividerHeight(4);
-            pages.add(lists.get(i));
+        for ( int i = 0; i < machines.length + addCustomPage; i++ )
+        {
+            coinList.add( new ArrayList<>() );
+            lists.add( new ListView( getActivity() ) );
+            lists.get( i ).setDivider( ContextCompat.getDrawable( getActivity(), R.drawable.gradient ) );
+            lists.get( i ).setDividerHeight( 4 );
+            pages.add( lists.get( i ) );
         }
 
         // Create viewpager with pages
-        CustomPagerAdapter adapter = new CustomPagerAdapter(getActivity(), pages);
-        viewPager.setAdapter(adapter);
+        CustomPagerAdapter adapter = new CustomPagerAdapter( getActivity(), pages );
+        viewPager.setAdapter( adapter );
 
         int j = 0;
         tabLayout.setupWithViewPager(viewPager);
@@ -183,9 +209,30 @@ public class allCoins extends Fragment implements Data, View.OnClickListener {
         tabLayout.getTabAt(1).setText("California Adventure");
         tabLayout.getTabAt(2).setText("Downtown Disney");
         // Add coins with separators
-        for (Machine[] machine : machines) {
-            allCoinsAdapter coinAdapter = new allCoinsAdapter(getActivity(), R.layout.row, coinList.get(j));
 
+        if( !selectedLand.equals( RETIRED ) )
+        {
+            // Add custom coins
+            tabLayout.getTabAt( j ).setText( "Custom" );
+            List< Coin > coins = sharedPreference.getCustomCoins( getActivity().getApplicationContext() );
+            ArrayList customCoinsList = new ArrayList();
+            for ( Coin coin : coins )
+            {
+                if ( coin.getCoinPark().equals( selectedLand ) )
+                {
+                    customCoinsList.add( coin );
+                }
+            }
+
+            ListAdapter customCoinAdapter = new ListAdapter( getActivity(), R.layout.row, customCoinsList );
+            lists.get( j ).setAdapter( customCoinAdapter );
+            j++;
+        }
+
+        // Add normal coins
+        for ( Machine[] machine : machines )
+        {
+            allCoinsAdapter coinAdapter = new allCoinsAdapter( getActivity(), R.layout.row, coinList.get( j ) );
             if(mach == retiredMachines){
                 //coinAdapter.addSeparatorItem("LAND");
                 for (Machine mac : machine) {
@@ -193,91 +240,86 @@ public class allCoins extends Fragment implements Data, View.OnClickListener {
                     coinList.get(j).addAll(Arrays.asList(mac.getCoins()));
                 }
             }
-            else {
-                for (Machine mac : machine) {
-                    coinAdapter.addSeparatorItem(mac.getMachineName());
-                    coinList.get(j).addAll(Arrays.asList(mac.getCoins()));
-                    tabLayout.getTabAt(j).setText(mac.getLand());
+            else
+            {
+                for ( Machine mac : machine )
+                {
+                    coinAdapter.addSeparatorItem( mac.getMachineName() );
+                    coinList.get( j ).addAll( Arrays.asList( mac.getCoins() ) );
+                    tabLayout.getTabAt( j ).setText( mac.getLand() );
                 }
             }
-            lists.get(j).setAdapter(coinAdapter);
+            lists.get( j ).setAdapter( coinAdapter );
             j++;
         }
-
-        // Change nav bar title
-        if(machines == disneyMachines){
-            getActivity().setTitle("Disneyland");
-        }
-        else if(machines == calMachines){
-            getActivity().setTitle("California Adventure");
-        }
-        else if(machines == retiredMachines){
-            getActivity().setTitle("Retired Machines");
-        }
-        else{
-            getActivity().setTitle("Downtown Disney");
-        }
-
     }
 
     @Override
-    public void onClick(View view) {
-        switch (view.getId()){
+    public void onClick( View view )
+    {
+        switch ( view.getId() )
+        {
             case R.id.disneylandFAB:
-                getActivity().setTitle("Disneyland");
+                selectedLand = DISNEYLAND;
                 mach = disneyMachines;
-                setLand(disneyMachines);
+                setLand( disneyMachines );
                 break;
             case R.id.californiaFAB:
-                getActivity().setTitle("California Adventure");
+                selectedLand = CALIFORNIA_ADVENTURE;
                 mach = calMachines;
-                setLand(calMachines);
+                setLand( calMachines );
                 break;
             case R.id.downtownFAB:
-                getActivity().setTitle("Downtown Disney");
+                selectedLand = DOWNTOWN_DISNEY;
                 mach = downtownMachines;
-                setLand(downtownMachines);
+                setLand( downtownMachines );
                 break;
             case R.id.retiredFAB:
-                getActivity().setTitle("Retired Machines");
+                selectedLand = RETIRED;
                 mach = retiredMachines;
                 setLand(retiredMachines);
                 break;
         }
-        materialDesignFAM.close(true);
+        materialDesignFAM.close( true );
     }
 
-    public class CustomPagerAdapter extends PagerAdapter {
+    public class CustomPagerAdapter extends PagerAdapter
+    {
 
         private Context mContext;
-        private Vector<View> pages;
+        private Vector< View > pages;
 
 
-        public CustomPagerAdapter(Context context, Vector<View> pages) {
+        public CustomPagerAdapter( Context context, Vector< View > pages )
+        {
             this.mContext = context;
             this.pages = pages;
         }
 
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            View page = pages.get(position);
-            container.addView(page);
+        public Object instantiateItem( ViewGroup container, int position )
+        {
+            View page = pages.get( position );
+            container.addView( page );
             return page;
         }
 
         @Override
-        public int getCount() {
+        public int getCount()
+        {
             return pages.size();
         }
 
         @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view.equals(object);
+        public boolean isViewFromObject( View view, Object object )
+        {
+            return view.equals( object );
         }
 
         @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
+        public void destroyItem( ViewGroup container, int position, Object object )
+        {
+            container.removeView( ( View ) object );
         }
 
     }

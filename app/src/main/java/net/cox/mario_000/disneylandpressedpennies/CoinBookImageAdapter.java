@@ -6,11 +6,11 @@ package net.cox.mario_000.disneylandpressedpennies;
 
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
@@ -19,206 +19,185 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 import java.util.List;
 
+import static net.cox.mario_000.disneylandpressedpennies.MainActivity.COIN_PATH;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.find;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.img;
 
-class CoinBookImageAdapter extends PagerAdapter {
+class CoinBookImageAdapter extends PagerAdapter
+{
+    // References
+    private Context context;
+    private LayoutInflater mLayoutInflater;
+    private final SharedPreference sharedPreference = new SharedPreference();
 
-    private static FragmentManager fragmentManager;
+    // Coins
+    private List< Coin > coinList;
+    private List< Coin > customCoins;
 
-
-    Context context;
-    List<Coin> c;
-    LayoutInflater mLayoutInflater;
+    // Animation
     private AnimatorSet mSetRightOut;
     private AnimatorSet mSetLeftIn;
 
 
-    CoinBookImageAdapter(Context context, List<Coin> c) {
+    CoinBookImageAdapter( Context context, List< Coin > coinList )
+    {
         this.context = context;
-        this.c = c;
-        mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.coinList = coinList;
+        mLayoutInflater = ( LayoutInflater ) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+        customCoins = sharedPreference.getCustomCoins( context );
+
         // Set animations
-        mSetRightOut = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.flip1);
-        mSetLeftIn = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.flip2);
+        mSetRightOut = ( AnimatorSet ) AnimatorInflater.loadAnimator( context, R.animator.flip1 );
+        mSetLeftIn = ( AnimatorSet ) AnimatorInflater.loadAnimator( context, R.animator.flip2 );
     }
 
     @Override
-    public int getCount() {
-        return c.size();
+    public int getCount()
+    {
+        return coinList.size();
     }
 
     @Override
-    public boolean isViewFromObject(View view, Object object) {
-        return view == ((LinearLayout) object);
+    public boolean isViewFromObject( View view, Object object )
+    {
+        return view == object;
     }
 
-
     @Override
-    public Object instantiateItem(ViewGroup container, final int position) {
-        //ImageView imageView = new ImageView(context);
-        //int padding = context.getResources().getDimensionPixelSize(R.dimen.padding_medium);
-        //imageView.setPadding(padding, padding, padding, padding);
-        //imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        final Coin currentCoin = c.get(position);
-        Machine currentMac = find(currentCoin);
-        final int resId3 = context.getResources().getIdentifier(currentCoin.getCoinFrontImg(), "drawable", context.getPackageName());
-        final int resId4;
-        if(currentMac.getBackstampImg() == null){
-            resId4 = context.getResources().getIdentifier(currentCoin.getCoinFrontImg() + "_backstamp", "drawable", context.getPackageName());
-        }else {
-            resId4 = context.getResources().getIdentifier(currentMac.getBackstampImg(), "drawable", context.getPackageName());
+    public Object instantiateItem( ViewGroup container, final int position )
+    {
+        View itemView = mLayoutInflater.inflate( R.layout.big_image, container, false );
+
+        // Link views
+        final ImageView coinFront = itemView.findViewById( R.id.editCoinFront );
+        final ImageView coinBack = itemView.findViewById( R.id.editCoinBack );
+
+        // Get displayed coin
+        final Coin currentCoin = coinList.get( position );
+
+        if( customCoins.contains( currentCoin ) )
+        {
+            // Set image
+            Uri frontImage = Uri.fromFile( new File( COIN_PATH + "/" + currentCoin.getCoinFrontImg() ) );
+            Uri backImage = Uri.fromFile( new File( COIN_PATH + "/" + currentCoin.getCoinBackImg() ) );
+            Picasso.get().load( frontImage ).error( R.drawable.new_penny ).fit().into( coinFront );
+            Picasso.get().load( backImage ).error( R.drawable.new_penny_back ).fit().into( coinBack );
         }
-
-        View itemView = mLayoutInflater.inflate(R.layout.big_image, container, false);
-        final ImageView imageView = (ImageView) itemView.findViewById(R.id.spinningCoinFront);
-        final ImageView imageView2 = (ImageView) itemView.findViewById(R.id.spinningCoinBack);
-
-        // Display image
-        img = new DisplayImage();
-        img.loadBitmap(resId3, context.getResources(), 1200, 1200, imageView, 0);
-        BitmapFactory.Options dimensions = new BitmapFactory.Options();
-        dimensions.inJustDecodeBounds = true;
-        Bitmap mBitmap = BitmapFactory.decodeResource(context.getResources(), resId3, dimensions);
-        int height = dimensions.outHeight;
-        int width = dimensions.outWidth;
-
-        //Set orientation based on coin direction
-        if (width > height) {
-            Bitmap mBitmap2 = BitmapFactory.decodeResource(context.getResources(), resId4);
-            if (mBitmap2.getWidth() < mBitmap2.getHeight()) {
-                Matrix matrix = new Matrix();
-                matrix.postRotate(90);
-                Bitmap bitmap = Bitmap.createBitmap(mBitmap2, 0, 0, mBitmap2.getWidth(), mBitmap2.getHeight(), matrix, true);
-                imageView2.setImageBitmap(bitmap);
-            } else {
-                img.loadBitmap(resId4, context.getResources(), 1200, 1200, imageView2, resId3);
+        else
+        {
+            Machine currentMac = find( currentCoin );
+            final int resId3 = context.getResources().getIdentifier( currentCoin.getCoinFrontImg(), "drawable", context.getPackageName() );
+            final int resId4;
+            if ( currentMac.getBackstampImg() == null )
+            {
+                resId4 = context.getResources().getIdentifier( currentCoin.getCoinFrontImg() + "_backstamp", "drawable", context.getPackageName() );
+            } else
+            {
+                resId4 = context.getResources().getIdentifier( currentMac.getBackstampImg(), "drawable", context.getPackageName() );
             }
 
-        } else {
-            img.loadBitmap(resId4, context.getResources(), 1200, 1200, imageView2, resId3);
+            // Display image
+            img = new DisplayImage();
+            img.loadBitmap( resId3, context.getResources(), 1200, 1200, coinFront, 0 );
+            BitmapFactory.Options dimensions = new BitmapFactory.Options();
+            dimensions.inJustDecodeBounds = true;
+            Bitmap mBitmap = BitmapFactory.decodeResource( context.getResources(), resId3, dimensions );
+            int height = dimensions.outHeight;
+            int width = dimensions.outWidth;
+
+            //Set orientation based on coin direction
+            if ( width > height )
+            {
+                Bitmap mBitmap2 = BitmapFactory.decodeResource( context.getResources(), resId4 );
+                if ( mBitmap2.getWidth() < mBitmap2.getHeight() )
+                {
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate( 90 );
+                    Bitmap bitmap = Bitmap.createBitmap( mBitmap2, 0, 0, mBitmap2.getWidth(), mBitmap2.getHeight(), matrix, true );
+                    coinBack.setImageBitmap( bitmap );
+                } else
+                {
+                    img.loadBitmap( resId4, context.getResources(), 1200, 1200, coinBack, resId3 );
+                }
+
+            } else
+            {
+                img.loadBitmap( resId4, context.getResources(), 1200, 1200, coinBack, resId3 );
+            }
         }
 
         // Set camera distance
-        // TODO: 1/28/2017 Figure out distance
-
         int distance = 4000;
         float scale = context.getResources().getDisplayMetrics().density * distance;
-        imageView.setCameraDistance(scale);
-        imageView2.setCameraDistance(scale);
+        coinFront.setCameraDistance( scale );
+        coinBack.setCameraDistance( scale );
 
-//        imageView.setImageResource(resId3);
-//        imageView2.setImageResource(resId4);
-
-
-
-        imageView.setOnClickListener(new View.OnClickListener() {
+        coinFront.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                if (!(mSetRightOut.isRunning() || mSetLeftIn.isRunning()) && resId3 != resId4) {
-                    mSetRightOut.setTarget(imageView);
-                    mSetLeftIn.setTarget(imageView2);
+            public void onClick( View view )
+            {
+                if ( !( mSetRightOut.isRunning() || mSetLeftIn.isRunning() ) )
+                {
+                    mSetRightOut.setTarget( coinFront );
+                    mSetLeftIn.setTarget( coinBack );
                     mSetRightOut.start();
                     mSetLeftIn.start();
 
-                    imageView2.setVisibility(View.VISIBLE);
+                    coinBack.setVisibility( View.VISIBLE );
                     final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
+                    handler.postDelayed( new Runnable()
+                    {
                         @Override
-                        public void run() {
-                            imageView.setVisibility(View.INVISIBLE);///////
+                        public void run()
+                        {
+                            coinFront.setVisibility( View.INVISIBLE );
                         }
-                    }, 1000);
+                    }, 1000 );
                 }
-
             }
-        });
-        imageView2.setOnClickListener(new View.OnClickListener() {
+        } );
+        coinBack.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                if (!(mSetRightOut.isRunning() || mSetLeftIn.isRunning()) && resId3 != resId4) {
-                    mSetRightOut.setTarget(imageView2);
-                    mSetLeftIn.setTarget(imageView);
+            public void onClick( View view )
+            {
+                if ( !( mSetRightOut.isRunning() || mSetLeftIn.isRunning() ) )
+                {
+                    mSetRightOut.setTarget( coinBack );
+                    mSetLeftIn.setTarget( coinFront );
                     mSetRightOut.start();
                     mSetLeftIn.start();
 
-                    imageView.setVisibility(View.VISIBLE);
+                    coinFront.setVisibility( View.VISIBLE );
                     final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
+                    handler.postDelayed( new Runnable()
+                    {
                         @Override
-                        public void run() {
-                            imageView2.setVisibility(View.INVISIBLE);/////////
+                        public void run()
+                        {
+                            coinBack.setVisibility( View.INVISIBLE );
 
                         }
-                    }, 1000);
+                    }, 1000 );
                 }
             }
-        });
+        } );
 
-//        imageView.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View view) {
-//                fragmentManager = MainActivity.fragmentManager;
-//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                CoinBookImageOverlay fragment = new CoinBookImageOverlay();
-//
-//                Bundle args = new Bundle();
-//
-//                Gson gson = new Gson();
-//                String jsonCoin = gson.toJson(currentCoin);
-//                args.putString("pos", jsonCoin);
-//                fragment.setArguments(args);
-//                fragmentTransaction.setCustomAnimations(
-//                        R.animator.fade_in,
-//                        R.animator.fade_out,
-//                        R.animator.fade_in,
-//                        R.animator.fade_out);
-//
-//                fragmentTransaction.replace(R.id.mainFrag, fragment);
-//                fragmentTransaction.addToBackStack(null);
-//                fragmentTransaction.commit();
-//                return false;
-//            }
-//        });
-//
-//        imageView2.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View view) {
-//                fragmentManager = MainActivity.fragmentManager;
-//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                CoinBookImageOverlay fragment = new CoinBookImageOverlay();
-//
-//                Bundle args = new Bundle();
-//
-//                Gson gson = new Gson();
-//                String jsonCoin = gson.toJson(currentCoin);
-//                args.putString("pos", jsonCoin);
-//                fragment.setArguments(args);
-//                fragmentTransaction.setCustomAnimations(
-//                        R.animator.fade_in,
-//                        R.animator.fade_out,
-//                        R.animator.fade_in,
-//                        R.animator.fade_out);
-//
-//                fragmentTransaction.replace(R.id.mainFrag, fragment);
-//                fragmentTransaction.addToBackStack(null);
-//                fragmentTransaction.commit();
-//                return false;
-//            }
-//        });
-
-
-        container.addView(itemView);
+        container.addView( itemView );
 
         return itemView;
     }
 
-
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView((LinearLayout) object);
+    public void destroyItem( ViewGroup container, int position, Object object )
+    {
+        container.removeView( ( LinearLayout ) object );
     }
 
 }

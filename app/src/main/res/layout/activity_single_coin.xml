@@ -13,13 +13,13 @@
         android:layout_weight="1">
 
         <ImageView
-            android:id="@+id/spinningCoinFront"
+            android:id="@+id/editCoinFront"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
 
         <ImageView
-            android:id="@+id/spinningCoinBack"
+            android:id="@+id/editCoinBack"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
@@ -37,6 +37,7 @@
 
 
     <ScrollView
+        android:id="@+id/normal_coin"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2">

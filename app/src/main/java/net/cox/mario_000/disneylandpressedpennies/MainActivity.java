@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -31,6 +32,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.kobakei.ratethisapp.RateThisApp;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -70,6 +72,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static Context appContext;
     private static List<Coin> savedCoins;
     private static final String LAST_VERSION_CODE_KEY = "last_version_code";
+    public static final String DISNEYLAND = "Disneyland";
+    public static final String CALIFORNIA_ADVENTURE = "California Adventure";
+    public static final String DOWNTOWN_DISNEY = "Downtown Disney";
+    public static final String RETIRED = "Retired";
+
+    public static File COIN_PATH;
 
 
     @Override
@@ -82,6 +90,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         img = new DisplayImage();
         PACKAGE_NAME = getApplicationContext().getPackageName();
+
+        // Set filepath
+        String root = Environment.getExternalStorageDirectory().toString();
+        COIN_PATH = new File( root + "/Pressed Coins at Disneyland/Coins" );
+
 
         sharedPreference = new SharedPreference();
         appContext = getApplication().getApplicationContext();
@@ -191,6 +204,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 else if(f instanceof Backup){
                     navigationView.setCheckedItem(R.id.nav_backup);
                     menuItemId = R.id.nav_backup;
+                }
+                else if(f instanceof CustomCoinList){
+                    navigationView.setCheckedItem(R.id.nav_custom_coin);
+                    menuItemId = R.id.nav_custom_coin;
                 }
                 else {
                     navigationView.setCheckedItem(menuItemId);
@@ -521,12 +538,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.setCheckedItem(menuItemId);
             alert("Exit?");
         } else if (id == R.id.nav_maps) {
-//            if (inv.hasPurchase("premium")) {
             menuItemId = R.id.nav_maps;
             fragment = new MapsActivity();
-//            } else {
-//                buy();
-//            }
         } else if (id == R.id.nav_coin_book) {
             menuItemId = R.id.nav_coin_book;
             fragment = new CoinBookDetail();
@@ -565,11 +578,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fragment = new MainPage();
         } else if (id == R.id.nav_want_list) {
             fragment = new wantList();
+            menuItemId = R.id.nav_want_list;
         }
         else if (id == R.id.nav_backup){
             fragment = new Backup();
+            menuItemId = R.id.nav_backup;
         }
-
+        else if (id == R.id.nav_custom_coin) {
+            fragment = new CustomCoinList();
+            menuItemId = R.id.nav_custom_coin;
+        }
 
         if (fragment != null) {
             fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
@@ -581,58 +599,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-//    public void buy() {
-//
-//        try {
-//            Toast.makeText(this, "Upgrade to premium to unlock feature.", Toast.LENGTH_LONG).show();
-//            mHelper.launchPurchaseFlow(this, "premium", 10001, mPurchaseFinishedListener, "");
-//        } catch (IabHelper.IabAsyncInProgressException e) {
-//        }
-//    }
-
-//    // Called when consumption is complete
-//    IabHelper.OnConsumeFinishedListener mConsumeFinishedListener = new IabHelper.OnConsumeFinishedListener() {
-//        public void onConsumeFinished(Purchase purchase, IabResult result) {
-//            // if we were disposed of in the meantime, quit.
-//            if (mHelper == null) return;
-//
-//            if (result.isSuccess()) {
-//                try {
-//                    mHelper.queryInventoryAsync(mGotInventoryListener);
-//                } catch (IabHelper.IabAsyncInProgressException e) {
-//                    //complain("Error querying inventory. Another async operation in progress.");
-//                }
-//            }
-//
-//        }
-//    };
-//
-//
-//    public void consume() {
-//        try {
-//            if(inv.hasPurchase("premium")){
-//                mHelper.consumeAsync(inv.getPurchase("premium"), mConsumeFinishedListener);
-//            }
-//            else{
-//                //alert("Not purchased yet");
-////                dialog cdd=new dialog(this);
-////                cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-////                cdd.show();
-//
-//                //Toast.makeText(getApplicationContext(), "Not purchased yet", Toast.LENGTH_SHORT).show();
-//            }
-//        } catch (IabHelper.IabAsyncInProgressException a) {
-//
-//        }
-//    }
-
     @Nullable
 // Find machine that coin belongs to
     public static Machine find(Coin o1) {
-// start tracing to "/sdcard/calc.trace"
-        // ...
-        // stop tracing
-
         for (Machine[] macs : disneyMachines) {
             for (Machine mac : macs) {
                 List a = Arrays.asList(mac.getCoins());
@@ -671,11 +640,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onDestroy() {
-
-//        if(autoEnabled){
-//            Backup.backupApp();
-//        }
-
         super.onDestroy();
         // very important:
 //        if (mBroadcastReceiver != null) {
@@ -687,7 +651,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            mHelper.disposeWhenFinished();
 //            mHelper = null;
 //        }
-
     }
 
     @Override
@@ -719,4 +682,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //  }
 
     }
+
+
 }
