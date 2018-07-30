@@ -86,7 +86,7 @@ class CoinBookImageAdapter extends PagerAdapter
             Uri frontImage = Uri.fromFile( new File( COIN_PATH + "/" + currentCoin.getCoinFrontImg() ) );
             Uri backImage = Uri.fromFile( new File( COIN_PATH + "/" + currentCoin.getCoinBackImg() ) );
             Picasso.get().load( frontImage ).error( R.drawable.new_penny ).fit().into( coinFront );
-            Picasso.get().load( backImage ).error( R.drawable.new_penny ).fit().into( coinBack );
+            Picasso.get().load( backImage ).error( R.drawable.new_penny_back ).fit().into( coinBack );
         }
         else
         {

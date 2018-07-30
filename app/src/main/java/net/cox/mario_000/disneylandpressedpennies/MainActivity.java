@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final String DISNEYLAND = "Disneyland";
     public static final String CALIFORNIA_ADVENTURE = "California Adventure";
     public static final String DOWNTOWN_DISNEY = "Downtown Disney";
+    public static final String RETIRED = "Retired";
 
     public static File COIN_PATH;
 

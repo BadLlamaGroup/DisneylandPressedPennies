@@ -36,6 +36,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -74,6 +75,8 @@ public class singleCoin extends Fragment implements Data, View.OnClickListener {
     private Tracker mTracker;
     DatePickerDialog.OnDateSetListener onDateSetListener;
     Calendar myCalendar;
+    TextView titleCoin;
+    TextView machineName;
 
 
     private static final int SWIPE_MIN_DISTANCE = 100;
@@ -141,8 +144,8 @@ public class singleCoin extends Fragment implements Data, View.OnClickListener {
         mTracker = application.getDefaultTracker();
 
         //Link views
-        TextView titleCoin = view.findViewById(R.id.txt_title);
-        TextView machineName = view.findViewById(R.id.txt_land);
+        titleCoin = view.findViewById(R.id.txt_title);
+        machineName = view.findViewById(R.id.txt_land);
         txtDate = view.findViewById(R.id.txtDateCollected);
         coinFront = view.findViewById(R.id.editCoinFront);
         coinBack = view.findViewById(R.id.editCoinBack);
@@ -349,7 +352,7 @@ public class singleCoin extends Fragment implements Data, View.OnClickListener {
 
         }
 
-        // Gesture detection
+        /*// Gesture detection
         gestureDetector = new GestureDetector(getActivity(), new MyGestureDetector());
         swipeListener = new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -358,7 +361,7 @@ public class singleCoin extends Fragment implements Data, View.OnClickListener {
         };
         scrollView = view.findViewById(R.id.normal_coin);
 
-        scrollView.setOnTouchListener(swipeListener);
+        scrollView.setOnTouchListener(swipeListener);*/
 
 
         return view;
@@ -520,29 +523,10 @@ public class singleCoin extends Fragment implements Data, View.OnClickListener {
 
                 // right to left swipe
                 if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    Toast.makeText(getActivity(), "Left Swipe", Toast.LENGTH_SHORT).show();
-                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                    singleCoin fragment = new singleCoin();
-                    Bundle bundle = new Bundle();
-                    Gson gson = new Gson();
-                    String jsonCoin = gson.toJson(machine.getCoins()[1]);
-                    String jsonMachine = gson.toJson(machine);
-                    bundle.putString("selectedCoin", jsonCoin);
-                    bundle.putString("selectedMachine", jsonMachine);
-                    fragment.setArguments(bundle);
-                    fragmentTransaction.setCustomAnimations(
-                            R.animator.fade_in,
-                            R.animator.fade_out,
-                            R.animator.fade_in,
-                            R.animator.fade_out);
-                    fragmentTransaction.replace(R.id.mainFrag, fragment);
-                    //fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
-                    //swipeLeft();
+                    swipeLeft();
                     return true;
                 } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    Toast.makeText(getActivity(), "Right Swipe", Toast.LENGTH_SHORT).show();
-                    //swipeRight();
+                    swipeRight();
                     return true;
                 }
             } catch (Exception e) {
@@ -561,30 +545,115 @@ public class singleCoin extends Fragment implements Data, View.OnClickListener {
             return true;
         }
 
-//        private void swipeRight() {
-//            if (spinningCoinDisplay.getVisibility() == View.VISIBLE) {
-//                slideToRight(spinningCoinDisplay);
-//                slideToRightFromEdge(editCoinDisplay);
-//                mHandler.removeCallbacks(mStatusChecker);
-//            } else {
-//                slideToRight(editCoinDisplay);
-//                slideToRightFromEdge(spinningCoinDisplay);
-//                rotate();
-//            }
-//        }
-//        private void swipeLeft(){
-//            if(spinningCoinDisplay.getVisibility() == View.VISIBLE){
-//                slideToLeft(spinningCoinDisplay);
-//                slideToLeftFromEdge(editCoinDisplay);
-//                mHandler.removeCallbacks(mStatusChecker);
-//            }
-//            else
-//            {
-//                slideToLeft(editCoinDisplay);
-//                slideToLeftFromEdge(spinningCoinDisplay);
-//                rotate();
-//            }
-//        }
+        private void swipeRight() {
+            Toast.makeText(getActivity(), "Right Swipe", Toast.LENGTH_SHORT).show();
+            Coin[] a = machine.getCoins();
+
+            List<Coin> b = Arrays.asList(a);
+            int pos = b.indexOf( coin );
+            if( pos > 0 )
+            {
+                pos -= 1;
+            }
+            else
+            {
+                pos = b.size() - 1;
+            }
+            coin = machine.getCoins()[pos];
+
+
+            // Display machine name in nav bar
+            getActivity().setTitle(machine.getMachineName());
+            // Display images
+            int resId = context.getResources().getIdentifier(coin.getCoinFrontImg(), "drawable", context.getPackageName());
+            int resId2;
+            if(machine.getBackstampImg() == null){
+                resId2 = context.getResources().getIdentifier(coin.getCoinFrontImg() + "_backstamp", "drawable", context.getPackageName());
+            }else {
+                resId2 = context.getResources().getIdentifier(machine.getBackstampImg(), "drawable", context.getPackageName());
+            }
+            img.loadBitmap(resId, getResources(), 800, 800, coinFront, 0);
+            BitmapFactory.Options dimensions = new BitmapFactory.Options();
+            dimensions.inJustDecodeBounds = true;
+            Bitmap mBitmap = BitmapFactory.decodeResource(getActivity().getResources(), resId, dimensions);
+            int height = dimensions.outHeight;
+            int width = dimensions.outWidth;
+
+            //Set orientation based on coin direction
+            if (width > height) {
+                Bitmap mBitmap2 = BitmapFactory.decodeResource(getActivity().getResources(), resId2);
+                if(mBitmap2 == null){
+                    int resId3 = context.getResources().getIdentifier("new_searching", "drawable", context.getPackageName());
+                    mBitmap2 = BitmapFactory.decodeResource(getActivity().getResources(), resId3);
+                }
+                if (mBitmap2.getWidth() < mBitmap2.getHeight()) {
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(90);
+                    Bitmap bitmap = Bitmap.createBitmap(mBitmap2, 0, 0, mBitmap2.getWidth(), mBitmap2.getHeight(), matrix, true);
+                    coinBack.setImageBitmap(bitmap);
+                } else {
+                    img.loadBitmap(resId2, getResources(), 800, 800, coinBack, resId);
+                }
+
+            } else {
+                img.loadBitmap(resId2, getResources(), 800, 800, coinBack, resId);
+            }
+
+
+            // Set data
+            titleCoin.setText(coin.getTitleCoin());
+            machineName.setText(machine.getLand());
+            txtMac.setText(machine.getMachineName());
+
+            // Set state of checkbox based on if coin is in collected
+            if (checkCoin(coin)) {
+                haveCoinBox.setChecked(true);
+                wantItBox.setEnabled(false);
+                txtDate.setText(dateFormat.format(collectedDate));
+            } else {
+                wantItBox.setEnabled(true);
+                haveCoinBox.setChecked(false);
+            }
+            if (checkWant(coin)) {
+                wantItBox.setChecked(true);
+                txtDate.setText("Want It");
+            } else {
+                wantItBox.setChecked(false);
+            }
+        }
+        private void swipeLeft(){
+            Toast.makeText(getActivity(), "Left Swipe", Toast.LENGTH_SHORT).show();
+            slideToLeft( scrollView );
+            slideToLeftFromEdge( scrollView );
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            singleCoin fragment = new singleCoin();
+            Bundle bundle = new Bundle();
+            Gson gson = new Gson();
+            Coin[] a = machine.getCoins();
+            List<Coin> b = Arrays.asList(a);
+            int pos = b.indexOf( coin );
+            if( pos < b.size() - 1 )
+            {
+                pos += 1;
+            }
+            else
+            {
+                pos = 0;
+            }
+            coin = machine.getCoins()[pos];
+            String jsonCoin = gson.toJson(machine.getCoins()[pos]);
+            String jsonMachine = gson.toJson(machine);
+            bundle.putString("selectedCoin", jsonCoin);
+            bundle.putString("selectedMachine", jsonMachine);
+            fragment.setArguments(bundle);
+            fragmentTransaction.setCustomAnimations(
+                    R.animator.fade_in,
+                    R.animator.fade_out,
+                    R.animator.fade_in,
+                    R.animator.fade_out);
+            fragmentTransaction.replace(R.id.mainFrag, fragment);
+            fragmentTransaction.commit();
+        }
     }
 
     public void slideToRight(View view) {

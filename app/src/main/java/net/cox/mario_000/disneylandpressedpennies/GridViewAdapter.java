@@ -8,17 +8,13 @@ package net.cox.mario_000.disneylandpressedpennies;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import com.squareup.picasso.Picasso;
-
 import org.askerov.dynamicgrid.BaseDynamicGridAdapter;
-
 import java.io.File;
 import java.util.List;
 
@@ -40,16 +36,15 @@ public class GridViewAdapter extends BaseDynamicGridAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-
         holder.build((Coin) getItem(position));
         return convertView;
     }
 
     private class ViewHolder {
-        private ImageView letterText;
+        private ImageView gridImageView;
 
         private ViewHolder(View view) {
-            letterText = (ImageView) view.findViewById(R.id.image_grid);
+            gridImageView = view.findViewById(R.id.image_grid);
         }
 
         void build(Coin gridViewCoin) {
@@ -58,25 +53,18 @@ public class GridViewAdapter extends BaseDynamicGridAdapter {
 
             if(resId == 0){
                 Uri frontImage = Uri.fromFile( new File( COIN_PATH + "/" + gridViewCoin.getCoinFrontImg() ) );
-                Picasso.get().load( frontImage ).error( R.drawable.new_penny ).fit().into( letterText );
-                //resId = getContext().getResources().getIdentifier("new_searching", "drawable", getContext().getPackageName());
+                Picasso.get().load( frontImage ).error( R.drawable.new_penny ).fit().into( gridImageView );
             }
             else
             {
                 BitmapFactory.Options dimensions = new BitmapFactory.Options();
                 Bitmap mBitmap = BitmapFactory.decodeResource( getContext().getResources(), resId, dimensions );
-
                 if ( mBitmap.getWidth() > mBitmap.getHeight() )
                 {
-                    Matrix matrix = new Matrix();
-                    matrix.postRotate( 90 );
-                    Bitmap bitmap2 = Bitmap.createBitmap( mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true );
-                    letterText.setImageBitmap( bitmap2 );
-                    //Picasso.get().load(resId).rotate(90).into(letterText);
+                    Picasso.get().load( resId ).rotate( 90 ).error( R.drawable.new_penny ).fit().into( gridImageView );
                 } else
                 {
-                    letterText.setImageBitmap( mBitmap );
-                    //Picasso.get().load(resId).into(letterText);
+                    Picasso.get().load( resId ).error( R.drawable.new_penny ).fit().into( gridImageView );
                 }
             }
         }

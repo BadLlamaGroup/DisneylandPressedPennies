@@ -54,9 +54,9 @@
 
                     android:id="@+id/nav_custom_coin"
 
-                    android:icon="@drawable/list"
+                    android:icon="@drawable/custom_coin"
 
-                    android:title="Custom Coins" />
+                    android:title="Custom Coin List" />
 
                 <item
 
@@ -68,17 +68,17 @@
 
                 <item
 
-                    android:id="@+id/nav_coin_book"
-                    android:icon="@drawable/book"
-                    android:title="Coin Book" />
-
-                <item
-
                     android:id="@+id/nav_want_list"
 
                     android:icon="@drawable/want"
 
                     android:title="Want It List" />
+
+                <item
+
+                    android:id="@+id/nav_coin_book"
+                    android:icon="@drawable/book"
+                    android:title="Coin Book" />
 
                 <item
 

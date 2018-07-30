@@ -46,14 +46,10 @@ import static net.cox.mario_000.disneylandpressedpennies.MainActivity.find;
  */
 public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener
 {
-    private final int SPINNER_A_Z = 0;
-    private final int SPINNER_Z_A = 1;
-    private final int SPINNER_OLD_NEW = 2;
-    private final int SPINNER_NEW_OLD = 3;
-    private final int SPINNER_CUSTOM = 4;
-    private final int SPINNER_LAND = 5;
     // References
     private final SharedPreference sharedPreference = new SharedPreference();
+    private Tracker mTracker;
+
     // Views
     private Button displayBtn;
     private TextView coinBookDetailsHeader;
@@ -62,9 +58,15 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
     private GridViewAdapter gridViewAdapter;
     private ListAdapter listAdapter;
     private TextView totalCoins;
+
     // Spinner
     private Spinner sortType = null;
-    private Tracker mTracker;
+    private final int SPINNER_A_Z = 0;
+    private final int SPINNER_Z_A = 1;
+    private final int SPINNER_OLD_NEW = 2;
+    private final int SPINNER_NEW_OLD = 3;
+    private final int SPINNER_CUSTOM = 4;
+    private final int SPINNER_LAND = 5;
 
     // Lists
     private List< Coin > customOrderCoins;
@@ -118,7 +120,7 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
         if ( spinnerValue != -1 )
         {
             // set the value of the sortType
-            //sortType.setSelection( spinnerValue );
+            sortType.setSelection( spinnerValue );
         }
 
         // Create list adapter for collected coins list

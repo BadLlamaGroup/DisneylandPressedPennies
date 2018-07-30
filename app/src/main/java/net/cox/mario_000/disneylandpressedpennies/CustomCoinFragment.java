@@ -110,6 +110,7 @@ public class CustomCoinFragment extends Fragment
     private View.OnTouchListener swipeListener;
     private ConstraintLayout editCoinDisplay;
     private ConstraintLayout spinningCoinDisplay;
+    private TextView slideHeader;
 
     // Rotation animation
     private AnimatorSet mSetRightOut;
@@ -154,6 +155,7 @@ public class CustomCoinFragment extends Fragment
         coinTypeSpinner = view.findViewById( R.id.type_picker );
         parkSpinner = view.findViewById( R.id.park_picker );
         customCoinScrollview = view.findViewById( R.id.custom_coin_fields );
+        slideHeader = view.findViewById( R.id.slideHeader );
 
         InputFilter filter = new InputFilter()
         {
@@ -272,7 +274,11 @@ public class CustomCoinFragment extends Fragment
                             takePicture();
                             break;
                         case R.id.spinningCoinBack:
-                            Toast.makeText( getActivity(), "spinningCoinBack", Toast.LENGTH_SHORT ).show();
+                            Intent bigImageIntent = new Intent( context, BigImage.class );
+                            bigImageIntent.putExtra( "frontImg", frontImageName );
+                            bigImageIntent.putExtra( "backImg", backImageName );
+                            bigImageIntent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+                            context.startActivity( bigImageIntent );
                             break;
                     }
                 }
@@ -347,8 +353,8 @@ public class CustomCoinFragment extends Fragment
             frontImageName = savedCoin.getCoinFrontImg();
 
             Uri backImage = Uri.fromFile( new File( dir + "/" + savedCoin.getCoinBackImg() ) );
-            Picasso.get().load( backImage ).error( R.drawable.new_penny ).fit().into( spinningCoinBack );
-            Picasso.get().load( backImage ).error( R.drawable.new_penny ).fit().into( editCoinBack );
+            Picasso.get().load( backImage ).error( R.drawable.new_penny_back ).fit().into( spinningCoinBack );
+            Picasso.get().load( backImage ).error( R.drawable.new_penny_back ).fit().into( editCoinBack );
             backImageName = savedCoin.getCoinBackImg();
 
             // Set buttons
@@ -365,6 +371,8 @@ public class CustomCoinFragment extends Fragment
                 }
             }, 500 );
 
+            slideHeader.setText( "Swipe to edit..." );
+
         } else
         {
             // Load default images
@@ -376,6 +384,9 @@ public class CustomCoinFragment extends Fragment
             Picasso.get().load( resId2 ).resize( 200, 300 ).into( spinningCoinBack );
             Picasso.get().load( resId2 ).resize( 200, 300 ).into( editCoinBack );
 
+            frontImageName = "new_penny";
+            backImageName = "new_penny_back";
+
             // Set button text
             btnSave.setText( "Save" );
             btnDelete.setText( "Cancel" );
@@ -386,6 +397,7 @@ public class CustomCoinFragment extends Fragment
             // Set view to edit
             spinningCoinDisplay.setVisibility( View.INVISIBLE );
             editCoinDisplay.setVisibility( View.VISIBLE );
+            slideHeader.setText( "Swipe to show animation..." );
         }
 
         return view;
@@ -830,6 +842,7 @@ public class CustomCoinFragment extends Fragment
                 slideToRight( spinningCoinDisplay );
                 slideToRightFromEdge( editCoinDisplay );
                 mHandler.removeCallbacks( mStatusChecker );
+                slideHeader.setText( "Swipe to show animation..." );
             } else
             {
                 slideToRight( editCoinDisplay );
@@ -842,6 +855,7 @@ public class CustomCoinFragment extends Fragment
                         rotate();
                     }
                 }, 500 );
+                slideHeader.setText( "Swipe to edit..." );
             }
         }
 
@@ -852,6 +866,7 @@ public class CustomCoinFragment extends Fragment
                 slideToLeft( spinningCoinDisplay );
                 slideToLeftFromEdge( editCoinDisplay );
                 mHandler.removeCallbacks( mStatusChecker );
+                slideHeader.setText( "Swipe to show animation..." );
             } else
             {
                 slideToLeft( editCoinDisplay );
@@ -864,6 +879,7 @@ public class CustomCoinFragment extends Fragment
                         rotate();
                     }
                 }, 500 );
+                slideHeader.setText( "Swipe to edit..." );
             }
         }
     }

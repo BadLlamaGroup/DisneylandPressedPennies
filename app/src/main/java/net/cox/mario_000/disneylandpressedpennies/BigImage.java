@@ -45,7 +45,6 @@ public class BigImage extends Activity
         Bundle extras = getIntent().getExtras();
         if ( extras != null )
         {
-
             // Names for coin images
             String frontImg = extras.getString( "frontImg" );
             String backImg = extras.getString( "backImg" );
@@ -104,7 +103,7 @@ public class BigImage extends Activity
                 Picasso.get().load( frontImage ).error( R.drawable.new_penny ).fit().into( frontCoin );
 
                 Uri backImage = Uri.fromFile( new File( COIN_PATH + "/" + backImg ) );
-                Picasso.get().load( backImage ).error( R.drawable.new_penny ).fit().into( backCoin );
+                Picasso.get().load( backImage ).error( R.drawable.new_penny_back ).fit().into( backCoin );
             }
 
 

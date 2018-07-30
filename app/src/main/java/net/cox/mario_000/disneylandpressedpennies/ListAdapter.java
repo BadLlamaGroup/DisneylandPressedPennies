@@ -44,6 +44,7 @@ public class ListAdapter extends ArrayAdapter< Coin >
     private final SimpleDateFormat dateFormat = new SimpleDateFormat( "MMMM dd, yyyy", Locale.US );
     private final ArrayList tempCoins;
     private final List< Coin > customCoins;
+    private final List< Coin > savedCoins;
     private LayoutInflater inflater;
     private CoinHolder holder;
     private TreeSet< Integer > mSeparatorsSet = new TreeSet<>();
@@ -84,6 +85,7 @@ public class ListAdapter extends ArrayAdapter< Coin >
         this.mResource = resource;
         this.tempCoins = coins;
         this.customCoins = sharedPreference.getCustomCoins( context );
+        this.savedCoins = sharedPreference.getCoins( context );
         inflater = ( LayoutInflater ) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
     }
 
@@ -126,7 +128,16 @@ public class ListAdapter extends ArrayAdapter< Coin >
                 //Set which row was clicked
                 holder.imageView.setTag( position );
 
-                final Coin coin = ( Coin ) tempCoins.get( position );
+                // Get single coin
+                final Coin coin = (Coin) tempCoins.get( position );
+                Coin savedCoin = coin;
+
+                // Check if coin is collected
+                for (Coin c : savedCoins){
+                    if(c.equals(coin)){
+                        savedCoin = savedCoins.get(savedCoins.indexOf(c));
+                    }
+                }
 
                 if( customCoins.contains( coin ) )
                 {
@@ -147,15 +158,23 @@ public class ListAdapter extends ArrayAdapter< Coin >
                     holder.imageView.setOnClickListener( PopupListener );
 
                     // Find machine that coin belongs to
-                    Machine mac = find( coin );
+                    Machine mac = find( savedCoin );
                     //Set text value for row
-                    holder.name.setText( String.valueOf( coin.getTitleCoin() ) );
+                    holder.name.setText( String.valueOf( savedCoin.getTitleCoin() ) );
                     holder.description.setText( String.valueOf( mac.getMachineName() ) );
                 }
 
-                if ( coin.getDateCollected() != null )
+                if ( savedCoin.getDateCollected() != null )
                 {
-                    holder.collected.setText( String.format( "Collected: %s", dateFormat.format( coin.getDateCollected() ) ) );
+                    holder.collected.setText( String.format( "Collected: %s", dateFormat.format( savedCoin.getDateCollected() ) ) );
+                }
+                else{
+                    if(checkWant(savedCoin)){
+                        holder.collected.setText("Want It");
+                    }else{
+                        holder.collected.setText("Not yet collected");
+                    }
+
                 }
 
                 // Make text scroll
@@ -225,6 +244,24 @@ public class ListAdapter extends ArrayAdapter< Coin >
         }
 
         return row;
+    }
+
+    // Check if coin is in collected coins
+    private boolean checkWant(Coin checkCoin) {
+        boolean check = false;
+        // Get collected coins list
+        List<Coin> wantCoins = sharedPreference.getWantedCoins(getContext());
+
+        if (wantCoins != null) {
+            for (Coin coin : wantCoins) {
+                // Check if coin matches coin already collected
+                if (coin.equals( checkCoin )) {
+                    check = true;
+                    break;
+                }
+            }
+        }
+        return check;
     }
 
     @Override

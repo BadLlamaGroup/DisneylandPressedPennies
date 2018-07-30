@@ -30,6 +30,7 @@ import java.util.Vector;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.CALIFORNIA_ADVENTURE;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.DISNEYLAND;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.DOWNTOWN_DISNEY;
+import static net.cox.mario_000.disneylandpressedpennies.MainActivity.RETIRED;
 import static net.cox.mario_000.disneylandpressedpennies.R.id.view_pager;
 
 
@@ -133,6 +134,10 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
             case DOWNTOWN_DISNEY:
                 setLand( downtownMachines );
                 break;
+            case RETIRED:
+                setLand( retiredMachines );
+            default:
+                setLand( disneyMachines );
         }
 
         tabLayout.setTabGravity( TabLayout.MODE_SCROLLABLE );
@@ -157,6 +162,7 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
 
     public void setLand( Machine[][] machines )
     {
+        int addCustomPage = 1;
         // Select land
         if(machines == disneyMachines){
             selectedLand = DISNEYLAND;
@@ -166,6 +172,11 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
         }
         else if(machines == downtownMachines){
             selectedLand = DOWNTOWN_DISNEY;
+        }
+        else if( machines == retiredMachines )
+        {
+            selectedLand = RETIRED;
+            addCustomPage = 0;
         }
 
         final ArrayList< ArrayList > coinList = new ArrayList<>();
@@ -178,10 +189,8 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
             lists.clear();
         }
 
-
-
         // Setup pages with lists of lands
-        for ( int i = 0; i < machines.length + 1; i++ )
+        for ( int i = 0; i < machines.length + addCustomPage; i++ )
         {
             coinList.add( new ArrayList<>() );
             lists.add( new ListView( getActivity() ) );
@@ -195,38 +204,51 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
         viewPager.setAdapter( adapter );
 
         int j = 0;
-        tabLayout.setupWithViewPager( viewPager );
-
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.getTabAt(0).setText("Disneyland");
+        tabLayout.getTabAt(1).setText("California Adventure");
+        tabLayout.getTabAt(2).setText("Downtown Disney");
         // Add coins with separators
 
-        // Add custom coins
-        tabLayout.getTabAt( j ).setText( "Custom" );
-        List< Coin > coins = sharedPreference.getCustomCoins( getActivity().getApplicationContext() );
-        ArrayList customCoinsList = new ArrayList();
-        for ( Coin coin : coins )
+        if( !selectedLand.equals( RETIRED ) )
         {
-            if ( coin.getCoinPark().equals( selectedLand ) )
+            // Add custom coins
+            tabLayout.getTabAt( j ).setText( "Custom" );
+            List< Coin > coins = sharedPreference.getCustomCoins( getActivity().getApplicationContext() );
+            ArrayList customCoinsList = new ArrayList();
+            for ( Coin coin : coins )
             {
-                customCoinsList.add( coin );
+                if ( coin.getCoinPark().equals( selectedLand ) )
+                {
+                    customCoinsList.add( coin );
+                }
             }
-        }
 
-        ListAdapter customCoinAdapter = new ListAdapter( getActivity(), R.layout.row, customCoinsList );
-        lists.get( j ).setAdapter( customCoinAdapter );
-        j++;
+            ListAdapter customCoinAdapter = new ListAdapter( getActivity(), R.layout.row, customCoinsList );
+            lists.get( j ).setAdapter( customCoinAdapter );
+            j++;
+        }
 
         // Add normal coins
         for ( Machine[] machine : machines )
         {
             allCoinsAdapter coinAdapter = new allCoinsAdapter( getActivity(), R.layout.row, coinList.get( j ) );
-
-            for ( Machine mac : machine )
-            {
-                coinAdapter.addSeparatorItem( mac.getMachineName() );
-                coinList.get( j ).addAll( Arrays.asList( mac.getCoins() ) );
-                tabLayout.getTabAt( j ).setText( mac.getLand() );
+            if(mach == retiredMachines){
+                //coinAdapter.addSeparatorItem("LAND");
+                for (Machine mac : machine) {
+                    coinAdapter.addSeparatorItem(mac.getMachineName());
+                    coinList.get(j).addAll(Arrays.asList(mac.getCoins()));
+                }
             }
-
+            else
+            {
+                for ( Machine mac : machine )
+                {
+                    coinAdapter.addSeparatorItem( mac.getMachineName() );
+                    coinList.get( j ).addAll( Arrays.asList( mac.getCoins() ) );
+                    tabLayout.getTabAt( j ).setText( mac.getLand() );
+                }
+            }
             lists.get( j ).setAdapter( coinAdapter );
             j++;
         }
@@ -251,6 +273,11 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
                 selectedLand = DOWNTOWN_DISNEY;
                 mach = downtownMachines;
                 setLand( downtownMachines );
+                break;
+            case R.id.retiredFAB:
+                selectedLand = RETIRED;
+                mach = retiredMachines;
+                setLand(retiredMachines);
                 break;
         }
         materialDesignFAM.close( true );

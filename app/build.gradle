@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 
-
 android {
     signingConfigs {
         config {
@@ -51,6 +50,5 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation 'com.squareup.picasso:picasso:2.71828'
 }
-
 
 //apply plugin: 'com.google.gms.google-services'
