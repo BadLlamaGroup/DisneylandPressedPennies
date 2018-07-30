@@ -609,11 +609,11 @@ public interface Data {
     };
 
     Machine[] retiredDowntownMachines = new Machine[]{
-            new Machine("Anna & Elsa's Boutique", "The Dream Boutique", "Nickel", "frozen_shop_mac", "frozen_shop_princess_backstamp", "frozen_shop_preview", annaElsaNickelOld, new LatLng(33.808713, -117.922590)),
-            new Machine("Rainforest Cafe", "Lobby #1", "Penny", "rainforest_1_mac", "blank_backstamp", "rainforest_1_preview", rainforestLobby1Penny, new LatLng(33.809381, -117.924896)),
-            new Machine("Rainforest Cafe", "Lobby #2", "Penny", "rainforest_2_mac", "blank_backstamp","rainforest_2_preview", rainforestLobby2Penny, new LatLng(33.809381, -117.924856)),
-            new Machine("Rainforest Cafe", "Lobby #3", "Quarter", "rainforest_3_mac", "blank_quarter_backstamp", "rainforest_3_preview", rainforestLobby3Quarter, new LatLng(33.809381, -117.924816)),
-            new Machine("ESPN Zone", "ESPN Gift Shop", "Penny", "espn_mac", "blank_backstamp", "espn_preview", espnShopPenny, new LatLng(33.809171, -117.925359))
+            new Machine("Anna & Elsa's Boutique", "The Dream Boutique - Retired", "Nickel", "frozen_shop_mac", "frozen_shop_princess_backstamp", "frozen_shop_preview", annaElsaNickelOld, new LatLng(33.808713, -117.922590)),
+            new Machine("Rainforest Cafe", "Lobby #1 - Retired", "Penny", "rainforest_1_mac", "blank_backstamp", "rainforest_1_preview", rainforestLobby1Penny, new LatLng(33.809381, -117.924896)),
+            new Machine("Rainforest Cafe", "Lobby #2 - Retired", "Penny", "rainforest_2_mac", "blank_backstamp","rainforest_2_preview", rainforestLobby2Penny, new LatLng(33.809381, -117.924856)),
+            new Machine("Rainforest Cafe", "Lobby #3 - Retired", "Quarter", "rainforest_3_mac", "blank_quarter_backstamp", "rainforest_3_preview", rainforestLobby3Quarter, new LatLng(33.809381, -117.924816)),
+            new Machine("ESPN Zone", "ESPN Gift Shop - Retired", "Penny", "espn_mac", "blank_backstamp", "espn_preview", espnShopPenny, new LatLng(33.809171, -117.925359))
     };
 
     Machine[] defaultMac = new Machine[]{
