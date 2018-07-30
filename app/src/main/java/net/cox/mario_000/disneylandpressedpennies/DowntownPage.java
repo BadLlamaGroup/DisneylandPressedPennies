@@ -117,17 +117,17 @@ public class DowntownPage extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
 //                if(inv.hasPurchase("premium")) {
-                    FragmentManager fragmentManager = getFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    MapsActivity fragment = new MapsActivity();
-                    fragmentTransaction.setCustomAnimations(
-                            R.animator.fade_in,
-                            R.animator.fade_out,
-                            R.animator.fade_in,
-                            R.animator.fade_out);
-                    fragmentTransaction.replace(R.id.mainFrag, fragment);
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                MapsActivity fragment = new MapsActivity();
+                fragmentTransaction.setCustomAnimations(
+                        R.animator.fade_in,
+                        R.animator.fade_out,
+                        R.animator.fade_in,
+                        R.animator.fade_out);
+                fragmentTransaction.replace(R.id.mainFrag, fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
 //                }
 //                else{
 //                    ((MainActivity)getActivity()).buy();
