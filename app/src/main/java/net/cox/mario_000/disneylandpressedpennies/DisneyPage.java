@@ -20,171 +20,190 @@ import static net.cox.mario_000.disneylandpressedpennies.Data.disneyMachines;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.numDisneyCoinsCollected;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.numDisneyCoinsTotal;
 
-
 /**
  * Created by mario_000 on 7/11/2016.
  * Description: Fragment for displaying Disney page
  */
-public class DisneyPage extends Fragment implements View.OnClickListener {
+public class DisneyPage extends Fragment implements View.OnClickListener
+{
+    // Layouts
     LinearLayout mapBtn;
     LinearLayout coinBook;
     LinearLayout coinList;
-    TextView amount;
+
+    // References
     private Tracker mTracker;
+    private final SharedPreference sharedPreference = new SharedPreference();
+
+    // Data
+    TextView amount;
+
 
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
-        amount.setText(numDisneyCoinsCollected + " / " + numDisneyCoinsTotal);
-        mTracker.setScreenName("Page - Disneyland");
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        amount.setText( numDisneyCoinsCollected + " / " + numDisneyCoinsTotal );
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View myFragmentView = inflater.inflate(R.layout.disneyland, container, false);
-        getActivity().setTitle("Disneyland");
-
-        MainActivity application = (MainActivity) getActivity();
+    public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState )
+    {
+        View myFragmentView = inflater.inflate( R.layout.disneyland, container, false );
+        getActivity().setTitle( "Disneyland" );
+        MainActivity application = ( MainActivity ) getActivity();
         mTracker = application.getDefaultTracker();
+        mTracker.setScreenName( "Page - Disneyland" );
+        mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
 
+        // Get saved coins
+        List< Coin > savedCoins = sharedPreference.getCoins( getActivity().getApplicationContext() );
 
-        //Link buttons and set on click listener
-        ImageButton tomorrowBtn = (ImageButton) myFragmentView.findViewById(R.id.tomorrowBtn);
-        tomorrowBtn.setOnClickListener(this);
-        ImageButton adventureBtn = (ImageButton) myFragmentView.findViewById(R.id.adventureBtn);
-        adventureBtn.setOnClickListener(this);
-        ImageButton frontierBtn = (ImageButton) myFragmentView.findViewById(R.id.frontierBtn);
-        frontierBtn.setOnClickListener(this);
-        ImageButton fantasyBtn = (ImageButton) myFragmentView.findViewById(R.id.fantasyBtn);
-        fantasyBtn.setOnClickListener(this);
-        ImageButton mainBtn = (ImageButton) myFragmentView.findViewById(R.id.mainBtn);
-        mainBtn.setOnClickListener(this);
-        ImageButton critterBtn = (ImageButton) myFragmentView.findViewById(R.id.critterBtn);
-        critterBtn.setOnClickListener(this);
-        ImageButton toonBtn = (ImageButton) myFragmentView.findViewById(R.id.toonBtn);
-        toonBtn.setOnClickListener(this);
-        ImageButton newOrleansBtn = (ImageButton) myFragmentView.findViewById(R.id.newOrleansBtn);
-        newOrleansBtn.setOnClickListener(this);
+        // Link buttons
+        ImageButton tomorrowBtn = myFragmentView.findViewById( R.id.tomorrowBtn );
+        ImageButton adventureBtn = myFragmentView.findViewById( R.id.adventureBtn );
+        ImageButton frontierBtn = myFragmentView.findViewById( R.id.frontierBtn );
+        ImageButton fantasyBtn = myFragmentView.findViewById( R.id.fantasyBtn );
+        ImageButton mainBtn = myFragmentView.findViewById( R.id.mainBtn );
+        ImageButton critterBtn = myFragmentView.findViewById( R.id.critterBtn );
+        ImageButton toonBtn = myFragmentView.findViewById( R.id.toonBtn );
+        ImageButton newOrleansBtn = myFragmentView.findViewById( R.id.newOrleansBtn );
 
-        final SharedPreference sharedPreference = new SharedPreference();
-        List<Coin> savedCoins = sharedPreference.getCoins(getActivity().getApplicationContext());
+        // Set listeners
+        tomorrowBtn.setOnClickListener( this );
+        adventureBtn.setOnClickListener( this );
+        frontierBtn.setOnClickListener( this );
+        fantasyBtn.setOnClickListener( this );
+        mainBtn.setOnClickListener( this );
+        critterBtn.setOnClickListener( this );
+        toonBtn.setOnClickListener( this );
+        newOrleansBtn.setOnClickListener( this );
 
-        TextView txtAdv = (TextView) myFragmentView.findViewById(R.id.txt_adventure_collected);
-        TextView txtTom = (TextView) myFragmentView.findViewById(R.id.txt_tomorrowland_collected);
-        TextView txtFro = (TextView) myFragmentView.findViewById(R.id.txt_frontierland_collected);
-        TextView txtToo = (TextView) myFragmentView.findViewById(R.id.txt_toontown_collected);
-        TextView txtFan = (TextView) myFragmentView.findViewById(R.id.txt_fantasyland_collected);
-        TextView txtMai = (TextView) myFragmentView.findViewById(R.id.txt_main_collected);
-        TextView txtCri = (TextView) myFragmentView.findViewById(R.id.txt_critter_collected);
-        TextView txtOrl = (TextView) myFragmentView.findViewById(R.id.txt_orleans_collected);
+        // Link textviews
+        TextView txtAdv = myFragmentView.findViewById( R.id.txt_adventure_collected );
+        TextView txtTom = myFragmentView.findViewById( R.id.txt_tomorrowland_collected );
+        TextView txtFro = myFragmentView.findViewById( R.id.txt_frontierland_collected );
+        TextView txtToo = myFragmentView.findViewById( R.id.txt_toontown_collected );
+        TextView txtFan = myFragmentView.findViewById( R.id.txt_fantasyland_collected );
+        TextView txtMai = myFragmentView.findViewById( R.id.txt_main_collected );
+        TextView txtCri = myFragmentView.findViewById( R.id.txt_critter_collected );
+        TextView txtOrl = myFragmentView.findViewById( R.id.txt_orleans_collected );
 
-        TextView[] list = new TextView[] {txtMai, txtTom, txtFan, txtToo, txtFro, txtAdv, txtCri, txtOrl};
+        TextView[] listOfLands = new TextView[]{ txtMai, txtTom, txtFan, txtToo, txtFro, txtAdv, txtCri, txtOrl };
 
+        // Get collected total for each land
         int collectedInLand;
         int landTotal;
-        for(int i = 0; i < disneyMachines.length; i++){ //Land
+        for ( int landNum = 0; landNum < disneyMachines.length; landNum++ )
+        {
+            // Land
             collectedInLand = 0;
             landTotal = 0;
-            for (Machine mach : disneyMachines[i]) { //Machine in land
+            for ( Machine mach : disneyMachines[ landNum ] )
+            {
+                // Machine in land
                 landTotal += mach.getCoins().length;
-                for (Coin c : mach.getCoins()) { //Coin in machine
-                    if (savedCoins.contains(c)) {
+                for ( Coin c : mach.getCoins() )
+                {
+                    // Coin in machine
+                    if ( savedCoins.contains( c ) )
+                    {
                         collectedInLand++;
                     }
                 }
             }
 
-            list[i].setText(collectedInLand + " / " + landTotal);
+            listOfLands[ landNum ].setText( collectedInLand + " / " + landTotal );
         }
 
+        // Link views
+        amount = myFragmentView.findViewById( R.id.amt );
+        coinBook = myFragmentView.findViewById( R.id.coinBookBtn );
+        mapBtn = myFragmentView.findViewById( R.id.mapBtn );
+        coinList = myFragmentView.findViewById( R.id.allCoinsBtn );
 
-        amount = (TextView) myFragmentView.findViewById(R.id.amt);
-
-
-        coinBook = (LinearLayout) myFragmentView.findViewById(R.id.coinBookBtn);
-        coinBook.setOnClickListener(new View.OnClickListener() {
+        // Set listeners
+        coinBook.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick( View v )
+            {
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 Bundle bundle = new Bundle();
                 CoinBookDetail fragment = new CoinBookDetail();
-                fragment.setArguments(bundle);
+                fragment.setArguments( bundle );
                 fragmentTransaction.setCustomAnimations(
                         R.animator.fade_in,
                         R.animator.fade_out,
                         R.animator.fade_in,
-                        R.animator.fade_out);
-                fragmentTransaction.replace(R.id.mainFrag, fragment);
-                fragmentTransaction.addToBackStack(null);
+                        R.animator.fade_out );
+                fragmentTransaction.replace( R.id.mainFrag, fragment );
+                fragmentTransaction.addToBackStack( null );
                 fragmentTransaction.commit();
             }
-        });
+        } );
 
-        mapBtn = (LinearLayout) myFragmentView.findViewById(R.id.mapBtn);
-        mapBtn.setOnClickListener(new View.OnClickListener() {
+        mapBtn.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-//                if (inv.hasPurchase("premium")) {
-                    FragmentManager fragmentManager = getFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    MapsActivity fragment = new MapsActivity();
-                    fragmentTransaction.setCustomAnimations(
-                            R.animator.fade_in,
-                            R.animator.fade_out,
-                            R.animator.fade_in,
-                            R.animator.fade_out);
-                    fragmentTransaction.replace(R.id.mainFrag, fragment);
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
-//                } else {
-//                    ((MainActivity) getActivity()).buy();
-//                }
-
+            public void onClick( View v )
+            {
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                MapsActivity fragment = new MapsActivity();
+                fragmentTransaction.setCustomAnimations(
+                        R.animator.fade_in,
+                        R.animator.fade_out,
+                        R.animator.fade_in,
+                        R.animator.fade_out );
+                fragmentTransaction.replace( R.id.mainFrag, fragment );
+                fragmentTransaction.addToBackStack( null );
+                fragmentTransaction.commit();
             }
-        });
+        } );
 
-        coinList = (LinearLayout) myFragmentView.findViewById(R.id.allCoinsBtn);
-        coinList.setOnClickListener(new View.OnClickListener() {
+        coinList.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick( View view )
+            {
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 allCoins fragment = new allCoins();
                 Bundle args = new Bundle();
-                args.putString("land", "Disneyland");
-                fragment.setArguments(args);
+                args.putString( "land", "Disneyland" );
+                fragment.setArguments( args );
                 fragmentTransaction.setCustomAnimations(
                         R.animator.fade_in,
                         R.animator.fade_out,
                         R.animator.fade_in,
-                        R.animator.fade_out);
-                fragmentTransaction.replace(R.id.mainFrag, fragment);
-                fragmentTransaction.addToBackStack(null);
+                        R.animator.fade_out );
+                fragmentTransaction.replace( R.id.mainFrag, fragment );
+                fragmentTransaction.addToBackStack( null );
                 fragmentTransaction.commit();
             }
-        });
+        } );
 
         return myFragmentView;
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick( View view )
+    {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Bundle bundle = new Bundle();
-        bundle.putInt("land", v.getId());
+        bundle.putInt( "land", view.getId() );
         MachineDetail fragment = new MachineDetail();
-        fragment.setArguments(bundle);
+        fragment.setArguments( bundle );
         fragmentTransaction.setCustomAnimations(
                 R.animator.fade_in,
                 R.animator.fade_out,
                 R.animator.fade_in,
-                R.animator.fade_out);
-        fragmentTransaction.replace(R.id.mainFrag, fragment);
-        fragmentTransaction.addToBackStack(null);
+                R.animator.fade_out );
+        fragmentTransaction.replace( R.id.mainFrag, fragment );
+        fragmentTransaction.addToBackStack( null );
         fragmentTransaction.commit();
     }
-
 }
