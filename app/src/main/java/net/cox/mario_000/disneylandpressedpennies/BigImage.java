@@ -5,7 +5,6 @@ import android.animation.AnimatorSet;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -19,7 +18,6 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.COIN_PATH;
-import static net.cox.mario_000.disneylandpressedpennies.MainActivity.img;
 
 /**
  * Created by mario_000 on 6/29/2016.
@@ -27,7 +25,6 @@ import static net.cox.mario_000.disneylandpressedpennies.MainActivity.img;
  */
 public class BigImage extends Activity
 {
-
     // Coin images
     private ImageView frontCoin;
     private ImageView backCoin;
@@ -55,48 +52,46 @@ public class BigImage extends Activity
             LinearLayout layout = findViewById( R.id.layout );
 
             // Get image resId number
-            final int resId = getApplicationContext().getResources().getIdentifier( frontImg, "drawable", getApplicationContext().getPackageName() );
-            if( resId != 0 )
+            final int frontResId = getApplicationContext().getResources().getIdentifier( frontImg, "drawable", getApplicationContext().getPackageName() );
+            if ( frontResId != 0 )
             {
-                final int resId2;
+                final int backResId;
                 if ( backImg == null )
                 {
-                    resId2 = getApplicationContext().getResources().getIdentifier( frontImg + "_backstamp", "drawable", getApplicationContext().getPackageName() );
+                    backResId = getApplicationContext().getResources().getIdentifier( frontImg + "_backstamp", "drawable", getApplicationContext().getPackageName() );
                 } else
                 {
-                    resId2 = getApplicationContext().getResources().getIdentifier( backImg, "drawable", getApplicationContext().getPackageName() );
+                    backResId = getApplicationContext().getResources().getIdentifier( backImg, "drawable", getApplicationContext().getPackageName() );
                 }
 
-                // Display image
-                img = new DisplayImage();
-                img.loadBitmap( resId, getResources(), 1200, 1200, frontCoin, 0 );
                 BitmapFactory.Options dimensions = new BitmapFactory.Options();
                 dimensions.inJustDecodeBounds = true;
-                Bitmap mBitmap = BitmapFactory.decodeResource( getApplicationContext().getResources(), resId, dimensions );
-                int height = dimensions.outHeight;
-                int width = dimensions.outWidth;
+                Bitmap mBitmap = BitmapFactory.decodeResource( getResources(), frontResId, dimensions );
+                int frontHeight = dimensions.outHeight;
+                int frontWidth = dimensions.outWidth;
 
                 //Set orientation based on coin direction
-                if ( width > height )
+                if ( frontWidth > frontHeight )
                 {
-                    Bitmap mBitmap2 = BitmapFactory.decodeResource( getApplicationContext().getResources(), resId2 );
-                    if ( mBitmap2.getWidth() < mBitmap2.getHeight() )
+                    dimensions = new BitmapFactory.Options();
+                    dimensions.inJustDecodeBounds = true;
+                    mBitmap = BitmapFactory.decodeResource( getResources(), backResId, dimensions );
+                    int backHeight = dimensions.outHeight;
+                    int backWidth = dimensions.outWidth;
+
+                    if ( backWidth < backHeight )
                     {
-                        Matrix matrix = new Matrix();
-                        matrix.postRotate( 90 );
-                        Bitmap bitmap = Bitmap.createBitmap( mBitmap2, 0, 0, mBitmap2.getWidth(), mBitmap2.getHeight(), matrix, true );
-                        backCoin.setImageBitmap( bitmap );
+                        Picasso.get().load( backResId ).error( R.drawable.new_penny_back ).fit().rotate( 90 ).into( backCoin );
                     } else
                     {
-                        img.loadBitmap( resId2, getResources(), 1200, 1200, backCoin, resId );
+                        Picasso.get().load( backResId ).error( R.drawable.new_penny_back ).fit().into( backCoin );
                     }
 
                 } else
                 {
-                    img.loadBitmap( resId2, getResources(), 1200, 1200, backCoin, resId );
+                    Picasso.get().load( backResId ).error( R.drawable.new_penny ).fit().into( frontCoin );
                 }
-            }
-            else
+            } else
             {
                 // Set images
                 Uri frontImage = Uri.fromFile( new File( COIN_PATH + "/" + frontImg ) );
@@ -105,7 +100,6 @@ public class BigImage extends Activity
                 Uri backImage = Uri.fromFile( new File( COIN_PATH + "/" + backImg ) );
                 Picasso.get().load( backImage ).error( R.drawable.new_penny_back ).fit().into( backCoin );
             }
-
 
 
             // Set animation
@@ -128,11 +122,6 @@ public class BigImage extends Activity
                 @Override
                 public void onClick( View v )
                 {
-                    // Check if coin is currently flipping
-                    /*if ( !( mSetRightOut.isRunning() || mSetLeftIn.isRunning() ) && resId != resId2 )
-                    {
-                        flipCoin();
-                    }*/
                     if ( !( mSetRightOut.isRunning() || mSetLeftIn.isRunning() ) )
                     {
                         flipCoin();
