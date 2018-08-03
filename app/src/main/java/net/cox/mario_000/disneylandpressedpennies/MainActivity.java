@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     navigationView.setCheckedItem(R.id.nav_tutorial);
                     menuItemId = R.id.nav_tutorial;
                 } else if (f instanceof search) {
-                    navigationView.setCheckedItem(R.id.search);
+                    navigationView.setCheckedItem(R.id.search_key);
                     menuItemId = R.id.nav_search;
                 } else if (f instanceof wantList) {
                     //Do Nothing

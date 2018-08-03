@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -27,70 +26,82 @@ import java.util.List;
  * Created by mario_000 on 2/15/2017.
  */
 
-public class search extends Fragment implements Data, AdapterView.OnItemClickListener {
-    private ListView l;
+public class search extends Fragment implements Data
+{
+    // Views
+    private ListView foundCoinsList;
+    TextView numFound;
+    TextView noResults;
+
+    // Lists
     ArrayList foundCoins;
     List< Coin > customCoins;
+
+    // References
     private final SharedPreference sharedPreference = new SharedPreference();
     ListAdapter mCoinAdapter;
     Parcelable state;
-    TextView numFound;
-    TextView noResults;
     private Tracker mTracker;
 
     @Override
-    public void onResume() {
-        if (foundCoins != null) {
-            numFound.setText(String.valueOf(foundCoins.size()));
+    public void onResume()
+    {
+        if ( foundCoins != null )
+        {
+            numFound.setText( String.valueOf( foundCoins.size() ) );
         }
-        if (l != null) {
-            l.setAdapter(mCoinAdapter);
-            l.setOnItemClickListener(this);
+        if ( foundCoinsList != null )
+        {
+            foundCoinsList.setAdapter( mCoinAdapter );
         }
-        if (state != null) {
-            l.onRestoreInstanceState(state);
+        if ( state != null )
+        {
+            foundCoinsList.onRestoreInstanceState( state );
         }
 
-        mTracker.setScreenName("Page - Search");
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        mTracker.setScreenName( "Page - Search" );
+        mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
         super.onResume();
     }
 
     @Override
-    public void onStop() {
-        state = l.onSaveInstanceState();
+    public void onStop()
+    {
+        state = foundCoinsList.onSaveInstanceState();
         super.onStop();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.search, container, false);
-        getActivity().setTitle("Search");
-
-        MainActivity application = (MainActivity) getActivity();
+    public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState )
+    {
+        super.onCreate( savedInstanceState );
+        View view = inflater.inflate( R.layout.search, container, false );
+        getActivity().setTitle( "Search" );
+        MainActivity application = ( MainActivity ) getActivity();
         mTracker = application.getDefaultTracker();
 
-        final Button b = (Button) view.findViewById(R.id.btn_test);
-        final EditText e = (EditText) view.findViewById(R.id.search);
-        l = (ListView) view.findViewById(R.id.searchList);
-        numFound = (TextView) view.findViewById(R.id.numFound);
-        noResults = (TextView) view.findViewById(R.id.noneFound);
-
+        // Link views
+        final Button searchBtn = view.findViewById( R.id.btn_search );
+        final EditText editSearch = view.findViewById( R.id.search_key );
+        foundCoinsList = view.findViewById( R.id.searchList );
+        numFound = view.findViewById( R.id.numFound );
+        noResults = view.findViewById( R.id.noneFound );
 
         customCoins = sharedPreference.getCustomCoins( view.getContext() );
 
+        final InputMethodManager inputMethodManager = ( InputMethodManager ) getActivity().getSystemService( Context.INPUT_METHOD_SERVICE );
 
-        l.setOnItemClickListener(this);
-        final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        e.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    switch (keyCode) {
+        editSearch.setOnKeyListener( new View.OnKeyListener()
+        {
+            public boolean onKey( View v, int keyCode, KeyEvent event )
+            {
+                if ( event.getAction() == KeyEvent.ACTION_DOWN )
+                {
+                    switch ( keyCode )
+                    {
                         case KeyEvent.KEYCODE_ENTER:
-                            b.callOnClick();
-                            inputMethodManager.hideSoftInputFromWindow(e.getWindowToken(), 0);
+                            searchBtn.callOnClick();
+                            inputMethodManager.hideSoftInputFromWindow( editSearch.getWindowToken(), 0 );
                             return true;
                         default:
                             break;
@@ -98,117 +109,117 @@ public class search extends Fragment implements Data, AdapterView.OnItemClickLis
                 }
                 return false;
             }
-        });
+        } );
 
-        e.setOnClickListener(new View.OnClickListener() {
+        editSearch.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                e.setText("");
+            public void onClick( View view )
+            {
+                editSearch.setText( "" );
             }
-        });
+        } );
 
 
-        b.setOnClickListener(new View.OnClickListener() {
+        searchBtn.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                String searchKey = e.getText().toString();
+            public void onClick( View view )
+            {
                 foundCoins = new ArrayList<>();
 
-                for (Machine[] macs : disneyMachines) {
-                    for (Machine mac : macs) {
-                        for (Coin c : mac.getCoins()) {
-                            if (c.getTitleCoin().toLowerCase().contains(searchKey.toLowerCase())) {
-                                foundCoins.add(c);
-                            }
-                        }
-                    }
-                }
-                for (Machine[] macs : calMachines) {
-                    for (Machine mac : macs) {
-                        for (Coin c : mac.getCoins()) {
-                            if (c.getTitleCoin().toLowerCase().contains(searchKey.toLowerCase())) {
-                                foundCoins.add(c);
-                            }
-                        }
-                    }
-                }
-                for (Machine[] macs : downtownMachines) {
-                    for (Machine mac : macs) {
-                        for (Coin c : mac.getCoins()) {
-                            if (c.getTitleCoin().toLowerCase().contains(searchKey.toLowerCase())) {
-                                foundCoins.add(c);
-                            }
-                        }
-                    }
-                }
-                for (Machine[] macs : retiredMachines) {
-                    for (Machine mac : macs) {
-                        for (Coin c : mac.getCoins()) {
-                            if (c.getTitleCoin().toLowerCase().contains(searchKey.toLowerCase())) {
-                                foundCoins.add(c);
-                            }
-                        }
-                    }
-                }
-
-                for( Coin coin : customCoins )
+                for ( Machine[] macs : disneyMachines )
                 {
-                    if (coin.getTitleCoin().toLowerCase().contains(searchKey.toLowerCase())) {
-                        foundCoins.add(coin);
+                    for ( Machine mac : macs )
+                    {
+                        for ( Coin c : mac.getCoins() )
+                        {
+                            if ( c.getTitleCoin().toLowerCase().contains( editSearch.getText().toString().toLowerCase() ) )
+                            {
+                                foundCoins.add( c );
+                            }
+                        }
+                    }
+                }
+                for ( Machine[] macs : calMachines )
+                {
+                    for ( Machine mac : macs )
+                    {
+                        for ( Coin c : mac.getCoins() )
+                        {
+                            if ( c.getTitleCoin().toLowerCase().contains( editSearch.getText().toString().toLowerCase() ) )
+                            {
+                                foundCoins.add( c );
+                            }
+                        }
+                    }
+                }
+                for ( Machine[] macs : downtownMachines )
+                {
+                    for ( Machine mac : macs )
+                    {
+                        for ( Coin c : mac.getCoins() )
+                        {
+                            if ( c.getTitleCoin().toLowerCase().contains( editSearch.getText().toString().toLowerCase() ) )
+                            {
+                                foundCoins.add( c );
+                            }
+                        }
+                    }
+                }
+                for ( Machine[] macs : retiredMachines )
+                {
+                    for ( Machine mac : macs )
+                    {
+                        for ( Coin c : mac.getCoins() )
+                        {
+                            if ( c.getTitleCoin().toLowerCase().contains( editSearch.getText().toString().toLowerCase() ) )
+                            {
+                                foundCoins.add( c );
+                            }
+                        }
                     }
                 }
 
-                numFound.setText(String.valueOf(foundCoins.size()));
-                if(foundCoins.size() == 0){
-                    l.setVisibility(View.INVISIBLE);
-                    noResults.setVisibility(View.VISIBLE);
-                }else {
-                    l.setVisibility(View.VISIBLE);
-                    noResults.setVisibility(View.INVISIBLE);
-                    mCoinAdapter = new ListAdapter(getActivity(), R.layout.row, foundCoins);
-                    l.setAdapter(mCoinAdapter);
+                for ( Coin coin : customCoins )
+                {
+                    if ( coin.getTitleCoin().toLowerCase().contains( editSearch.getText().toString().toLowerCase() ) )
+                    {
+                        foundCoins.add( coin );
+                    }
                 }
-                inputMethodManager.hideSoftInputFromWindow(e.getWindowToken(), 0);
+
+                numFound.setText( String.valueOf( foundCoins.size() ) );
+                if ( foundCoins.size() == 0 )
+                {
+                    foundCoinsList.setVisibility( View.INVISIBLE );
+                    noResults.setVisibility( View.VISIBLE );
+                } else
+                {
+                    foundCoinsList.setVisibility( View.VISIBLE );
+                    noResults.setVisibility( View.INVISIBLE );
+                    mCoinAdapter = new ListAdapter( getActivity(), R.layout.row, foundCoins );
+                    foundCoinsList.setAdapter( mCoinAdapter );
+                }
+                inputMethodManager.hideSoftInputFromWindow( editSearch.getWindowToken(), 0 );
 
             }
-        });
+        } );
 
-        TextView txtParkBanner = (TextView) view.findViewById(R.id.parkBanner);
-        txtParkBanner.setOnClickListener(new View.OnClickListener() {
+        TextView txtParkBanner = ( TextView ) view.findViewById( R.id.parkBanner );
+        txtParkBanner.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick( View view )
+            {
                 String url = "http://www.parkpennies.com";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
+                Intent i = new Intent( Intent.ACTION_VIEW );
+                i.setData( Uri.parse( url ) );
+                startActivity( i );
 
             }
-        });
+        } );
 
         return view;
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        /*FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        singleCoin fragment = new singleCoin();
-        Bundle bundle = new Bundle();
-        Gson gson = new Gson();
-        String jsonCoin = gson.toJson(mCoinAdapter.getCoinsInMachine()[position]);
-        Machine machine = find(mCoinAdapter.getCoinsInMachine()[position]);
-        String jsonMachine = gson.toJson(machine);
-        bundle.putString("selectedCoin", jsonCoin);
-        bundle.putString("selectedMachine", jsonMachine);
-        fragment.setArguments(bundle);
-        fragmentTransaction.setCustomAnimations(
-                R.animator.fade_in,
-                R.animator.fade_out,
-                R.animator.fade_in,
-                R.animator.fade_out);
-        //fragmentTransaction.hide(this);
-        //fragmentTransaction.add(R.id.mainFrag, fragment);
-        fragmentTransaction.replace(R.id.mainFrag, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();*/
     }
 }

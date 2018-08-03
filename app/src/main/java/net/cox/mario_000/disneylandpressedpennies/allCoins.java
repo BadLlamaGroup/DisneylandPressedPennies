@@ -41,30 +41,32 @@ import static net.cox.mario_000.disneylandpressedpennies.R.id.view_pager;
 
 public class allCoins extends Fragment implements Data, View.OnClickListener
 {
-    FloatingActionMenu materialDesignFAM;
-    FloatingActionButton disneylandFAB, californiaFAB, downtownFAB, retiredFAB;
-    ViewPager viewPager;
-    TabLayout tabLayout;
-    Vector< View > pages;
-    List< ListView > lists;
-    Parcelable state;
-    Machine[][] mach;
-    int pos;
+    // FAB
+    private FloatingActionMenu materialDesignFAM;
+    private FloatingActionButton disneylandFAB, californiaFAB, downtownFAB, retiredFAB;
+
+    // References
     private Tracker mTracker;
     private final SharedPreference sharedPreference = new SharedPreference();
+
+    // Data
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
+    private Vector< View > pages;
+    private List< ListView > lists;
+    private Parcelable state;
+    private Machine[][] mach;
+    private int pos;
     private String selectedLand;
-
-
 
     @Override
     public void onStop()
     {
         pos = tabLayout.getSelectedTabPosition();
-        ListView l = ( ListView ) pages.get( pos );
-        state = l.onSaveInstanceState();
+        ListView allCoinsList = ( ListView ) pages.get( pos );
+        state = allCoinsList.onSaveInstanceState();
         super.onStop();
     }
-
 
     @Override
     public void onResume()
@@ -80,11 +82,8 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
             ListView l = ( ListView ) pages.get( pos );
             l.onRestoreInstanceState( state );
         }
-        mTracker.setScreenName( "Page - Coin List" );
-        mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
         super.onResume();
     }
-
 
     @Nullable
     @Override
@@ -92,11 +91,13 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
     {
         super.onCreate( savedInstanceState );
         View view = inflater.inflate( R.layout.all_coins, container, false );
-
         MainActivity application = ( MainActivity ) getActivity();
         mTracker = application.getDefaultTracker();
+        mTracker.setScreenName("Page - Coin List");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
 
+        // Link views
         viewPager = view.findViewById( view_pager );
         tabLayout = view.findViewById( R.id.tab_layout );
         materialDesignFAM = view.findViewById( R.id.fab_menu );
@@ -105,9 +106,7 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
         downtownFAB = view.findViewById( R.id.downtownFAB );
         retiredFAB = view.findViewById( R.id.retiredFAB );
 
-        pages = new Vector<>();
-        lists = new ArrayList<>();
-
+        // Set listeners
         materialDesignFAM.setClosedOnTouchOutside( true );
 
         disneylandFAB.setOnClickListener( this );
@@ -119,6 +118,13 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
         californiaFAB.setShowShadow( false );
         downtownFAB.setShowShadow( false );
         retiredFAB.setShowShadow( false );
+
+        // Set viewpager data
+        pages = new Vector<>();
+        lists = new ArrayList<>();
+        tabLayout.setTabGravity( TabLayout.MODE_SCROLLABLE );
+        viewPager.addOnPageChangeListener( new TabLayout.TabLayoutOnPageChangeListener( tabLayout ) );
+        viewPager.setOffscreenPageLimit( 10 );
 
         //Default land
         Bundle args = getArguments();
@@ -139,10 +145,6 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
             default:
                 setLand( disneyMachines );
         }
-
-        tabLayout.setTabGravity( TabLayout.MODE_SCROLLABLE );
-        viewPager.addOnPageChangeListener( new TabLayout.TabLayoutOnPageChangeListener( tabLayout ) );
-        viewPager.setOffscreenPageLimit( 10 );
 
         TextView txtParkBanner = view.findViewById( R.id.parkBanner );
         txtParkBanner.setOnClickListener( new View.OnClickListener()

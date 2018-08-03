@@ -14,8 +14,8 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +26,7 @@ import java.util.List;
  * Created by mario_000 on 7/14/2018.
  */
 
-public class CustomCoinList extends Fragment implements Data, AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener
+public class CustomCoinList extends Fragment implements Data, AdapterView.OnItemSelectedListener
 {
 
     /**
@@ -34,45 +34,28 @@ public class CustomCoinList extends Fragment implements Data, AdapterView.OnItem
      * Description: Fragment for displaying coins in current machine
      */
 
+    // References
     private ListAdapter mCoinAdapter;
     private SharedPreference sharedPreference = new SharedPreference();
-    private ListView listCoins;
     private Tracker mTracker;
-    private int selection = 0;
-    private Spinner sortTypeSpinner;
-    private ImageView addCoinBtn;
-    // Counter
-    private TextView amtCollectedCustom;
-    private List< Coin > customCoins;
 
+    // Views
+    private ImageView addCoinBtn;
+    private TextView amtCollectedCustom;
+    private ListView listCoins;
+
+    // Data
+    private List< Coin > customCoins;
+    private ArrayList customCoinsList = new ArrayList();
+
+    // Spinner
+    private Spinner sortTypeSpinner;
+    private int selection = 0;
     private final int SPINNER_A_Z = 0;
     private final int SPINNER_Z_A = 1;
     private final int SPINNER_OLD_NEW = 2;
     private final int SPINNER_NEW_OLD = 3;
     private final int SPINNER_PARK = 4;
-
-    private ArrayList customCoinsList = new ArrayList();
-
-    @Override
-    public void onItemClick( AdapterView< ? > parent, View view, int position, long id )
-    {
-        selection = position;
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        CustomCoinFragment fragment = new CustomCoinFragment();
-        Bundle bundle = new Bundle();
-        Gson gson = new Gson();
-        String jsonCoin = gson.toJson( customCoins.get( position ) );
-        bundle.putString( "selectedCoin", jsonCoin );
-        fragment.setArguments( bundle );
-        fragmentTransaction.setCustomAnimations(
-                R.animator.fade_in,
-                R.animator.fade_out,
-                R.animator.fade_in,
-                R.animator.fade_out );
-        fragmentTransaction.replace( R.id.mainFrag, fragment );
-        fragmentTransaction.addToBackStack( null );
-        fragmentTransaction.commit();
-    }
 
     @Override
     public void onResume()
@@ -93,16 +76,19 @@ public class CustomCoinList extends Fragment implements Data, AdapterView.OnItem
         View view = inflater.inflate( R.layout.custom_coin_list, container, false );
         MainActivity application = ( MainActivity ) getActivity();
         mTracker = application.getDefaultTracker();
-        getActivity().setTitle( "Custom Coins" );
+        mTracker.setScreenName("Page - Custom Coin List");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        getActivity().setTitle( "Custom Coin List" );
 
         customCoins = sharedPreference.getCustomCoins( getActivity() );
 
-        // Link views to variables
+        // Link views
         listCoins = view.findViewById( R.id.listCustomCoins );
         sortTypeSpinner = view.findViewById( R.id.customSortType );
         addCoinBtn = view.findViewById( R.id.customAdd );
         amtCollectedCustom = view.findViewById( R.id.customCollected );
 
+        // Set listeners
         addCoinBtn.setOnClickListener( new View.OnClickListener()
         {
             @Override
@@ -123,12 +109,13 @@ public class CustomCoinList extends Fragment implements Data, AdapterView.OnItem
             }
         } );
 
+        sortTypeSpinner.setOnItemSelectedListener( this );
+
         // Create coin adapter
         customCoinsList.clear();
         customCoinsList.addAll( customCoins );
         mCoinAdapter = new ListAdapter( getActivity(), R.layout.row, customCoinsList );
         listCoins.setAdapter( mCoinAdapter );
-        listCoins.setOnItemClickListener( this );
 
         // Create spinner adapter
         final ArrayAdapter< CharSequence > parkAdapter = ArrayAdapter.createFromResource( getActivity(), R.array.Custom_Sort_Type, android.R.layout.simple_spinner_dropdown_item );
@@ -137,11 +124,6 @@ public class CustomCoinList extends Fragment implements Data, AdapterView.OnItem
 
         // Set data
         amtCollectedCustom.setText( String.valueOf( customCoins.size() ) );
-
-        sortTypeSpinner.setOnItemSelectedListener( this );
-
-
-
 
         return view;
     }

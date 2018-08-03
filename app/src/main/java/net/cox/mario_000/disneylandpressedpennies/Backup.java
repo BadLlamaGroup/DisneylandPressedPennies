@@ -528,7 +528,7 @@ public class Backup extends Fragment
             }
             for ( Coin coin : wantCoins )
             {
-                if ( count % 6 == 0 )
+                if ( count % 8 == 0 )
                 {
                     document.newPage();
                 }
@@ -583,7 +583,7 @@ public class Backup extends Fragment
             }
             for ( Coin coin : customCoins )
             {
-                if ( count % 6 == 0 )
+                if ( count % 8 == 0 )
                 {
                     document.newPage();
                 }
@@ -593,8 +593,18 @@ public class Backup extends Fragment
 
                 BitmapFactory.Options dimensions = new BitmapFactory.Options();
                 dimensions.inJustDecodeBounds = true;
-                Bitmap bitDim = BitmapFactory.decodeFile( filePath, dimensions );
-                Bitmap mBitmap = BitmapFactory.decodeFile( filePath );
+                //Bitmap bitDim = BitmapFactory.decodeFile( filePath, dimensions );
+                Bitmap mBitmap;
+                if( new File(filePath).exists() )
+                {
+                    mBitmap = BitmapFactory.decodeFile( filePath );
+                }
+                else
+                {
+                    int resId = getActivity().getResources().getIdentifier("new_penny", "drawable", getActivity().getPackageName());
+                    mBitmap = BitmapFactory.decodeResource( getActivity().getResources(), resId );
+                }
+
                 int height = dimensions.outHeight;
                 int width = dimensions.outWidth;
 

@@ -59,6 +59,7 @@ import java.util.Locale;
 import java.util.Random;
 
 import static android.app.Activity.RESULT_OK;
+import static net.cox.mario_000.disneylandpressedpennies.MainActivity.COIN_PATH;
 
 /**
  * Created by mario_000 on 7/1/2018.
@@ -119,15 +120,6 @@ public class CustomCoinFragment extends Fragment
     private Handler mHandler;
     private boolean mIsBackVisible = false;
 
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-        mTracker.setScreenName( "Page - Custom Coin" );
-        mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
-    }
-
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState )
     {
@@ -137,6 +129,8 @@ public class CustomCoinFragment extends Fragment
 
         MainActivity application = ( MainActivity ) getActivity();
         mTracker = application.getDefaultTracker();
+        mTracker.setScreenName( "Page - Custom Coin Page" );
+        mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
 
         isStoragePermissionGranted();
 
@@ -216,7 +210,7 @@ public class CustomCoinFragment extends Fragment
             }
         } );
 
-        // Handle back press action when action mode is on.
+        // Handle back press action
         view.setFocusableInTouchMode(true);
         view.requestFocus();
         view.setOnKeyListener(new View.OnKeyListener() {
@@ -412,6 +406,7 @@ public class CustomCoinFragment extends Fragment
         removeDialog.setCancelable( false );
         TextView coinName = removeDialog.findViewById( R.id.txt_coin );
         coinName.setText( savedCoin.getTitleCoin() );
+
         // Link buttons
         Button noBtn = removeDialog.findViewById( R.id.btn_no );
         Button overwriteBtn = removeDialog.findViewById( R.id.btn_yes );
@@ -436,14 +431,13 @@ public class CustomCoinFragment extends Fragment
                     sharedPreference.removeCustomCoin( getActivity(), savedCoin );
                     deleteCoinImages();
                     getFragmentManager().popBackStackImmediate();
+                    mTracker.send(new HitBuilders.EventBuilder()
+                            .setCategory("Custom Coin Removed")
+                            .setAction("Removed")
+                            .setLabel(savedCoin.getTitleCoin())
+                            .setValue(1)
+                            .build());
                 }
-
-                /*mTracker.send(new HitBuilders.EventBuilder()
-                        .setCategory("Coin Removed")
-                        .setAction("Removed")
-                        .setLabel(coin.getTitleCoin())
-                        .setValue(1)
-                        .build());*/
                 removeDialog.dismiss();
             }
         } );
@@ -459,10 +453,15 @@ public class CustomCoinFragment extends Fragment
         removeDialog.setTitle( "Title..." );
         removeDialog.getWindow().setBackgroundDrawable( new ColorDrawable( Color.TRANSPARENT ) );
         removeDialog.setCancelable( false );
+
+        // Link views
         TextView description = removeDialog.findViewById( R.id.txt_dia );
         TextView warningMsg = removeDialog.findViewById( R.id.txt_coin );
+
+        // Set data
         description.setText( "Are you sure you wish to cancel?" );
         warningMsg.setText( "You will lose all changes for this coin." );
+
         // Link buttons
         Button noBtn = removeDialog.findViewById( R.id.btn_no );
         Button overwriteBtn = removeDialog.findViewById( R.id.btn_yes );
@@ -485,12 +484,6 @@ public class CustomCoinFragment extends Fragment
                 // Remove old images
                 removeOldCoinImages();
                 getFragmentManager().popBackStackImmediate();
-                /*mTracker.send(new HitBuilders.EventBuilder()
-                        .setCategory("Coin Removed")
-                        .setAction("Removed")
-                        .setLabel(coin.getTitleCoin())
-                        .setValue(1)
-                        .build());*/
                 removeDialog.dismiss();
             }
         } );
@@ -500,9 +493,7 @@ public class CustomCoinFragment extends Fragment
 
     private void removeOldCoinImages()
     {
-        String root = Environment.getExternalStorageDirectory().toString();
-        File dir = new File( root + "/Pressed Coins at Disneyland/Coins" );
-        final File[] files = dir.listFiles( new FilenameFilter()
+        final File[] files = COIN_PATH.listFiles( new FilenameFilter()
         {
             @Override
             public boolean accept( final File dir,
@@ -570,19 +561,17 @@ public class CustomCoinFragment extends Fragment
     {
         try
         {
-            String root = Environment.getExternalStorageDirectory().toString();
-            File dir = new File( root + "/Pressed Coins at Disneyland/Coins/" );
-            File frontFrom = new File( dir, frontImageName );
+            File frontFrom = new File( COIN_PATH + "/", frontImageName );
             String newFrontImage = editTitle.getText().toString().trim().replaceAll( " ", "_" ).toLowerCase();
-            File frontTo = new File( dir, newFrontImage + "_front.png" );
+            File frontTo = new File( COIN_PATH + "/", newFrontImage + "_front.png" );
             if ( frontFrom.renameTo( frontTo ) )
             {
                 frontImageName = frontTo.getName();
             }
 
-            File backFrom = new File( dir, backImageName );
+            File backFrom = new File( COIN_PATH + "/", backImageName );
             String newBackImage = editTitle.getText().toString().trim().replaceAll( " ", "_" ).toLowerCase();
-            File backTo = new File( dir, newBackImage + "_back.png" );
+            File backTo = new File( COIN_PATH + "/", newBackImage + "_back.png" );
             if ( backFrom.renameTo( backTo ) )
             {
                 backImageName = backTo.getName();
@@ -599,12 +588,10 @@ public class CustomCoinFragment extends Fragment
     {
         try
         {
-            String root = Environment.getExternalStorageDirectory().toString();
-            File dir = new File( root + "/Pressed Coins at Disneyland/Coins/" );
-            File frontImage = new File( dir, frontImageName );
+            File frontImage = new File( COIN_PATH + "/", frontImageName );
             frontImage.delete();
 
-            File backImage = new File( dir, backImageName );
+            File backImage = new File( COIN_PATH + "/", backImageName );
             backImage.delete();
         } catch ( Exception e )
         {
@@ -648,6 +635,13 @@ public class CustomCoinFragment extends Fragment
                 sharedPreference.addCustomCoin( getActivity(), newCustomCoin );
                 getFragmentManager().popBackStackImmediate();
             }
+
+            mTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("Custom Coin Added")
+                    .setAction("Added")
+                    .setLabel(newCustomCoin.getTitleCoin())
+                    .setValue(1)
+                    .build());
         }
     }
 
@@ -739,14 +733,12 @@ public class CustomCoinFragment extends Fragment
 
     private void SaveImage( Bitmap finalBitmap )
     {
-        String root = Environment.getExternalStorageDirectory().toString();
-        File dir = new File( root + "/Pressed Coins at Disneyland/Coins" );
-        dir.mkdirs();
+        COIN_PATH.mkdirs();
         Random generator = new Random();
         int n = 10000;
         n = generator.nextInt( n );
         String fname = "Image-" + n + ".png";
-        File file = new File( dir, fname );
+        File file = new File( COIN_PATH, fname );
         if ( selectedSide.equals( "Front" ) )
         {
             frontImageName = fname;
@@ -805,7 +797,6 @@ public class CustomCoinFragment extends Fragment
         {
             try
             {
-
                 // right to left swipe
                 if ( e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs( velocityX ) > SWIPE_THRESHOLD_VELOCITY )
                 {
