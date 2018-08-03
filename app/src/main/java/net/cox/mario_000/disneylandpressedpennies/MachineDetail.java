@@ -49,7 +49,7 @@ public class MachineDetail extends Fragment implements Data, AdapterView.OnItemC
         View view = inflater.inflate(R.layout.activity_land, container, false);
 
         // Logo on page of machines in picked land
-        ImageView logo = (ImageView) view.findViewById(R.id.logo);
+        ImageView logo = view.findViewById(R.id.logo);
 
 
         Bundle extras = getArguments();
@@ -171,23 +171,12 @@ public class MachineDetail extends Fragment implements Data, AdapterView.OnItemC
             mMachineAdapter = new MachineAdapter(getActivity().getApplicationContext(), R.layout.machine_row, tempCoins);
         }
 
-
         //List of machines in land
-        ListView list = (ListView) view.findViewById(R.id.landCoins);
+        ListView list = view.findViewById(R.id.landCoins);
         if (list != null) {
             list.setAdapter(mMachineAdapter);
             list.setOnItemClickListener(this);
         }
         return view;
     }
-
-    // Get device screen dimensions
-//    private void getScreenDim() {
-//        DisplayMetrics displayMetrics = new DisplayMetrics();
-//        WindowManager wm = (WindowManager) getActivity().getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-//        wm.getDefaultDisplay().getMetrics(displayMetrics);
-//        int screenWidth = displayMetrics.widthPixels;
-//        //int deviceHeight = displayMetrics.heightPixels;
-//    }
-
 }

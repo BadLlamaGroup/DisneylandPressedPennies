@@ -26,7 +26,6 @@ import java.util.TreeSet;
 
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.COIN_PATH;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.find;
-import static net.cox.mario_000.disneylandpressedpennies.MainActivity.img;
 
 /**
  * Created by mario_000 on 7/7/2016.
@@ -37,20 +36,22 @@ public class ListAdapter extends ArrayAdapter< Coin >
     // Adapter types
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
+
     // References
+    private final SharedPreference sharedPreference = new SharedPreference();
     private final Context context;
     private final int mResource;
-    // Data
     private final SimpleDateFormat dateFormat = new SimpleDateFormat( "MMMM dd, yyyy", Locale.US );
+
+    // Data
     private final ArrayList tempCoins;
     private final List< Coin > customCoins;
     private final List< Coin > savedCoins;
+    private final List< Coin > wantCoins;
     private LayoutInflater inflater;
     private CoinHolder holder;
     private TreeSet< Integer > mSeparatorsSet = new TreeSet<>();
     private Machine machine;
-    // References
-    private final SharedPreference sharedPreference = new SharedPreference();
 
     private final View.OnClickListener PopupListener = new View.OnClickListener()
     {
@@ -61,12 +62,11 @@ public class ListAdapter extends ArrayAdapter< Coin >
             Integer viewPos = ( Integer ) v.getTag();
             Intent bigImageIntent = new Intent( context, BigImage.class );
             Coin coin = ( Coin ) tempCoins.get( viewPos );
-            if( customCoins.contains( coin ) )
+            if ( customCoins.contains( coin ) )
             {
                 bigImageIntent.putExtra( "frontImg", coin.getCoinFrontImg() );
                 bigImageIntent.putExtra( "backImg", coin.getCoinBackImg() );
-            }
-            else
+            } else
             {
                 machine = find( coin );
                 bigImageIntent.putExtra( "frontImg", coin.getCoinFrontImg() );
@@ -86,13 +86,13 @@ public class ListAdapter extends ArrayAdapter< Coin >
         this.tempCoins = coins;
         this.customCoins = sharedPreference.getCustomCoins( context );
         this.savedCoins = sharedPreference.getCoins( context );
+        this.wantCoins = sharedPreference.getWantedCoins( context );
         inflater = ( LayoutInflater ) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
     }
 
     public void addSeparatorItem( final String item )
     {
         tempCoins.add( item );
-        // save separator position
         mSeparatorsSet.add( tempCoins.size() - 1 );
         notifyDataSetChanged();
     }
@@ -129,32 +129,34 @@ public class ListAdapter extends ArrayAdapter< Coin >
                 holder.imageView.setTag( position );
 
                 // Get single coin
-                final Coin coin = (Coin) tempCoins.get( position );
+                final Coin coin = ( Coin ) tempCoins.get( position );
                 Coin savedCoin = coin;
 
                 // Check if coin is collected
-                for (Coin c : savedCoins){
-                    if(c.equals(coin)){
-                        savedCoin = savedCoins.get(savedCoins.indexOf(c));
+                for ( Coin c : savedCoins )
+                {
+                    if ( c.equals( coin ) )
+                    {
+                        savedCoin = savedCoins.get( savedCoins.indexOf( c ) );
                     }
                 }
 
-                if( customCoins.contains( coin ) )
+                if ( customCoins.contains( coin ) )
                 {
                     // Set image
                     Uri frontImage = Uri.fromFile( new File( COIN_PATH + "/" + coin.getCoinFrontImg() ) );
                     Picasso.get().load( frontImage ).error( R.drawable.new_penny ).fit().into( holder.imageView );
+
                     //Set text value for row
                     holder.name.setText( String.valueOf( coin.getTitleCoin() ) );
                     holder.description.setText( String.valueOf( coin.getCoinPark() ) );
-
                     holder.imageView.setOnClickListener( PopupListener );
-                }
-                else
+                } else
                 {
                     //Set image and res id
                     int resId = context.getResources().getIdentifier( coin.getCoinFrontImg(), "drawable", context.getPackageName() );
-                    img.loadBitmap( resId, context.getResources(), 100, 140, holder.imageView, 0 );
+                    Picasso.get().load( resId ).error( R.drawable.new_penny ).into( holder.imageView );
+                    //img.loadBitmap( resId, context.getResources(), 100, 140, holder.imageView, 0 );
                     holder.imageView.setOnClickListener( PopupListener );
 
                     // Find machine that coin belongs to
@@ -167,14 +169,15 @@ public class ListAdapter extends ArrayAdapter< Coin >
                 if ( savedCoin.getDateCollected() != null )
                 {
                     holder.collected.setText( String.format( "Collected: %s", dateFormat.format( savedCoin.getDateCollected() ) ) );
-                }
-                else{
-                    if(checkWant(savedCoin)){
-                        holder.collected.setText("Want It");
-                    }else{
-                        holder.collected.setText("Not yet collected");
+                } else
+                {
+                    if ( checkWant( savedCoin ) )
+                    {
+                        holder.collected.setText( "Want It" );
+                    } else
+                    {
+                        holder.collected.setText( "Not yet collected" );
                     }
-
                 }
 
                 // Make text scroll
@@ -206,14 +209,13 @@ public class ListAdapter extends ArrayAdapter< Coin >
                                 R.animator.fade_in,
                                 R.animator.fade_out );
 
-                        if( customCoins.contains( coin ) )
+                        if ( customCoins.contains( coin ) )
                         {
                             CustomCoinFragment fragment = new CustomCoinFragment();
                             bundle.putString( "selectedCoin", jsonCoin );
                             fragment.setArguments( bundle );
                             fragmentTransaction.replace( R.id.mainFrag, fragment );
-                        }
-                        else
+                        } else
                         {
                             singleCoin fragment = new singleCoin();
                             String jsonMac = gson.toJson( find( coin ) );
@@ -227,13 +229,12 @@ public class ListAdapter extends ArrayAdapter< Coin >
                     }
                 } );
 
-
                 return row;
 
             case TYPE_SEPARATOR:
                 ViewHolder sep = new ViewHolder();
                 row = inflater.inflate( R.layout.header, parent, false );
-                sep.separator = ( TextView ) row.findViewById( R.id.separator );
+                sep.separator = row.findViewById( R.id.separator );
                 row.setTag( sep );
 
                 if ( position == 0 || mSeparatorsSet.contains( position ) )
@@ -247,15 +248,17 @@ public class ListAdapter extends ArrayAdapter< Coin >
     }
 
     // Check if coin is in collected coins
-    private boolean checkWant(Coin checkCoin) {
+    private boolean checkWant( Coin checkCoin )
+    {
         boolean check = false;
-        // Get collected coins list
-        List<Coin> wantCoins = sharedPreference.getWantedCoins(getContext());
 
-        if (wantCoins != null) {
-            for (Coin coin : wantCoins) {
-                // Check if coin matches coin already collected
-                if (coin.equals( checkCoin )) {
+        if ( wantCoins != null )
+        {
+            for ( Coin coin : wantCoins )
+            {
+                // Check if coin matches coin already wanted
+                if ( coin.equals( checkCoin ) )
+                {
                     check = true;
                     break;
                 }
