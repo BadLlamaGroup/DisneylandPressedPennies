@@ -6,17 +6,22 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by mario_000 on 6/25/2016.
  * Description: Class to create a machine
  */
-public class Machine {
-    private String land;
-    private String machineName;
-    private String typeCoin;
+public class Machine
+{
+    // Images
     private final String machineImg;
     private String backstampImg;
     private final String coinPreviewImg;
+
+    // Data
+    private String land;
+    private String machineName;
+    private String typeCoin;
     private Coin[] coins;
     private final LatLng position;
 
-    protected Machine(String land, String machineName, String typeCoin, String machineImg, String backstampImg, String coinPreview, Coin[] coins, LatLng position) {
+    protected Machine( String land, String machineName, String typeCoin, String machineImg, String backstampImg, String coinPreview, Coin[] coins, LatLng position )
+    {
         this.land = land;
         this.machineName = machineName;
         this.typeCoin = typeCoin;
@@ -27,54 +32,48 @@ public class Machine {
         this.position = position;
     }
 
-    public String getLand() {
+    public String getLand()
+    {
         return land;
     }
 
-    public void setLand( String newLand ) {
+    public void setLand( String newLand )
+    {
         land = newLand;
     }
 
-    public String getMachineName() {
+    public String getMachineName()
+    {
         return machineName;
     }
 
-    public void setMachineName( String newName ) {
-        machineName = newName;
-    }
-
-    public String getTypeCoin() {
+    public String getTypeCoin()
+    {
         return typeCoin;
     }
 
-    public void setTypeCoin( String newType ) {
-        typeCoin = newType;
-    }
-
-    public String getMachineImg() {
+    public String getMachineImg()
+    {
         return machineImg;
     }
 
-    public String getBackstampImg() {
+    public String getBackstampImg()
+    {
         return backstampImg;
     }
 
-    public void setBackstampImg( String newBackstamp ) {
-        backstampImg = newBackstamp;
-    }
-
-    public String getCoinPreviewImg() {
+    public String getCoinPreviewImg()
+    {
         return coinPreviewImg;
     }
 
-    public Coin[] getCoins() {
+    public Coin[] getCoins()
+    {
         return coins;
     }
 
-    public void setCoin( String newCoin ) {
-    }
-
-    public LatLng getPosition() {
+    public LatLng getPosition()
+    {
         return position;
     }
 }
