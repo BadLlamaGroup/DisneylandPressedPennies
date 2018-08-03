@@ -50,11 +50,6 @@ public class Coin implements Serializable
         return coinBackImg;
     }
 
-    public void setCoinBackImg( String coinBackImg )
-    {
-        this.coinBackImg = coinBackImg;
-    }
-
     public String getTitleCoin()
     {
         return titleCoin;
@@ -70,29 +65,14 @@ public class Coin implements Serializable
         return coinType;
     }
 
-    public void setCoinType( String coinType )
-    {
-        this.coinType = coinType;
-    }
-
     public String getCoinPark()
     {
         return coinPark;
     }
 
-    public void setCoinPark( String coinPark )
-    {
-        this.coinPark = coinPark;
-    }
-
     public String getNotes()
     {
         return notes;
-    }
-
-    public void setNotes( String notes )
-    {
-        this.notes = notes;
     }
 
     public Date getDateCollected()
