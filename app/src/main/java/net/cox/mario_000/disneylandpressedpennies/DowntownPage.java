@@ -58,7 +58,7 @@ public class DowntownPage extends Fragment implements View.OnClickListener
         // Get saved coins
         List< Coin > savedCoins = sharedPreference.getCoins( getActivity().getApplicationContext() );
 
-        //Link buttons
+        // Link buttons
         ImageButton wodBtn = myFragmentView.findViewById( R.id.wodBtn );
         ImageButton pinTradersBtn = myFragmentView.findViewById( R.id.tortillaJoBtn );
         ImageButton wetzelsBtn = myFragmentView.findViewById( R.id.wetzelsBtn );
@@ -82,17 +82,17 @@ public class DowntownPage extends Fragment implements View.OnClickListener
         TextView txtGrandCal = myFragmentView.findViewById( R.id.txt_grandCal_collected );
         TextView txtPierHotel = myFragmentView.findViewById( R.id.txt_pierHotel_collected );
 
-        TextView[] list = new TextView[]{ txtWod, txtWetzels, txtPin, txtDisneyHotel, txtGrandCal, txtPierHotel };
+        TextView[] listOfLands = new TextView[]{ txtWod, txtWetzels, txtPin, txtDisneyHotel, txtGrandCal, txtPierHotel };
 
         // Get collected total for each land
         int collectedInLand;
         int landTotal;
-        for ( int i = 0; i < downtownMachines.length; i++ )
+        for ( int landNum = 0; landNum < downtownMachines.length; landNum++ )
         {
             //Land
             collectedInLand = 0;
             landTotal = 0;
-            for ( Machine mach : downtownMachines[ i ] )
+            for ( Machine mach : downtownMachines[ landNum ] )
             {
                 //Machine in land
                 landTotal += mach.getCoins().length;
@@ -106,7 +106,7 @@ public class DowntownPage extends Fragment implements View.OnClickListener
                 }
             }
 
-            list[ i ].setText( collectedInLand + " / " + landTotal );
+            listOfLands[ landNum ].setText( collectedInLand + " / " + landTotal );
         }
 
 
