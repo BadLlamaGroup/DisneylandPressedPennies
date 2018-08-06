@@ -21,12 +21,17 @@ import static net.cox.mario_000.disneylandpressedpennies.MainActivity.find;
 
 public class CoinBookBigImage extends Fragment implements ViewPager.OnPageChangeListener
 {
-    private List< Coin > coinList;
-    private List< Coin > customCoins;
+    // Coin lists
+    private List< Object > coinList;
+    private List< CustomCoin > customCoins;
+
+    // Textviews
     private TextView coinTitle;
     private TextView coinDate;
     private TextView coinMac;
     private TextView coinLand;
+
+    // References
     private ViewPager viewPager;
     private final SharedPreference sharedPreference = new SharedPreference();
     private SimpleDateFormat dateFormat = new SimpleDateFormat( "MMMM dd, yyyy", Locale.US );
@@ -37,12 +42,13 @@ public class CoinBookBigImage extends Fragment implements ViewPager.OnPageChange
     {
         super.onCreate( savedInstanceState );
         View view = inflater.inflate( R.layout.coin_book_pager, container, false );
+        getActivity().setTitle( "Coin Book" );
         Bundle args = getArguments();
         int pos = args.getInt( "pos" );
-        coinList = ( List< Coin > ) args.getSerializable( "ARRAYLIST" );
-        getActivity().setTitle( coinList.get( pos ).getTitleCoin() );
 
+        // Get coins
         customCoins = sharedPreference.getCustomCoins( view.getContext() );
+        coinList = ( List< Object > ) args.getSerializable( "ARRAYLIST" );
 
         // Link views
         viewPager = view.findViewById( R.id.view_pager );
@@ -59,20 +65,29 @@ public class CoinBookBigImage extends Fragment implements ViewPager.OnPageChange
         viewPager.addOnPageChangeListener( this );
 
         // Set coin data
-        Coin savedCoin = coinList.get( pos );
-        coinTitle.setText( savedCoin.getTitleCoin() );
-        coinDate.setText( dateFormat.format( savedCoin.getDateCollected() ) );
-
-        if( customCoins.contains( savedCoin ) )
+        if( coinList.get( pos ) instanceof Coin )
         {
-            coinMac.setVisibility( View.GONE );
-            coinLand.setText( savedCoin.getCoinPark() );
+            // Get coin data
+            Coin savedCoin = ( Coin ) coinList.get( pos );
+            coinTitle.setText( savedCoin.getTitleCoin() );
+            coinDate.setText( dateFormat.format( savedCoin.getDateCollected() ) );
+
+            // Get machine
+            Machine selectedMac = find( savedCoin );
+            coinMac.setVisibility( View.VISIBLE );
+            coinMac.setText( selectedMac.getMachineName() );
+            coinLand.setText( selectedMac.getLand() );
         }
         else
         {
-            coinMac.setVisibility( View.VISIBLE );
-            coinMac.setText( find( savedCoin ).getMachineName() );
-            coinLand.setText( find( savedCoin ).getLand() );
+            // Set custom coin data
+            CustomCoin savedCoin = ( CustomCoin ) coinList.get( pos );
+            int index = customCoins.indexOf( savedCoin );
+            CustomCoin customCoin = customCoins.get( index );
+            coinMac.setVisibility( View.GONE );
+            coinLand.setText( customCoin.getCoinPark() );
+            coinTitle.setText( customCoin.getTitleCoin() );
+            coinDate.setText( dateFormat.format( customCoin.getDateCollected() ) );
         }
 
         return view;
@@ -87,24 +102,28 @@ public class CoinBookBigImage extends Fragment implements ViewPager.OnPageChange
     @Override
     public void onPageSelected( int position )
     {
-        // Set new title
-        getActivity().setTitle( coinList.get( position ).getTitleCoin() );
-
         // Set new coin data
-        Coin savedCoin = coinList.get( position );
-        coinTitle.setText( savedCoin.getTitleCoin() );
-        coinDate.setText( dateFormat.format( savedCoin.getDateCollected() ) );
-
-        if( customCoins.contains( savedCoin ) )
+        if( coinList.get( position ) instanceof Coin )
         {
-            coinMac.setVisibility( View.GONE );
-            coinLand.setText( savedCoin.getCoinPark() );
+            Coin savedCoin = ( Coin ) coinList.get( position );
+            coinTitle.setText( savedCoin.getTitleCoin() );
+            coinDate.setText( dateFormat.format( savedCoin.getDateCollected() ) );
+
+            // Get machine
+            Machine selectedMac = find( savedCoin );
+            coinMac.setVisibility( View.VISIBLE );
+            coinMac.setText( selectedMac.getMachineName() );
+            coinLand.setText( selectedMac.getLand() );
         }
         else
         {
-            coinMac.setVisibility( View.VISIBLE );
-            coinMac.setText( find( savedCoin ).getMachineName() );
-            coinLand.setText( find( savedCoin ).getLand() );
+            CustomCoin savedCoin = ( CustomCoin ) coinList.get( position );
+            coinTitle.setText( savedCoin.getTitleCoin() );
+            coinDate.setText( dateFormat.format( savedCoin.getDateCollected() ) );
+            int index = customCoins.indexOf( savedCoin );
+            CustomCoin customCoin = customCoins.get( index );
+            coinMac.setVisibility( View.GONE );
+            coinLand.setText( customCoin.getCoinPark() );
         }
     }
 

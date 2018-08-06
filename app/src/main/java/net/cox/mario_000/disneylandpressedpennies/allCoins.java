@@ -33,7 +33,6 @@ import static net.cox.mario_000.disneylandpressedpennies.MainActivity.DOWNTOWN_D
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.RETIRED;
 import static net.cox.mario_000.disneylandpressedpennies.R.id.view_pager;
 
-
 /**
  * Created by mario_000 on 9/26/2016.
  * Description: Fragment for displaying all coins from all machines for each park.
@@ -79,8 +78,8 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
         {
             TabLayout.Tab tab = tabLayout.getTabAt( pos );
             tab.select();
-            ListView l = ( ListView ) pages.get( pos );
-            l.onRestoreInstanceState( state );
+            ListView listView = ( ListView ) pages.get( pos );
+            listView.onRestoreInstanceState( state );
         }
         super.onResume();
     }
@@ -93,9 +92,8 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
         View view = inflater.inflate( R.layout.all_coins, container, false );
         MainActivity application = ( MainActivity ) getActivity();
         mTracker = application.getDefaultTracker();
-        mTracker.setScreenName("Page - Coin List");
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-
+        mTracker.setScreenName( "Page - Coin List" );
+        mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
 
         // Link views
         viewPager = view.findViewById( view_pager );
@@ -108,16 +106,12 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
 
         // Set listeners
         materialDesignFAM.setClosedOnTouchOutside( true );
+        materialDesignFAM.setIconAnimated( false );
 
         disneylandFAB.setOnClickListener( this );
         californiaFAB.setOnClickListener( this );
         downtownFAB.setOnClickListener( this );
         retiredFAB.setOnClickListener( this );
-
-        disneylandFAB.setShowShadow( false );
-        californiaFAB.setShowShadow( false );
-        downtownFAB.setShowShadow( false );
-        retiredFAB.setShowShadow( false );
 
         // Set viewpager data
         pages = new Vector<>();
@@ -153,9 +147,9 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
             public void onClick( View view )
             {
                 String url = "http://www.parkpennies.com";
-                Intent i = new Intent( Intent.ACTION_VIEW );
-                i.setData( Uri.parse( url ) );
-                startActivity( i );
+                Intent intent = new Intent( Intent.ACTION_VIEW );
+                intent.setData( Uri.parse( url ) );
+                startActivity( intent );
             }
         } );
 
@@ -165,24 +159,25 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
     public void setLand( Machine[][] machines )
     {
         int addCustomPage = 1;
+
         // Select land
-        if(machines == disneyMachines){
+        if ( machines == disneyMachines )
+        {
             selectedLand = DISNEYLAND;
-        }
-        else if(machines == calMachines){
+        } else if ( machines == calMachines )
+        {
             selectedLand = CALIFORNIA_ADVENTURE;
-        }
-        else if(machines == downtownMachines){
+        } else if ( machines == downtownMachines )
+        {
             selectedLand = DOWNTOWN_DISNEY;
-        }
-        else if( machines == retiredMachines )
+        } else if ( machines == retiredMachines )
         {
             selectedLand = RETIRED;
             addCustomPage = 0;
         }
 
         final ArrayList< ArrayList > coinList = new ArrayList<>();
-        getActivity().setTitle(selectedLand);
+        getActivity().setTitle( selectedLand );
 
         // Clear previous list
         if ( pages != null && lists != null )
@@ -205,20 +200,20 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
         CustomPagerAdapter adapter = new CustomPagerAdapter( getActivity(), pages );
         viewPager.setAdapter( adapter );
 
-        int j = 0;
-        tabLayout.setupWithViewPager(viewPager);
-        tabLayout.getTabAt(0).setText("Disneyland");
-        tabLayout.getTabAt(1).setText("California Adventure");
-        tabLayout.getTabAt(2).setText("Downtown Disney");
-        // Add coins with separators
+        int tabNum = 0;
+        tabLayout.setupWithViewPager( viewPager );
+        tabLayout.getTabAt( 0 ).setText( "Disneyland" );
+        tabLayout.getTabAt( 1 ).setText( "California Adventure" );
+        tabLayout.getTabAt( 2 ).setText( "Downtown Disney" );
 
-        if( !selectedLand.equals( RETIRED ) )
+        // Add coins with separators
+        if ( !selectedLand.equals( RETIRED ) )
         {
             // Add custom coins
-            tabLayout.getTabAt( j ).setText( "Custom" );
-            List< Coin > coins = sharedPreference.getCustomCoins( getActivity().getApplicationContext() );
+            tabLayout.getTabAt( tabNum ).setText( "Custom" );
+            List< CustomCoin > coins = sharedPreference.getCustomCoins( getActivity().getApplicationContext() );
             ArrayList customCoinsList = new ArrayList();
-            for ( Coin coin : coins )
+            for ( CustomCoin coin : coins )
             {
                 if ( coin.getCoinPark().equals( selectedLand ) )
                 {
@@ -226,33 +221,33 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
                 }
             }
 
-            ListAdapter customCoinAdapter = new ListAdapter( getActivity(), R.layout.row, customCoinsList );
-            lists.get( j ).setAdapter( customCoinAdapter );
-            j++;
+            ListAdapter customCoinAdapter = new ListAdapter<>( getActivity(), R.layout.row, customCoinsList );
+            lists.get( tabNum ).setAdapter( customCoinAdapter );
+            tabNum++;
         }
 
         // Add normal coins
         for ( Machine[] machine : machines )
         {
-            allCoinsAdapter coinAdapter = new allCoinsAdapter( getActivity(), R.layout.row, coinList.get( j ) );
-            if(mach == retiredMachines){
-                //coinAdapter.addSeparatorItem("LAND");
-                for (Machine mac : machine) {
-                    coinAdapter.addSeparatorItem(mac.getMachineName());
-                    coinList.get(j).addAll(Arrays.asList(mac.getCoins()));
-                }
-            }
-            else
+            allCoinsAdapter coinAdapter = new allCoinsAdapter( getActivity(), R.layout.row, coinList.get( tabNum ) );
+            if ( mach == retiredMachines )
             {
                 for ( Machine mac : machine )
                 {
                     coinAdapter.addSeparatorItem( mac.getMachineName() );
-                    coinList.get( j ).addAll( Arrays.asList( mac.getCoins() ) );
-                    tabLayout.getTabAt( j ).setText( mac.getLand() );
+                    coinList.get( tabNum ).addAll( Arrays.asList( mac.getCoins() ) );
+                }
+            } else
+            {
+                for ( Machine mac : machine )
+                {
+                    coinAdapter.addSeparatorItem( mac.getMachineName() );
+                    coinList.get( tabNum ).addAll( Arrays.asList( mac.getCoins() ) );
+                    tabLayout.getTabAt( tabNum ).setText( mac.getLand() );
                 }
             }
-            lists.get( j ).setAdapter( coinAdapter );
-            j++;
+            lists.get( tabNum ).setAdapter( coinAdapter );
+            tabNum++;
         }
     }
 
@@ -279,7 +274,7 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
             case R.id.retiredFAB:
                 selectedLand = RETIRED;
                 mach = retiredMachines;
-                setLand(retiredMachines);
+                setLand( retiredMachines );
                 break;
         }
         materialDesignFAM.close( true );
@@ -287,7 +282,6 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
 
     public class CustomPagerAdapter extends PagerAdapter
     {
-
         private Context mContext;
         private Vector< View > pages;
 

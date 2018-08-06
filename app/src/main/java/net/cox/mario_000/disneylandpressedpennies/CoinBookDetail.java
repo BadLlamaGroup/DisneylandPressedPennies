@@ -33,18 +33,14 @@ import java.util.Comparator;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
-import static net.cox.mario_000.disneylandpressedpennies.Data.calMachines;
 import static net.cox.mario_000.disneylandpressedpennies.Data.defaultMac;
-import static net.cox.mario_000.disneylandpressedpennies.Data.disneyMachines;
-import static net.cox.mario_000.disneylandpressedpennies.Data.downtownMachines;
-import static net.cox.mario_000.disneylandpressedpennies.Data.retiredMachines;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.find;
 
 /**
  * Created by mario_000 on 7/6/2016.
  * Description: Fragment for coin book feature. Displays all collected coins with sorting options.
  */
-public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener
+public class CoinBookDetail extends Fragment implements AdapterView.OnItemSelectedListener
 {
     // References
     private final SharedPreference sharedPreference = new SharedPreference();
@@ -65,17 +61,18 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
     private final int SPINNER_Z_A = 1;
     private final int SPINNER_OLD_NEW = 2;
     private final int SPINNER_NEW_OLD = 3;
-    private final int SPINNER_CUSTOM = 4;
+    private final int SPINNER_ORGANIZE = 4;
     private final int SPINNER_LAND = 5;
 
     // Lists
     private List< Coin > customOrderCoins;
     private List< Coin > spinnerCustomOrderList;
     private List< Coin > savedCoins;
-    private List< Coin > customCoins;
+    private List< CustomCoin > customCoins;
 
     // Data
     private boolean coinDetailsDisplayed;
+    final List< Object > allCoinsCollected = new ArrayList<>();
 
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState )
@@ -88,14 +85,18 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
         mTracker.setScreenName( "Page - Coin Book" );
         mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
 
-        // Get collected coins list and machines
-        customOrderCoins = sharedPreference.getCoins( view.getContext() );
+        // Get collected coins list
         customCoins = sharedPreference.getCustomCoins( view.getContext() );
         savedCoins = sharedPreference.getCoins( view.getContext() );
 
-        // Add custom coins
-        customOrderCoins.addAll( customCoins );
-        savedCoins.addAll( customCoins );
+        // Create list of all coins
+        allCoinsCollected.clear();
+        allCoinsCollected.addAll( savedCoins );
+        allCoinsCollected.addAll( customCoins );
+
+        // Organized coins
+        customOrderCoins = new ArrayList<>();
+        customOrderCoins.addAll( savedCoins );
 
         // Link views
         sortType = view.findViewById( R.id.coinBookSortType );
@@ -105,13 +106,15 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
         totalCoins = view.findViewById( R.id.txt_total );
         gridView = view.findViewById( R.id.dynamic_grid );
 
-        totalCoins.setText( String.valueOf( savedCoins.size() ) );
+        totalCoins.setText( String.valueOf( allCoinsCollected.size() ) );
 
         // Set spinner adapter
         ArrayAdapter< CharSequence > adapter = ArrayAdapter.createFromResource( getActivity(),
                 R.array.Sort_Type, android.R.layout.simple_spinner_item );
+
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
+
         // Apply the adapter to the sortType
         sortType.setAdapter( adapter );
         sortType.setOnItemSelectedListener( this );
@@ -125,9 +128,8 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
 
         // Create list adapter for collected coins list
         ArrayList coinDetailList = new ArrayList();
-        coinDetailList.addAll( savedCoins );
+        coinDetailList.addAll( allCoinsCollected );
         listAdapter = new ListAdapter( view.getContext(), R.layout.row, coinDetailList );
-        //listFav.setOnItemClickListener( this );
         listFav.setAdapter( listAdapter );
 
         // Create gridView adapter
@@ -140,12 +142,12 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
             @Override
             public boolean onItemLongClick( AdapterView parent, View view, int position, long id )
             {
-                if ( sortType.getSelectedItemPosition() == SPINNER_CUSTOM )
+                if ( sortType.getSelectedItemPosition() == SPINNER_ORGANIZE )
                 {
                     gridView.startEditMode( position );
                 } else
                 {
-                    Toast.makeText( getActivity(), "Switch to custom", Toast.LENGTH_SHORT ).show();
+                    Toast.makeText( getActivity(), "Switch to organized to rearrange coins...", Toast.LENGTH_SHORT ).show();
                 }
                 return true;
             }
@@ -157,12 +159,12 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
             {
                 Bundle args = new Bundle();
 
-                if ( sortType.getSelectedItemPosition() == SPINNER_CUSTOM )
+                if ( sortType.getSelectedItemPosition() == SPINNER_ORGANIZE )
                 {
                     args.putSerializable( "ARRAYLIST", ( Serializable ) spinnerCustomOrderList );
                 } else
                 {
-                    args.putSerializable( "ARRAYLIST", ( Serializable ) savedCoins );
+                    args.putSerializable( "ARRAYLIST", ( Serializable ) allCoinsCollected );
                 }
 
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -187,10 +189,14 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
             {
                 gridView.stopEditMode();
                 spinnerCustomOrderList.clear();
+
                 // Rebuild custom list based on edits
                 for ( int itemPos = 0; itemPos < gridView.getCount(); itemPos++ )
                 {
-                    spinnerCustomOrderList.add( ( Coin ) gridView.getItemAtPosition( itemPos ) );
+                    if ( gridView.getItemAtPosition( itemPos ) instanceof Coin )
+                    {
+                        spinnerCustomOrderList.add( ( Coin ) gridView.getItemAtPosition( itemPos ) );
+                    }
                 }
                 SharedPreferences settings = getActivity().getSharedPreferences( "File", Context.MODE_PRIVATE );
                 SharedPreferences.Editor editor = settings.edit();
@@ -225,10 +231,9 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
             public void onClick( View view )
             {
                 String url = "http://www.parkpennies.com";
-                Intent i = new Intent( Intent.ACTION_VIEW );
-                i.setData( Uri.parse( url ) );
-                startActivity( i );
-
+                Intent intent = new Intent( Intent.ACTION_VIEW );
+                intent.setData( Uri.parse( url ) );
+                startActivity( intent );
             }
         } );
 
@@ -252,7 +257,13 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
         {
             displayList();
         }
-        totalCoins.setText( String.valueOf( savedCoins.size() ) );
+        if ( sortType.getSelectedItemPosition() == SPINNER_ORGANIZE )
+        {
+            totalCoins.setText( String.valueOf( savedCoins.size() ) );
+        } else
+        {
+            totalCoins.setText( String.valueOf( allCoinsCollected.size() ) );
+        }
     }
 
     private void displayPictures()
@@ -263,7 +274,7 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
         coinBookDetailsHeader.setText( "Display Details" );
         displayBtn.setBackground( ContextCompat.getDrawable( getActivity(), R.drawable.list ) );
 
-        if ( sortType.getSelectedItemPosition() == SPINNER_CUSTOM )
+        if ( sortType.getSelectedItemPosition() == SPINNER_ORGANIZE )
         {
             gridViewAdapter.clear();
             gridViewAdapter.add( spinnerCustomOrderList );
@@ -271,96 +282,8 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
         } else
         {
             gridViewAdapter.clear();
-            gridViewAdapter.add( savedCoins );
+            gridViewAdapter.add( allCoinsCollected );
             gridViewAdapter.notifyDataSetChanged();
-        }
-    }
-
-    public void updateImages()
-    {
-        for ( Coin coin : spinnerCustomOrderList )
-        {
-            //outerloop:
-            for ( Machine[] m : disneyMachines )
-            {
-                for ( Machine mach : m )
-                {
-                    for ( Coin c : mach.getCoins() )
-                    {
-                        if ( c.getTitleCoin().equals( coin.getTitleCoin() ) )
-                        {
-                            if ( !coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
-                            {
-                                coin.setCoinFrontImg( c.getCoinFrontImg() );
-                                //                    break outerloop;
-                            }
-                        }
-                    }
-                }
-            }
-            //outerloop:
-            for ( Machine[] m : calMachines )
-            {
-                for ( Machine mach : m )
-                {
-                    for ( Coin c : mach.getCoins() )
-                    {
-                        if ( c.getTitleCoin().equals( coin.getTitleCoin() ) )
-                        {
-                            if ( !coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
-                            {
-                                coin.setCoinFrontImg( c.getCoinFrontImg() );
-                                //                  break outerloop;
-                            }
-                        }
-                    }
-                }
-            }
-            //outerloop:
-            for ( Machine[] m : downtownMachines )
-            {
-                for ( Machine mach : m )
-                {
-                    for ( Coin c : mach.getCoins() )
-                    {
-                        if ( c.getTitleCoin().equals( coin.getTitleCoin() ) )
-                        {
-                            if ( !coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
-                            {
-                                coin.setCoinFrontImg( c.getCoinFrontImg() );
-                                //                    break outerloop;
-                            }
-                        }
-                    }
-                }
-            }
-
-            //outerloop:
-            for ( Machine[] m : retiredMachines )
-            {
-                for ( Machine mach : m )
-                {
-                    for ( Coin c : mach.getCoins() )
-                    {
-                        if ( c.getTitleCoin().equals( coin.getTitleCoin() ) )
-                        {
-                            if ( !coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
-                            {
-                                coin.setCoinFrontImg( c.getCoinFrontImg() );
-                                //                  break outerloop;
-                            }
-                        }
-                    }
-                }
-            }
-
-
-            SharedPreferences settings = getActivity().getSharedPreferences( "File", Context.MODE_PRIVATE );
-            SharedPreferences.Editor editor = settings.edit();
-            Gson gson = new Gson();
-            String jsonCoins = gson.toJson( spinnerCustomOrderList );
-            editor.putString( "custom", jsonCoins );
-            editor.apply();
         }
     }
 
@@ -372,7 +295,7 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
         gridView.setVisibility( View.INVISIBLE );
         listFav.setVisibility( View.VISIBLE );
 
-        if ( sortType.getSelectedItemPosition() == SPINNER_CUSTOM )
+        if ( sortType.getSelectedItemPosition() == SPINNER_ORGANIZE )
         {
             listAdapter.clear();
             listAdapter.addAll( spinnerCustomOrderList );
@@ -384,66 +307,6 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
     }
 
     @Override
-    public void onItemClick( AdapterView< ? > parent, View view, int position, long id )
-    {
-        /*Bundle bundle = new Bundle();
-        Gson gson = new Gson();
-        String jsonCoin;
-        String jsonMachine;
-        Coin coin;
-
-        // Get coin information based on sorting method
-        if ( listAdapter.getItem( position ) instanceof Coin )
-        {
-            if ( sortType.getSelectedItemPosition() == SPINNER_CUSTOM )
-            {
-                coin = spinnerCustomOrderList.get( position );
-                jsonCoin = gson.toJson( spinnerCustomOrderList.get( position ) );
-                jsonMachine = gson.toJson( find( spinnerCustomOrderList.get( position ) ) );
-            } else if ( sortType.getSelectedItemPosition() == SPINNER_LAND )
-            {
-                coin = listAdapter.getItem( position );
-                jsonCoin = gson.toJson( listAdapter.getItem( position ) );
-                jsonMachine = gson.toJson( find( listAdapter.getItem( position ) ) );
-            } else
-            {
-                coin = savedCoins.get( position );
-                jsonCoin = gson.toJson( savedCoins.get( position ) );
-                jsonMachine = gson.toJson( find( savedCoins.get( position ) ) );
-            }
-
-
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.setCustomAnimations(
-                    R.animator.fade_in,
-                    R.animator.fade_out,
-                    R.animator.fade_in,
-                    R.animator.fade_out );
-
-            if ( customCoins.contains( coin ) )
-            {
-                CustomCoinFragment fragment = new CustomCoinFragment();
-                bundle.putString( "selectedCoin", jsonCoin );
-                fragment.setArguments( bundle );
-                fragmentTransaction.replace( R.id.mainFrag, fragment );
-
-            } else
-            {
-                singleCoin fragment = new singleCoin();
-                bundle.putString( "selectedCoin", jsonCoin );
-                bundle.putString( "selectedMachine", jsonMachine );
-                fragment.setArguments( bundle );
-                fragmentTransaction.replace( R.id.mainFrag, fragment );
-            }
-
-            fragmentTransaction.addToBackStack( null );
-            fragmentTransaction.commit();
-
-
-        }*/
-    }
-
-    @Override
     // Sort method
     public void onItemSelected( AdapterView< ? > adapterView, View view, final int pos, long id )
     {
@@ -451,44 +314,99 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
         SharedPreferences.Editor prefEditor = sharedPref.edit();
         prefEditor.putInt( "userChoiceSpinner", pos );
         prefEditor.apply();
-        Collections.sort( savedCoins, new Comparator< Coin >()
+        Collections.sort( allCoinsCollected, new Comparator< Object >()
         {
             @Override
-            public int compare( Coin o1, Coin o2 )
+            public int compare( Object o1, Object o2 )
             {
                 switch ( pos )
                 {
                     case SPINNER_A_Z:
-                        return o1.getTitleCoin().compareTo( o2.getTitleCoin() );
+                        if ( o1 instanceof Coin && o2 instanceof Coin )
+                        {
+                            return ( ( Coin ) o1 ).getTitleCoin().compareTo( ( ( Coin ) o2 ).getTitleCoin() );
+                        } else if ( o1 instanceof Coin && o2 instanceof CustomCoin )
+                        {
+                            return ( ( Coin ) o1 ).getTitleCoin().compareTo( ( ( CustomCoin ) o2 ).getTitleCoin() );
+                        } else if ( o1 instanceof CustomCoin && o2 instanceof Coin )
+                        {
+                            return ( ( CustomCoin ) o1 ).getTitleCoin().compareTo( ( ( Coin ) o2 ).getTitleCoin() );
+                        } else if ( o1 instanceof CustomCoin && o2 instanceof CustomCoin )
+                        {
+                            return ( ( CustomCoin ) o1 ).getTitleCoin().compareTo( ( ( CustomCoin ) o2 ).getTitleCoin() );
+                        }
+                        //return o1.getTitleCoin().compareTo(o2.getTitleCoin());
                     case SPINNER_Z_A:
-                        return o2.getTitleCoin().compareTo( o1.getTitleCoin() );
+                        if ( o2 instanceof Coin && o1 instanceof Coin )
+                        {
+                            return ( ( Coin ) o2 ).getTitleCoin().compareTo( ( ( Coin ) o1 ).getTitleCoin() );
+                        } else if ( o2 instanceof Coin && o1 instanceof CustomCoin )
+                        {
+                            return ( ( Coin ) o2 ).getTitleCoin().compareTo( ( ( CustomCoin ) o1 ).getTitleCoin() );
+                        } else if ( o2 instanceof CustomCoin && o1 instanceof Coin )
+                        {
+                            return ( ( CustomCoin ) o2 ).getTitleCoin().compareTo( ( ( Coin ) o1 ).getTitleCoin() );
+                        } else if ( o2 instanceof CustomCoin && o1 instanceof CustomCoin )
+                        {
+                            return ( ( CustomCoin ) o2 ).getTitleCoin().compareTo( ( ( CustomCoin ) o1 ).getTitleCoin() );
+                        }
+                        //return o2.getTitleCoin().compareTo(o1.getTitleCoin());
                     case SPINNER_OLD_NEW:
-                        return o1.getDateCollected().compareTo( o2.getDateCollected() );
+                        if ( o1 instanceof Coin && o2 instanceof Coin )
+                        {
+                            return ( ( Coin ) o1 ).getDateCollected().compareTo( ( ( Coin ) o2 ).getDateCollected() );
+                        } else if ( o1 instanceof Coin && o2 instanceof CustomCoin )
+                        {
+                            return ( ( Coin ) o1 ).getDateCollected().compareTo( ( ( CustomCoin ) o2 ).getDateCollected() );
+                        } else if ( o1 instanceof CustomCoin && o2 instanceof Coin )
+                        {
+                            return ( ( CustomCoin ) o1 ).getDateCollected().compareTo( ( ( Coin ) o2 ).getDateCollected() );
+                        } else if ( o1 instanceof CustomCoin && o2 instanceof CustomCoin )
+                        {
+                            return ( ( CustomCoin ) o1 ).getDateCollected().compareTo( ( ( CustomCoin ) o2 ).getDateCollected() );
+                        }
+                        //return o1.getDateCollected().compareTo(o2.getDateCollected());
                     case SPINNER_NEW_OLD:
-                        return o2.getDateCollected().compareTo( o1.getDateCollected() );
+                        if ( o2 instanceof Coin && o1 instanceof Coin )
+                        {
+                            return ( ( Coin ) o2 ).getDateCollected().compareTo( ( ( Coin ) o1 ).getDateCollected() );
+                        } else if ( o2 instanceof Coin && o1 instanceof CustomCoin )
+                        {
+                            return ( ( Coin ) o2 ).getDateCollected().compareTo( ( ( CustomCoin ) o1 ).getDateCollected() );
+                        } else if ( o2 instanceof CustomCoin && o1 instanceof Coin )
+                        {
+                            return ( ( CustomCoin ) o2 ).getDateCollected().compareTo( ( ( Coin ) o1 ).getDateCollected() );
+                        } else if ( o2 instanceof CustomCoin && o1 instanceof CustomCoin )
+                        {
+                            return ( ( CustomCoin ) o2 ).getDateCollected().compareTo( ( ( CustomCoin ) o1 ).getDateCollected() );
+                        }
+                        //return o2.getDateCollected().compareTo(o1.getDateCollected());
                     default:
                         return 0;
                 }
             }
         } );
         gridViewAdapter.clear();
-        gridViewAdapter.add( savedCoins );
+        gridViewAdapter.add( allCoinsCollected );
         gridViewAdapter.notifyDataSetChanged();
 
         listAdapter.removeSeparatorItem();
         listAdapter.clear();
-        listAdapter.addAll( savedCoins );
+        listAdapter.addAll( allCoinsCollected );
         listAdapter.notifyDataSetChanged();
 
 
-        if ( pos == SPINNER_CUSTOM )
+        if ( pos == SPINNER_ORGANIZE )
         {
+            Toast.makeText( getActivity(), "Displaying non-custom coins...", Toast.LENGTH_SHORT ).show();
+
             SharedPreferences settings = getActivity().getSharedPreferences( "File", Context.MODE_PRIVATE );
 
             if ( settings.contains( "custom" ) )
             {
                 String jsonFavorites = settings.getString( "custom", null );
                 Gson gson = new Gson();
+
                 Coin[] customCoins = gson.fromJson( jsonFavorites, Coin[].class );
                 spinnerCustomOrderList = Arrays.asList( customCoins );
                 spinnerCustomOrderList = new ArrayList<>( spinnerCustomOrderList );
@@ -517,7 +435,7 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
                 editor.putString( "custom", jsonCoins );
                 editor.apply();
 
-                updateImages();
+                //updateImages();
                 gridViewAdapter.clear();
                 gridViewAdapter.add( spinnerCustomOrderList );
                 gridViewAdapter.notifyDataSetChanged();
@@ -535,12 +453,34 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
         {
             listAdapter.clear();
 
-
             // Sort by machine name A-Z
-            Collections.sort( savedCoins, new Comparator< Coin >()
+            Collections.sort( allCoinsCollected, new Comparator< Object >()
             {
                 @Override
-                public int compare( Coin o1, Coin o2 )
+                public int compare( Object o1, Object o2 )
+                {
+                    if ( o1 instanceof Coin && o2 instanceof Coin )
+                    {
+                        return ( ( Coin ) o1 ).getTitleCoin().compareTo( ( ( Coin ) o2 ).getTitleCoin() );
+                    } else if ( o1 instanceof Coin && o2 instanceof CustomCoin )
+                    {
+                        return ( ( Coin ) o1 ).getTitleCoin().compareTo( ( ( CustomCoin ) o2 ).getTitleCoin() );
+                    } else if ( o1 instanceof CustomCoin && o2 instanceof Coin )
+                    {
+                        return ( ( CustomCoin ) o1 ).getTitleCoin().compareTo( ( ( Coin ) o2 ).getTitleCoin() );
+                    } else
+                    {
+                        return ( ( CustomCoin ) o1 ).getTitleCoin().compareTo( ( ( CustomCoin ) o2 ).getTitleCoin() );
+                    }
+                }
+            } );
+
+
+            // Sort by machine name A-Z
+            Collections.sort( allCoinsCollected, new Comparator< Object >()
+            {
+                @Override
+                public int compare( Object o1, Object o2 )
                 {
                     Machine mac1 = find( o1 );
                     Machine mac2 = find( o2 );
@@ -549,22 +489,22 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
                         return mac1.getMachineName().compareTo( mac2.getMachineName() );
                     } else if ( mac1 == defaultMac[ 0 ] )
                     {
-                        return o1.getTitleCoin().compareTo( mac2.getMachineName() );
+                        return ( ( CustomCoin ) o1 ).getTitleCoin().compareTo( mac2.getMachineName() );
                     } else if ( mac2 == defaultMac[ 0 ] )
                     {
-                        return mac1.getMachineName().compareTo( o2.getTitleCoin() );
+                        return mac1.getMachineName().compareTo( ( ( CustomCoin ) o2 ).getTitleCoin() );
                     } else
                     {
-                        return o1.getTitleCoin().compareTo( o2.getTitleCoin() );
+                        return ( ( CustomCoin ) o1 ).getTitleCoin().compareTo( ( ( CustomCoin ) o2 ).getTitleCoin() );
                     }
                 }
             } );
 
             // Sort by land name A-Z
-            Collections.sort( savedCoins, new Comparator< Coin >()
+            Collections.sort( allCoinsCollected, new Comparator< Object >()
             {
                 @Override
-                public int compare( Coin o1, Coin o2 )
+                public int compare( Object o1, Object o2 )
                 {
                     Machine mac1 = find( o1 );
                     Machine mac2 = find( o2 );
@@ -573,39 +513,46 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemClickL
                         return mac1.getLand().compareTo( mac2.getLand() );
                     } else if ( mac1 == defaultMac[ 0 ] )
                     {
-                        return o1.getCoinPark().compareTo( mac2.getLand() );
+                        return ( ( CustomCoin ) o1 ).getCoinPark().compareTo( mac2.getLand() );
                     } else if ( mac2 == defaultMac[ 0 ] )
                     {
-                        return mac1.getLand().compareTo( o2.getCoinPark() );
+                        return mac1.getLand().compareTo( ( ( CustomCoin ) o2 ).getCoinPark() );
                     } else
                     {
-                        return o1.getCoinPark().compareTo( o2.getCoinPark() );
+                        return ( ( CustomCoin ) o1 ).getCoinPark().compareTo( ( ( CustomCoin ) o2 ).getCoinPark() );
                     }
                 }
             } );
 
             // Add land titles and coins from land
-            for ( int i = 0; i < savedCoins.size(); i++ )
+            String land;
+            for ( int coinPos = 0; coinPos < allCoinsCollected.size(); coinPos++ )
             {
-                String land;
-                if ( customCoins.contains( savedCoins.get( i ) ) )
+                if ( customCoins.contains( allCoinsCollected.get( coinPos ) ) )
                 {
                     land = "Custom Coins";
-                    /*land = savedCoins.get( i ).getCoinPark();*/
                 } else
                 {
-                    land = find( savedCoins.get( i ) ).getLand();
+                    land = find( allCoinsCollected.get( coinPos ) ).getLand();
                 }
                 if ( !listAdapter.duplicateSeparator( land ) )
                 {
                     listAdapter.addSeparatorItem( land );
                 }
-                listAdapter.add( savedCoins.get( i ) );
+                listAdapter.add( allCoinsCollected.get( coinPos ) );
             }
             gridViewAdapter.clear();
-            gridViewAdapter.add( savedCoins );
+            gridViewAdapter.add( allCoinsCollected );
             gridViewAdapter.notifyDataSetChanged();
             listAdapter.notifyDataSetChanged();
+        }
+
+        if ( pos == SPINNER_ORGANIZE )
+        {
+            totalCoins.setText( String.valueOf( savedCoins.size() ) );
+        } else
+        {
+            totalCoins.setText( String.valueOf( allCoinsCollected.size() ) );
         }
     }
 

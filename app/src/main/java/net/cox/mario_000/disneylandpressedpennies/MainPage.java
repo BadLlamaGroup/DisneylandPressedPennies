@@ -41,13 +41,18 @@ import static net.cox.mario_000.disneylandpressedpennies.MainActivity.numDowntow
  */
 public class MainPage extends Fragment implements View.OnClickListener
 {
-    TextView total;
+    // Textviews
+    TextView totalCoins;
     TextView disneyCollected;
     TextView calCollected;
     TextView downtownCollected;
+
+    // Data
     List< Coin > savedCoins;
-    SharedPreference sharedPreference;
     int numClicked;
+
+    // References
+    SharedPreference sharedPreference = new SharedPreference();
     MainActivity application;
     private Tracker mTracker;
 
@@ -55,9 +60,15 @@ public class MainPage extends Fragment implements View.OnClickListener
     public void onResume()
     {
         super.onResume();
+
+        // Get saved coins
         savedCoins = sharedPreference.getCoins( getActivity().getApplicationContext() );
+
+        // Update coins collected amount
         numCurrentCoinsCollected = savedCoins.size() - numArcCoinsCollected;
-        total.setText( numCurrentCoinsCollected + " / " + numCurrentCoinsTotal );
+
+        // Set collected amounts
+        totalCoins.setText( numCurrentCoinsCollected + " / " + numCurrentCoinsTotal );
         disneyCollected.setText( numDisneyCoinsCollected + " / " + numDisneyCoinsTotal );
         calCollected.setText( numCalCoinsCollected + " / " + numCalCoinsTotal );
         downtownCollected.setText( numDowntownCoinsCollected + " / " + numDowntownCoinsTotal );
@@ -69,35 +80,39 @@ public class MainPage extends Fragment implements View.OnClickListener
         View myFragmentView = inflater.inflate( R.layout.main_page, container, false );
         getActivity().setTitle( "Main Page" );
 
-        //Link buttons and set on click listener
-        total = ( TextView ) myFragmentView.findViewById( R.id.txt_total_collected );
-        disneyCollected = ( TextView ) myFragmentView.findViewById( R.id.txt_disney_collected );
-        calCollected = ( TextView ) myFragmentView.findViewById( R.id.txt_cal_collected );
-        downtownCollected = ( TextView ) myFragmentView.findViewById( R.id.txt_downtown_collected );
+        // Link buttons
+        totalCoins = myFragmentView.findViewById( R.id.txt_total_collected );
+        disneyCollected = myFragmentView.findViewById( R.id.txt_disney_collected );
+        calCollected = myFragmentView.findViewById( R.id.txt_cal_collected );
+        downtownCollected = myFragmentView.findViewById( R.id.txt_downtown_collected );
 
-        LinearLayout disneyLayout = ( LinearLayout ) myFragmentView.findViewById( R.id.disneyMain );
+        // Link layouts and set listeners
+        LinearLayout disneyLayout = myFragmentView.findViewById( R.id.disneyMain );
         disneyLayout.setOnClickListener( this );
 
-        LinearLayout californiaLayout = ( LinearLayout ) myFragmentView.findViewById( R.id.californiaMain );
+        LinearLayout californiaLayout = myFragmentView.findViewById( R.id.californiaMain );
         californiaLayout.setOnClickListener( this );
 
-        LinearLayout downtownLayout = ( LinearLayout ) myFragmentView.findViewById( R.id.downtownMain );
+        LinearLayout downtownLayout = myFragmentView.findViewById( R.id.downtownMain );
         downtownLayout.setOnClickListener( this );
 
-        sharedPreference = new SharedPreference();
+        // Get saved coins
         savedCoins = sharedPreference.getCoins( getActivity().getApplicationContext() );
+
+        // Update collected coin amount
         numCurrentCoinsCollected = savedCoins.size() - numArcCoinsCollected;
 
-        total.setText( numCurrentCoinsCollected + " / " + numCurrentCoinsTotal );
+        // Set collected amounts
+        totalCoins.setText( numCurrentCoinsCollected + " / " + numCurrentCoinsTotal );
         disneyCollected.setText( numDisneyCoinsCollected + " / " + numDisneyCoinsTotal );
         calCollected.setText( numCalCoinsCollected + " / " + numCalCoinsTotal );
         downtownCollected.setText( numDowntownCoinsCollected + " / " + numDowntownCoinsTotal );
 
-
-        View v = myFragmentView.findViewById( R.id.txtName );
+        // Set hidden mickey listener
+        View appTitle = myFragmentView.findViewById( R.id.txtName );
         numClicked = 0;
 
-        v.setOnClickListener( new View.OnClickListener()
+        appTitle.setOnClickListener( new View.OnClickListener()
         {
             @Override
             public void onClick( View view )
@@ -142,11 +157,11 @@ public class MainPage extends Fragment implements View.OnClickListener
     }
 
     @Override
-    public void onClick( View v )
+    public void onClick( View landSelected )
     {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        int land = v.getId();
+        int land = landSelected.getId();
         Fragment fragment = new Fragment();
         switch ( land )
         {

@@ -21,6 +21,7 @@ import static net.cox.mario_000.disneylandpressedpennies.MainActivity.fragmentMa
 
 public class about extends Fragment
 {
+    // References
     private Tracker mTracker;
 
     @Nullable

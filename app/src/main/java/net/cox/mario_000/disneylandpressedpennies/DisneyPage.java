@@ -38,7 +38,6 @@ public class DisneyPage extends Fragment implements View.OnClickListener
     // Data
     TextView amount;
 
-
     @Override
     public void onResume()
     {

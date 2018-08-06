@@ -13,54 +13,57 @@ import android.widget.ListView;
 
 import com.google.gson.Gson;
 
-import static net.cox.mario_000.disneylandpressedpennies.MainActivity.img;
-
 /**
  * Created by mario_000 on 6/25/2016.
  * Description: Fragment for displaying machines in land
  */
-public class MachineDetail extends Fragment implements Data, AdapterView.OnItemClickListener {
-    private MachineAdapter mMachineAdapter = null;
+public class MachineDetail extends Fragment implements Data, AdapterView.OnItemClickListener
+{
+    // Data
+    private MachineAdapter mMachineAdapter;
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick( AdapterView< ? > parent, View view, int position, long id )
+    {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         Bundle bundle = new Bundle();
         Gson gson = new Gson();
-        String jsonMachine = gson.toJson(mMachineAdapter.machines[position]);
-        bundle.putString("selectedMachine", jsonMachine);
+        String jsonMachine = gson.toJson( mMachineAdapter.machines[ position ] );
+        bundle.putString( "selectedMachine", jsonMachine );
         CoinsInMachineDetail fragment = new CoinsInMachineDetail();
-        fragment.setArguments(bundle);
+        fragment.setArguments( bundle );
 
         fragmentTransaction.setCustomAnimations(
                 R.animator.fade_in,
                 R.animator.fade_out,
                 R.animator.fade_in,
-                R.animator.fade_out);
+                R.animator.fade_out );
 
-        fragmentTransaction.replace(R.id.mainFrag, fragment);
-        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.replace( R.id.mainFrag, fragment );
+        fragmentTransaction.addToBackStack( null );
         fragmentTransaction.commit();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.activity_land, container, false);
+    public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState )
+    {
+        super.onCreate( savedInstanceState );
+        View view = inflater.inflate( R.layout.activity_land, container, false );
 
         // Logo on page of machines in picked land
-        ImageView logo = view.findViewById(R.id.logo);
-
+        ImageView logoView = view.findViewById( R.id.logo );
 
         Bundle extras = getArguments();
-        if (extras != null) {
-            int land = extras.getInt("land");
+        if ( extras != null )
+        {
+            int land = extras.getInt( "land" );
             String logoImg = null;
             Machine[] tempCoins = null;
             String landTitle = null;
 
             //Set array based on land picked
-            switch (land) {
+            switch ( land )
+            {
                 case R.id.tomorrowBtn:
                     logoImg = "tomorrowland";
                     tempCoins = tomorrowCoins;
@@ -161,21 +164,22 @@ public class MachineDetail extends Fragment implements Data, AdapterView.OnItemC
                     tempCoins = paradiseHotelCoins;
                     landTitle = "Paradise Pier Hotel";
                     break;
-
             }
 
             // Set nav bar title
-            getActivity().setTitle(landTitle);
-            int resId = getResources().getIdentifier(logoImg, "drawable", getActivity().getPackageName());
-            img.loadBitmap(resId, getResources(), 1000, 400, logo, 0);
-            mMachineAdapter = new MachineAdapter(getActivity().getApplicationContext(), R.layout.machine_row, tempCoins);
+            getActivity().setTitle( landTitle );
+            int logoResId = getResources().getIdentifier( logoImg, "drawable", getActivity().getPackageName() );
+            logoView.setImageResource( logoResId );
+            //Picasso.get().load( logoResId ).error( R.drawable.new_searching ).fit().into( logoView );
+            mMachineAdapter = new MachineAdapter( getActivity().getApplicationContext(), R.layout.machine_row, tempCoins );
         }
 
         //List of machines in land
-        ListView list = view.findViewById(R.id.landCoins);
-        if (list != null) {
-            list.setAdapter(mMachineAdapter);
-            list.setOnItemClickListener(this);
+        ListView list = view.findViewById( R.id.landCoins );
+        if ( list != null )
+        {
+            list.setAdapter( mMachineAdapter );
+            list.setOnItemClickListener( this );
         }
         return view;
     }

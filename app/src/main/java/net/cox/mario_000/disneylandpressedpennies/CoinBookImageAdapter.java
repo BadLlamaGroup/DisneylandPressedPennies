@@ -9,7 +9,6 @@ import android.animation.AnimatorSet;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
@@ -26,7 +25,6 @@ import java.util.List;
 
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.COIN_PATH;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.find;
-import static net.cox.mario_000.disneylandpressedpennies.MainActivity.img;
 
 class CoinBookImageAdapter extends PagerAdapter
 {
@@ -36,15 +34,15 @@ class CoinBookImageAdapter extends PagerAdapter
     private final SharedPreference sharedPreference = new SharedPreference();
 
     // Coins
-    private List< Coin > coinList;
-    private List< Coin > customCoins;
+    private List< Object > coinList;
+    private List< CustomCoin > customCoins;
 
     // Animation
     private AnimatorSet mSetRightOut;
     private AnimatorSet mSetLeftIn;
 
 
-    CoinBookImageAdapter( Context context, List< Coin > coinList )
+    CoinBookImageAdapter( Context context, List< Object > coinList )
     {
         this.context = context;
         this.coinList = coinList;
@@ -78,57 +76,77 @@ class CoinBookImageAdapter extends PagerAdapter
         final ImageView coinBack = itemView.findViewById( R.id.editCoinBack );
 
         // Get displayed coin
-        final Coin currentCoin = coinList.get( position );
+        if ( coinList.get( position ) instanceof Coin )
+        {
+            final Coin currentCoin = ( Coin ) coinList.get( position );
+            String frontImg = currentCoin.getCoinFrontImg();
 
-        if( customCoins.contains( currentCoin ) )
-        {
-            // Set image
-            Uri frontImage = Uri.fromFile( new File( COIN_PATH + "/" + currentCoin.getCoinFrontImg() ) );
-            Uri backImage = Uri.fromFile( new File( COIN_PATH + "/" + currentCoin.getCoinBackImg() ) );
-            Picasso.get().load( frontImage ).error( R.drawable.new_penny ).fit().into( coinFront );
-            Picasso.get().load( backImage ).error( R.drawable.new_penny_back ).fit().into( coinBack );
-        }
-        else
-        {
+            // Get image resId number
+            final int frontResId = context.getResources().getIdentifier( frontImg, "drawable", context.getPackageName() );
+            final int backResId;
+            // Get machine for coin
             Machine currentMac = find( currentCoin );
-            final int resId3 = context.getResources().getIdentifier( currentCoin.getCoinFrontImg(), "drawable", context.getPackageName() );
-            final int resId4;
-            if ( currentMac.getBackstampImg() == null )
+            String backImg = currentMac.getBackstampImg();
+
+            if ( backImg == null )
             {
-                resId4 = context.getResources().getIdentifier( currentCoin.getCoinFrontImg() + "_backstamp", "drawable", context.getPackageName() );
+                backResId = context.getResources().getIdentifier( frontImg + "_backstamp", "drawable", context.getPackageName() );
             } else
             {
-                resId4 = context.getResources().getIdentifier( currentMac.getBackstampImg(), "drawable", context.getPackageName() );
+                backResId = context.getResources().getIdentifier( backImg, "drawable", context.getPackageName() );
             }
 
-            // Display image
-            img = new DisplayImage();
-            img.loadBitmap( resId3, context.getResources(), 1200, 1200, coinFront, 0 );
+            // Display front image
+            Picasso.get().load( frontResId ).error( R.drawable.new_penny ).into( coinFront );
+
+            // Create dimensions
             BitmapFactory.Options dimensions = new BitmapFactory.Options();
             dimensions.inJustDecodeBounds = true;
-            Bitmap mBitmap = BitmapFactory.decodeResource( context.getResources(), resId3, dimensions );
-            int height = dimensions.outHeight;
-            int width = dimensions.outWidth;
 
-            //Set orientation based on coin direction
-            if ( width > height )
+            // Check dimensions of front image
+            Bitmap frontBitmap = BitmapFactory.decodeResource( context.getResources(), frontResId, dimensions );
+            int frontHeight = dimensions.outHeight;
+            int frontWidth = dimensions.outWidth;
+
+            // Check dimensions of back image
+            Bitmap backBitmap = BitmapFactory.decodeResource( context.getResources(), backResId, dimensions );
+            int backHeight = dimensions.outHeight;
+            int backWidth = dimensions.outWidth;
+
+            // Set orientation based on coin direction
+            if ( frontWidth > frontHeight )
             {
-                Bitmap mBitmap2 = BitmapFactory.decodeResource( context.getResources(), resId4 );
-                if ( mBitmap2.getWidth() < mBitmap2.getHeight() )
+                if ( backWidth < backHeight )
                 {
-                    Matrix matrix = new Matrix();
-                    matrix.postRotate( 90 );
-                    Bitmap bitmap = Bitmap.createBitmap( mBitmap2, 0, 0, mBitmap2.getWidth(), mBitmap2.getHeight(), matrix, true );
-                    coinBack.setImageBitmap( bitmap );
+                    Picasso.get().load( backResId ).error( R.drawable.new_penny_back ).rotate( 90 ).into( coinBack );
                 } else
                 {
-                    img.loadBitmap( resId4, context.getResources(), 1200, 1200, coinBack, resId3 );
+                    Picasso.get().load( backResId ).error( R.drawable.new_penny_back ).into( coinBack );
                 }
-
             } else
             {
-                img.loadBitmap( resId4, context.getResources(), 1200, 1200, coinBack, resId3 );
+                if ( backWidth > backHeight )
+                {
+                    Picasso.get().load( backResId ).error( R.drawable.new_penny_back ).rotate( 90 ).into( coinBack );
+                } else
+                {
+                    Picasso.get().load( backResId ).error( R.drawable.new_penny_back ).into( coinBack );
+                }
             }
+        } else
+        {
+            final CustomCoin currentCoin = ( CustomCoin ) coinList.get( position );
+            String frontImg = currentCoin.getCoinFrontImg();
+
+            int index = customCoins.indexOf( currentCoin );
+            CustomCoin customCoin = customCoins.get( index );
+
+            // Set images
+            Uri frontImage = Uri.fromFile( new File( COIN_PATH + "/" + frontImg ) );
+            Picasso.get().load( frontImage ).error( R.drawable.new_penny ).into( coinFront );
+
+            Uri backImage = Uri.fromFile( new File( COIN_PATH + "/" + customCoin.getCoinBackImg() ) );
+            Picasso.get().load( backImage ).error( R.drawable.new_penny_back ).into( coinBack );
         }
 
         // Set camera distance

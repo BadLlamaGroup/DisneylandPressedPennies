@@ -80,23 +80,26 @@ import static net.cox.mario_000.disneylandpressedpennies.R.id.backupList;
 
 public class Backup extends Fragment
 {
-    private Tracker mTracker;
-    private SharedPreference sharedPreference;
-    boolean storageApproved;
-    List< Coin > savedCoins;
+    // Layouts
     LinearLayout backupBtn;
     LinearLayout restoreBtn;
     LinearLayout exportBtn;
+
+    // Data
+    List< Coin > savedCoins;
     TextView txtCheck;
-    MainActivity application;
+    File sdCard;
+    File dir;
+
+    // References
+    private Tracker mTracker;
+    private SharedPreference sharedPreference = new SharedPreference();
     public static SharedPreferences pref;
     private SimpleDateFormat dateFormat = new SimpleDateFormat( "MMMM dd, yyyy", Locale.US );
 
     @Override
     public void onResume()
     {
-        mTracker.setScreenName( "Page - Backup/Restore" );
-        mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
         super.onResume();
     }
 
@@ -106,42 +109,48 @@ public class Backup extends Fragment
         super.onCreate( savedInstanceState );
         View view = inflater.inflate( R.layout.backup, container, false );
         getActivity().setTitle( "Backup / Restore" );
-
-        application = ( MainActivity ) getActivity();
+        MainActivity application = ( MainActivity ) getActivity();
         mTracker = application.getDefaultTracker();
-
-        sharedPreference = new SharedPreference();
-        savedCoins = sharedPreference.getCoins( getActivity().getApplicationContext() );
+        mTracker.setScreenName( "Page - Backup/Restore" );
+        mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
         pref = application.getApplicationContext().getSharedPreferences( PREFS_NAME, MODE_PRIVATE );
 
+        sdCard = Environment.getExternalStorageDirectory();
+        dir = new File( sdCard.getAbsolutePath() + "/Pressed Coins at Disneyland" );
+        dir.mkdir();
 
+        // Check permissions
         isStoragePermissionGranted();
 
+        // Get saved coins
+        savedCoins = sharedPreference.getCoins( getActivity().getApplicationContext() );
+
+        // Link views
         backupBtn = view.findViewById( backupList );
         restoreBtn = view.findViewById( R.id.restoreList );
         exportBtn = view.findViewById( R.id.exportList );
         txtCheck = view.findViewById( R.id.txtResult );
 
+        // Check for previous backup
         checkBackup();
 
+        // Set listeners
         backupBtn.setOnClickListener( new View.OnClickListener()
         {
             @Override
             public void onClick( View view )
             {
-                showNoticeDialogBackup();
+                showNoticeDialog( view );
             }
         } );
-
         restoreBtn.setOnClickListener( new View.OnClickListener()
         {
             @Override
             public void onClick( View view )
             {
-                showNoticeDialogRestore();
+                showNoticeDialog( view );
             }
         } );
-
         exportBtn.setOnClickListener( new View.OnClickListener()
         {
             @Override
@@ -165,12 +174,7 @@ public class Backup extends Fragment
         ObjectOutputStream output = null;
         try
         {
-            File sdCard = Environment.getExternalStorageDirectory();
-            // TODO: 9/20/2017 Check if dir already exists
-            File dir = new File( sdCard.getAbsolutePath() + "/Pressed Coins at Disneyland" );
-            dir.mkdirs();
             File file = new File( dir, "coinsBackup.ser" );
-            // TODO: 9/20/2017 Make file non-editable
             output = new ObjectOutputStream( new FileOutputStream( file ) );
             output.writeObject( pref.getAll() );
             Toast.makeText( getActivity().getApplicationContext(), "Backup created in " + sdCard.getAbsolutePath() + "/Pressed Coins at Disneyland", Toast.LENGTH_LONG ).show();
@@ -194,6 +198,7 @@ public class Backup extends Fragment
                 ex.printStackTrace();
             }
         }
+        // Check backup was created
         checkBackup();
     }
 
@@ -203,9 +208,6 @@ public class Backup extends Fragment
         ObjectInputStream input = null;
         try
         {
-            File sdCard = Environment.getExternalStorageDirectory();
-            File dir = new File( sdCard.getAbsolutePath() + "/Pressed Coins at Disneyland" );
-            dir.mkdirs();
             File file = new File( dir, "coinsBackup.ser" );
             input = new ObjectInputStream( new FileInputStream( file ) );
             SharedPreferences.Editor prefEdit = pref.edit();
@@ -336,7 +338,6 @@ public class Backup extends Fragment
 
     private boolean checkBackup()
     {
-
         boolean backupExists = false;
 
         if ( Environment.MEDIA_MOUNTED.equals( Environment.getExternalStorageState() ) )
@@ -369,13 +370,7 @@ public class Backup extends Fragment
             {
                 FragmentCompat.requestPermissions( this, new String[]{ android.Manifest.permission.WRITE_EXTERNAL_STORAGE }, 1 );
 
-            } else
-            {
-                storageApproved = true;
             }
-        } else
-        {
-            storageApproved = true;
         }
     }
 
@@ -383,10 +378,7 @@ public class Backup extends Fragment
     public void onRequestPermissionsResult( int requestCode, String[] permissions, int[] grantResults )
     {
         super.onRequestPermissionsResult( requestCode, permissions, grantResults );
-        if ( grantResults[ 0 ] == PackageManager.PERMISSION_GRANTED )
-        {
-            storageApproved = true;
-        } else
+        if ( !( grantResults[ 0 ] == PackageManager.PERMISSION_GRANTED ) )
         {
             getFragmentManager().popBackStackImmediate();
         }
@@ -395,17 +387,14 @@ public class Backup extends Fragment
     // Method for creating a pdf file from text, saving it then opening it for display
     public void createandDisplayPdf()
     {
-        File sdCard = Environment.getExternalStorageDirectory();
-        File dir = new File( sdCard.getAbsolutePath() + "/Pressed Coins at Disneyland" );
-        dir.mkdir();
-
         mTracker.send( new HitBuilders.EventBuilder()
                 .setCategory( "Export" )
                 .setAction( "Exported" )
                 .setValue( 1 )
                 .build() );
 
-        File myFile = new File( dir, "Coin-list.pdf" );
+        // Create exported list
+        File myFile = new File( dir, "Coin-List.pdf" );
 
         try
         {
@@ -425,7 +414,7 @@ public class Backup extends Fragment
             // Get coins
             List< Coin > collectedCoins = sharedPreference.getCoins( getActivity() );
             List< Coin > wantCoins = sharedPreference.getWantedCoins( getActivity() );
-            List< Coin > customCoins = sharedPreference.getCustomCoins( getActivity() );
+            List< CustomCoin > customCoins = sharedPreference.getCustomCoins( getActivity() );
 
             // Prepare collected coins
             Font coinHeaderFont = new Font( Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD );
@@ -563,10 +552,10 @@ public class Backup extends Fragment
             document.newPage();
             count = 1;
 
-            Collections.sort( customCoins, new Comparator< Coin >()
+            Collections.sort( customCoins, new Comparator< CustomCoin >()
             {
                 @Override
-                public int compare( Coin c1, Coin c2 )
+                public int compare( CustomCoin c1, CustomCoin c2 )
                 {
                     return c1.getDateCollected().compareTo( c2.getDateCollected() );
                 }
@@ -581,7 +570,7 @@ public class Backup extends Fragment
                 document.add( linebreak );
                 document.add( Chunk.NEWLINE );
             }
-            for ( Coin coin : customCoins )
+            for ( CustomCoin coin : customCoins )
             {
                 if ( count % 8 == 0 )
                 {
@@ -593,15 +582,13 @@ public class Backup extends Fragment
 
                 BitmapFactory.Options dimensions = new BitmapFactory.Options();
                 dimensions.inJustDecodeBounds = true;
-                //Bitmap bitDim = BitmapFactory.decodeFile( filePath, dimensions );
                 Bitmap mBitmap;
-                if( new File(filePath).exists() )
+                if ( new File( filePath ).exists() )
                 {
                     mBitmap = BitmapFactory.decodeFile( filePath );
-                }
-                else
+                } else
                 {
-                    int resId = getActivity().getResources().getIdentifier("new_penny", "drawable", getActivity().getPackageName());
+                    int resId = getActivity().getResources().getIdentifier( "new_penny", "drawable", getActivity().getPackageName() );
                     mBitmap = BitmapFactory.decodeResource( getActivity().getResources(), resId );
                 }
 
@@ -627,7 +614,6 @@ public class Backup extends Fragment
             }
 
             document.close();
-            Toast.makeText( getActivity(), "PDF Created", Toast.LENGTH_SHORT ).show();
             showNoticeDialogExport( myFile );
         } catch ( DocumentException e )
         {
@@ -660,20 +646,27 @@ public class Backup extends Fragment
         }
     }
 
-    public void showNoticeDialogBackup()
+    public void showNoticeDialog( View btnSelected )
     {
-        final Dialog removeDialog = new Dialog( getActivity(), R.style.CustomDialog );
-        // Set up dialog window
-        removeDialog.setContentView( R.layout.backup_restore_dialog );
-        removeDialog.setTitle( "Title..." );
-        removeDialog.getWindow().setBackgroundDrawable( new ColorDrawable( Color.TRANSPARENT ) );
-        removeDialog.setCancelable( false );
-        TextView txtOption = removeDialog.findViewById( R.id.txt_option );
-        // Link buttons
-        Button noBtn = removeDialog.findViewById( R.id.btn_no );
-        Button backupBtn = removeDialog.findViewById( R.id.btn_yes );
+        final Dialog backupDialog = new Dialog( getActivity(), R.style.CustomDialog );
 
-        txtOption.setText( "Are you sure you want to backup?" );
+        // Set up dialog window
+        backupDialog.setContentView( R.layout.backup_restore_dialog );
+        backupDialog.setTitle( "Title..." );
+        backupDialog.getWindow().setBackgroundDrawable( new ColorDrawable( Color.TRANSPARENT ) );
+        backupDialog.setCancelable( false );
+
+        // Link views
+        Button noBtn = backupDialog.findViewById( R.id.btn_no );
+        Button yesBtn = backupDialog.findViewById( R.id.btn_yes );
+        TextView txtOption = backupDialog.findViewById( R.id.txt_option );
+
+        // Get dialog type
+        final Boolean backup = btnSelected.getId() == R.id.backupList;
+
+        // Set text
+        String dialogType = backup ? "backup?" : "restore?";
+        txtOption.setText( String.format( "Are you sure you want to %s", dialogType ) );
 
         // Listeners for buttons
         noBtn.setOnClickListener( new View.OnClickListener()
@@ -681,83 +674,49 @@ public class Backup extends Fragment
             @Override
             public void onClick( View view )
             {
-                removeDialog.dismiss();
+                backupDialog.dismiss();
             }
         } );
 
-        backupBtn.setOnClickListener( new View.OnClickListener()
+        yesBtn.setOnClickListener( new View.OnClickListener()
         {
             @Override
             public void onClick( View view )
             {
-                backupApp();
+                if ( backup )
+                {
+                    backupApp();
+                } else
+                {
+                    restoreApp();
+                }
+
                 mTracker.send( new HitBuilders.EventBuilder()
                         .setCategory( "Backup/Restore" )
-                        .setAction( "Backed up" )
+                        .setAction( backup ? "Backed Up" : "Restored" )
                         .setValue( 1 )
                         .build() );
-                removeDialog.dismiss();
+                backupDialog.dismiss();
             }
         } );
 
-        removeDialog.show();
-    }
-
-    public void showNoticeDialogRestore()
-    {
-        final Dialog removeDialog = new Dialog( getActivity(), R.style.CustomDialog );
-        // Set up dialog window
-        removeDialog.setContentView( R.layout.backup_restore_dialog );
-        removeDialog.setTitle( "Title..." );
-        removeDialog.getWindow().setBackgroundDrawable( new ColorDrawable( Color.TRANSPARENT ) );
-        removeDialog.setCancelable( false );
-        TextView txtOption = removeDialog.findViewById( R.id.txt_option );
-        // Link buttons
-        Button noBtn = removeDialog.findViewById( R.id.btn_no );
-        Button restoreBtn = removeDialog.findViewById( R.id.btn_yes );
-
-        txtOption.setText( "Are you sure you want to restore?" );
-
-        // Listeners for buttons
-        noBtn.setOnClickListener( new View.OnClickListener()
-        {
-            @Override
-            public void onClick( View view )
-            {
-                removeDialog.dismiss();
-            }
-        } );
-
-        restoreBtn.setOnClickListener( new View.OnClickListener()
-        {
-            @Override
-            public void onClick( View view )
-            {
-                restoreApp();
-                mTracker.send( new HitBuilders.EventBuilder()
-                        .setCategory( "Backup/Restore" )
-                        .setAction( "Restored" )
-                        .setValue( 1 )
-                        .build() );
-                removeDialog.dismiss();
-            }
-        } );
-
-        removeDialog.show();
+        backupDialog.show();
     }
 
     public void showNoticeDialogExport( final File myFile )
     {
         final Dialog removeDialog = new Dialog( getActivity(), R.style.CustomDialog );
+
         // Set up dialog window
         removeDialog.setContentView( R.layout.backup_restore_dialog );
         removeDialog.setTitle( "Title..." );
         removeDialog.getWindow().setBackgroundDrawable( new ColorDrawable( Color.TRANSPARENT ) );
         removeDialog.setCancelable( false );
-        TextView txtOption = removeDialog.findViewById( R.id.txt_option );
-        // Link buttons
+
+        // Link views
         Button noBtn = removeDialog.findViewById( R.id.btn_no );
         Button exportBtn = removeDialog.findViewById( R.id.btn_yes );
+        TextView txtOption = removeDialog.findViewById( R.id.txt_option );
 
         txtOption.setText( "Would you like to view the PDF?" );
 

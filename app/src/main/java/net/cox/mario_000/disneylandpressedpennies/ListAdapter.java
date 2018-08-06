@@ -19,7 +19,6 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
@@ -31,7 +30,7 @@ import static net.cox.mario_000.disneylandpressedpennies.MainActivity.find;
  * Created by mario_000 on 7/7/2016.
  * Description: Adapter class for creating lists
  */
-public class ListAdapter extends ArrayAdapter< Coin >
+public class ListAdapter< T > extends ArrayAdapter< T >
 {
     // Adapter types
     private static final int TYPE_ITEM = 0;
@@ -44,14 +43,15 @@ public class ListAdapter extends ArrayAdapter< Coin >
     private final SimpleDateFormat dateFormat = new SimpleDateFormat( "MMMM dd, yyyy", Locale.US );
 
     // Data
-    private final ArrayList tempCoins;
-    private final List< Coin > customCoins;
+    private final List<Object> tempCoins;
+    private final List< CustomCoin > customCoins;
     private final List< Coin > savedCoins;
     private final List< Coin > wantCoins;
     private LayoutInflater inflater;
     private CoinHolder holder;
     private TreeSet< Integer > mSeparatorsSet = new TreeSet<>();
     private Machine machine;
+    Coin savedCoin;
 
     private final View.OnClickListener PopupListener = new View.OnClickListener()
     {
@@ -61,16 +61,22 @@ public class ListAdapter extends ArrayAdapter< Coin >
             //Get which row was clicked
             Integer viewPos = ( Integer ) v.getTag();
             Intent bigImageIntent = new Intent( context, BigImage.class );
-            Coin coin = ( Coin ) tempCoins.get( viewPos );
-            if ( customCoins.contains( coin ) )
+            if ( tempCoins.get( viewPos ) instanceof Coin )
             {
-                bigImageIntent.putExtra( "frontImg", coin.getCoinFrontImg() );
-                bigImageIntent.putExtra( "backImg", coin.getCoinBackImg() );
-            } else
-            {
+                Coin coin = ( Coin ) tempCoins.get( viewPos );
                 machine = find( coin );
                 bigImageIntent.putExtra( "frontImg", coin.getCoinFrontImg() );
                 bigImageIntent.putExtra( "backImg", machine.getBackstampImg() );
+            } else if ( tempCoins.get( viewPos ) instanceof CustomCoin )
+            {
+                CustomCoin coin = ( CustomCoin ) tempCoins.get( viewPos );
+                if ( customCoins.contains( coin ) )
+                {
+                    int index = customCoins.indexOf( coin );
+                    CustomCoin customCoin = customCoins.get( index );
+                    bigImageIntent.putExtra( "frontImg", coin.getCoinFrontImg() );
+                    bigImageIntent.putExtra( "backImg", customCoin.getCoinBackImg() );
+                }
             }
 
             bigImageIntent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
@@ -78,7 +84,7 @@ public class ListAdapter extends ArrayAdapter< Coin >
         }
     };
 
-    public ListAdapter( Context context, int resource, ArrayList coins )
+    public ListAdapter( Context context, int resource, List coins )
     {
         super( context, resource, coins );
         this.context = context;
@@ -123,60 +129,136 @@ public class ListAdapter extends ArrayAdapter< Coin >
                 holder.description = row.findViewById( R.id.rowDescription );
                 holder.collected = row.findViewById( R.id.rowCollected );
                 holder.imageView = row.findViewById( R.id.imgCoin );
-                row.setTag( holder );
 
                 //Set which row was clicked
                 holder.imageView.setTag( position );
 
                 // Get single coin
-                final Coin coin = ( Coin ) tempCoins.get( position );
-                Coin savedCoin = coin;
-
-                // Check if coin is collected
-                for ( Coin c : savedCoins )
+                if ( tempCoins.get( position ) instanceof Coin )
                 {
-                    if ( c.equals( coin ) )
-                    {
-                        savedCoin = savedCoins.get( savedCoins.indexOf( c ) );
-                    }
-                }
-
-                if ( customCoins.contains( coin ) )
-                {
-                    // Set image
-                    Uri frontImage = Uri.fromFile( new File( COIN_PATH + "/" + coin.getCoinFrontImg() ) );
-                    Picasso.get().load( frontImage ).error( R.drawable.new_penny ).fit().into( holder.imageView );
-
-                    //Set text value for row
-                    holder.name.setText( String.valueOf( coin.getTitleCoin() ) );
-                    holder.description.setText( String.valueOf( coin.getCoinPark() ) );
-                    holder.imageView.setOnClickListener( PopupListener );
-                } else
-                {
+                    final Coin coin = ( Coin ) tempCoins.get( position );
                     //Set image and res id
-                    int resId = context.getResources().getIdentifier( coin.getCoinFrontImg(), "drawable", context.getPackageName() );
-                    Picasso.get().load( resId ).error( R.drawable.new_penny ).into( holder.imageView );
-                    //img.loadBitmap( resId, context.getResources(), 100, 140, holder.imageView, 0 );
+                    int frontResId = context.getResources().getIdentifier( coin.getCoinFrontImg(), "drawable", context.getPackageName() );
+                    Picasso.get().load( frontResId ).error( R.drawable.new_penny ).into( holder.imageView );
                     holder.imageView.setOnClickListener( PopupListener );
 
                     // Find machine that coin belongs to
-                    Machine mac = find( savedCoin );
-                    //Set text value for row
-                    holder.name.setText( String.valueOf( savedCoin.getTitleCoin() ) );
-                    holder.description.setText( String.valueOf( mac.getMachineName() ) );
-                }
+                    Machine mac = find( coin );
 
-                if ( savedCoin.getDateCollected() != null )
-                {
-                    holder.collected.setText( String.format( "Collected: %s", dateFormat.format( savedCoin.getDateCollected() ) ) );
-                } else
-                {
-                    if ( checkWant( savedCoin ) )
+                    //Set text value for row
+                    holder.name.setText( String.valueOf( coin.getTitleCoin() ) );
+                    holder.description.setText( String.valueOf( mac.getMachineName() ) );
+
+                    savedCoin = coin;
+
+                    // Check if coin is collected
+                    for ( Coin c : savedCoins )
                     {
-                        holder.collected.setText( "Want It" );
+                        if ( c.equals( coin ) )
+                        {
+                            savedCoin = savedCoins.get( savedCoins.indexOf( c ) );
+                        }
+                    }
+
+                    if ( savedCoin.getDateCollected() != null )
+                    {
+                        holder.collected.setText( String.format( "Collected: %s", dateFormat.format( savedCoin.getDateCollected() ) ) );
                     } else
                     {
-                        holder.collected.setText( "Not yet collected" );
+                        if ( checkWant( coin ) )
+                        {
+                            holder.collected.setText( "Want It" );
+                        } else
+                        {
+                            holder.collected.setText( "Not yet collected" );
+                        }
+                    }
+
+
+                    // Set detail listener
+                    row.setOnClickListener( new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick( View view )
+                        {
+                            FragmentTransaction fragmentTransaction = ( ( Activity ) context ).getFragmentManager().beginTransaction();
+                            Bundle bundle = new Bundle();
+                            Gson gson = new Gson();
+                            String jsonCoin = gson.toJson( coin );
+
+                            fragmentTransaction.setCustomAnimations(
+                                    R.animator.fade_in,
+                                    R.animator.fade_out,
+                                    R.animator.fade_in,
+                                    R.animator.fade_out );
+
+                            singleCoin fragment = new singleCoin();
+                            String jsonMac = gson.toJson( find( coin ) );
+                            bundle.putString( "selectedCoin", jsonCoin );
+                            bundle.putString( "selectedMachine", jsonMac );
+                            fragment.setArguments( bundle );
+                            fragmentTransaction.replace( R.id.mainFrag, fragment );
+
+                            fragmentTransaction.addToBackStack( null );
+                            fragmentTransaction.commit();
+                        }
+                    } );
+
+
+                } else if ( tempCoins.get( position ) instanceof CustomCoin )
+                {
+                    final CustomCoin coin = ( CustomCoin ) tempCoins.get( position );
+                    if ( customCoins.contains( coin ) )
+                    {
+                        int index = customCoins.indexOf( coin );
+                        final CustomCoin customCoin = customCoins.get( index );
+
+                        // Set image
+                        Uri frontImage = Uri.fromFile( new File( COIN_PATH + "/" + customCoin.getCoinFrontImg() ) );
+                        Picasso.get().load( frontImage ).error( R.drawable.new_penny ).fit().into( holder.imageView );
+
+                        //Set text value for row
+                        holder.name.setText( String.valueOf( customCoin.getTitleCoin() ) );
+                        holder.description.setText( String.valueOf( customCoin.getCoinPark() ) );
+                        holder.imageView.setOnClickListener( PopupListener );
+
+
+                        if ( customCoin.getDateCollected() != null )
+                        {
+                            holder.collected.setText( String.format( "Collected: %s", dateFormat.format( customCoin.getDateCollected() ) ) );
+                        } else
+                        {
+                            holder.collected.setText( "Not yet collected" );
+                        }
+
+
+                        // Set detail listener
+                        row.setOnClickListener( new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick( View view )
+                            {
+                                FragmentTransaction fragmentTransaction = ( ( Activity ) context ).getFragmentManager().beginTransaction();
+                                Bundle bundle = new Bundle();
+                                Gson gson = new Gson();
+                                String jsonCoin = gson.toJson( customCoin );
+
+                                fragmentTransaction.setCustomAnimations(
+                                        R.animator.fade_in,
+                                        R.animator.fade_out,
+                                        R.animator.fade_in,
+                                        R.animator.fade_out );
+
+                                CustomCoinFragment fragment = new CustomCoinFragment();
+                                bundle.putString( "selectedCoin", jsonCoin );
+                                fragment.setArguments( bundle );
+                                fragmentTransaction.replace( R.id.mainFrag, fragment );
+
+                                fragmentTransaction.addToBackStack( null );
+                                fragmentTransaction.commit();
+                            }
+                        } );
+
                     }
                 }
 
@@ -188,46 +270,7 @@ public class ListAdapter extends ArrayAdapter< Coin >
                     {
                         holder.name.setSelected( true );
                     }
-                }, 1500 );
-
-                // Set detail listener
-                row.setOnClickListener( new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick( View view )
-                    {
-                        view.setTag( position );
-
-                        FragmentTransaction fragmentTransaction = ( ( Activity ) context ).getFragmentManager().beginTransaction();
-                        Bundle bundle = new Bundle();
-                        Gson gson = new Gson();
-                        String jsonCoin = gson.toJson( coin );
-
-                        fragmentTransaction.setCustomAnimations(
-                                R.animator.fade_in,
-                                R.animator.fade_out,
-                                R.animator.fade_in,
-                                R.animator.fade_out );
-
-                        if ( customCoins.contains( coin ) )
-                        {
-                            CustomCoinFragment fragment = new CustomCoinFragment();
-                            bundle.putString( "selectedCoin", jsonCoin );
-                            fragment.setArguments( bundle );
-                            fragmentTransaction.replace( R.id.mainFrag, fragment );
-                        } else
-                        {
-                            singleCoin fragment = new singleCoin();
-                            String jsonMac = gson.toJson( find( coin ) );
-                            bundle.putString( "selectedCoin", jsonCoin );
-                            bundle.putString( "selectedMachine", jsonMac );
-                            fragment.setArguments( bundle );
-                            fragmentTransaction.replace( R.id.mainFrag, fragment );
-                        }
-                        fragmentTransaction.addToBackStack( null );
-                        fragmentTransaction.commit();
-                    }
-                } );
+                }, 2500 );
 
                 return row;
 
