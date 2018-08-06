@@ -29,14 +29,16 @@ import static net.cox.mario_000.disneylandpressedpennies.MainActivity.COIN_PATH;
  * Created by mario_000 on 7/14/2018.
  */
 
-public class CustomCoinAdapter extends ArrayAdapter< Coin > implements View.OnClickListener
+public class CustomCoinAdapter extends ArrayAdapter< CustomCoin > implements View.OnClickListener
 {
     // Adapter types
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
+
     // References
     private final Context context;
     private final int mResource;
+
     // Data
     private final ArrayList customCoins;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat( "MMMM dd, yyyy", Locale.US );
@@ -70,13 +72,12 @@ public class CustomCoinAdapter extends ArrayAdapter< Coin > implements View.OnCl
                 holder.description = row.findViewById( R.id.rowDescription );
                 holder.collected = row.findViewById( R.id.rowCollected );
                 holder.imageView = row.findViewById( R.id.imgCoin );
-                row.setTag( holder );
 
                 //Set which row was clicked
                 holder.imageView.setTag( position );
 
                 // Get single coin
-                final Coin savedCoin = ( Coin ) customCoins.get( position );
+                final CustomCoin savedCoin = ( CustomCoin ) customCoins.get( position );
 
                 // Set image
                 Uri frontImage = Uri.fromFile( new File( COIN_PATH + "/" + savedCoin.getCoinFrontImg() ) );
@@ -101,7 +102,7 @@ public class CustomCoinAdapter extends ArrayAdapter< Coin > implements View.OnCl
                     {
                         holder.name.setSelected( true );
                     }
-                }, 1500 );
+                }, 2500 );
 
                 // Set detail listener
                 row.setOnClickListener( new View.OnClickListener()
@@ -152,7 +153,7 @@ public class CustomCoinAdapter extends ArrayAdapter< Coin > implements View.OnCl
     {
         //Get which row was clicked
         Integer viewPos = ( Integer ) v.getTag();
-        Coin coin = ( Coin ) customCoins.get( viewPos );
+        CustomCoin coin = ( CustomCoin ) customCoins.get( viewPos );
         Intent bigIntent = new Intent( context, BigImage.class );
         bigIntent.putExtra( "frontImg", coin.getCoinFrontImg() );
         bigIntent.putExtra( "backImg", coin.getCoinBackImg() );

@@ -36,326 +36,350 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-
 /**
  * Created by mario_000 on 6/25/2016.
  * Description: An app to keep track of souvenir pressed coins at Disneyland Resort
  */
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Data {
-    public static FragmentManager fragmentManager;
-
-
-    public static DisplayImage img;
-    private int menuItemId;
-    public static String PACKAGE_NAME;
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Data
+{
+    // Coin totals
     public static int numDisneyCoinsTotal;
     public static int numCalCoinsTotal;
     public static int numDowntownCoinsTotal;
     public static int numCurrentCoinsTotal;
     public static int numCoinsTotal;
     public static int numArcCoinsTotal;
-
     public static int numDisneyCoinsCollected;
     public static int numCalCoinsCollected;
     public static int numDowntownCoinsCollected;
     public static int numCurrentCoinsCollected;
     public static int numArcCoinsCollected;
-    private static final String USER_ID = "User_ID";
-    public static final String AUTO_ENABLED = "Auto_Enabled";
-    public static final String PREFS_NAME = "Coin_App";
-    private String uniqueID;
-    public static boolean autoEnabled;
     public static int numCoins;
-    NavigationView navigationView;
-    SharedPreference sharedPreference;
-    public static Context appContext;
-    private static List<Coin> savedCoins;
-    private static final String LAST_VERSION_CODE_KEY = "last_version_code";
+
+    // Data
+    private static List< Coin > savedCoins;
+
+    // Strings
+    public static final String PREFS_NAME = "Coin_App";
+    public static String PACKAGE_NAME;
     public static final String DISNEYLAND = "Disneyland";
     public static final String CALIFORNIA_ADVENTURE = "California Adventure";
     public static final String DOWNTOWN_DISNEY = "Downtown Disney";
     public static final String RETIRED = "Retired";
-
+    private static final String LAST_VERSION_CODE_KEY = "last_version_code";
     public static File COIN_PATH;
+    public String FIRST_RUN = "MyPrefsFile";
 
+    // References
+    public static FragmentManager fragmentManager;
+    private int menuItemId;
+    private NavigationView navigationView;
+    private SharedPreference sharedPreference;
+    public static Context appContext;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate( Bundle savedInstanceState )
+    {
         // TODO: 4/19/2017 Milestones users, coins collected
-        setTheme(R.style.AppTheme);
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        img = new DisplayImage();
+        setTheme( R.style.AppTheme );
+        super.onCreate( savedInstanceState );
+        setContentView( R.layout.activity_main );
+        Toolbar toolbar = findViewById( R.id.toolbar );
+        setSupportActionBar( toolbar );
         PACKAGE_NAME = getApplicationContext().getPackageName();
+        appContext = getApplication().getApplicationContext();
+        mTracker = getDefaultTracker();
+
+        mTracker.send( new HitBuilders.EventBuilder()
+                .setCategory( "UX" )
+                .setAction( "User Sign In" )
+                .build() );
 
         // Set filepath
         String root = Environment.getExternalStorageDirectory().toString();
         COIN_PATH = new File( root + "/Pressed Coins at Disneyland/Coins" );
-
-
         sharedPreference = new SharedPreference();
-        appContext = getApplication().getApplicationContext();
-        mTracker = getDefaultTracker();
+        // Get saved coins
+        savedCoins = sharedPreference.getCoins( getApplicationContext() );
 
-        mTracker.send(new HitBuilders.EventBuilder()
-                .setCategory("UX")
-                .setAction("User Sign In")
-                .build());
-
-        final String PREFS_NAME = "MyPrefsFile";
-
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        //SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        savedCoins = sharedPreference.getCoins(getApplicationContext());
+        // Check if first run
+        SharedPreferences settings = getSharedPreferences( FIRST_RUN, 0 );
         SharedPreferences.Editor editor = settings.edit();
-        //autoEnabled = settings.getBoolean(AUTO_ENABLED, false);
 
-        if (settings.getBoolean("my_first_time", true)) {
-            //the app is being launched for first time, do something
-            Toast.makeText(getApplicationContext(), "Welcome to Disneyland Pressed Coins", Toast.LENGTH_SHORT).show();
-
+        if ( settings.getBoolean( "my_first_time", true ) )
+        {
+            // First launch
+            Toast.makeText( getApplicationContext(), "Welcome to Disneyland Pressed Coins", Toast.LENGTH_SHORT ).show();
             fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             tutorial fragment = new tutorial();
-            fragmentTransaction.replace(R.id.mainFrag, fragment, "main");
+            fragmentTransaction.replace( R.id.mainFrag, fragment, "main" );
             fragmentTransaction.commit();
 
-
-            // record the fact that the app has been started at least once
-            settings.edit().putBoolean("my_first_time", false).apply();
-        } else {
+            // Update that the app ran before
+            settings.edit().putBoolean( "my_first_time", false ).apply();
+        } else
+        {
             fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             MainPage fragment = new MainPage();
-            fragmentTransaction.replace(R.id.mainFrag, fragment, "main");
+            fragmentTransaction.replace( R.id.mainFrag, fragment, "main" );
             fragmentTransaction.commit();
-            new whatsNew(this).show();
-//            updateImages();
-//            updateCoinTotals();
-//            updateTitles();
+            new whatsNew( this ).show();
         }
-        try {
-            final PackageInfo packageInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_ACTIVITIES);
-            final long lastVersionCode = settings.getLong(LAST_VERSION_CODE_KEY, 0);
-            if (packageInfo.versionCode != lastVersionCode) {
-                editor.putLong(LAST_VERSION_CODE_KEY, packageInfo.versionCode);
+        try
+        {
+            // Save current version number
+            final PackageInfo packageInfo = this.getPackageManager().getPackageInfo( this.getPackageName(), PackageManager.GET_ACTIVITIES );
+            final long lastVersionCode = settings.getLong( LAST_VERSION_CODE_KEY, 0 );
+            if ( packageInfo.versionCode != lastVersionCode )
+            {
+                editor.putLong( LAST_VERSION_CODE_KEY, packageInfo.versionCode );
                 editor.apply();
             }
 
-        } catch (PackageManager.NameNotFoundException e) {
+        } catch ( PackageManager.NameNotFoundException e )
+        {
             e.printStackTrace();
         }
 
         updateImages();
-        updateCoinTotals();
         updateTitles();
+        updateCoinTotals();
 
-
-//        // TODO: 1/20/2017 Check if needed
-//        // Check for image updates
-
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
-        navigationView.setCheckedItem(R.id.nav_main_page);
+        // Create menu drawer
+        DrawerLayout drawer = findViewById( R.id.drawer_layout );
+        navigationView = findViewById( R.id.nav_view );
+        navigationView.setNavigationItemSelectedListener( this );
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle( this, drawer, toolbar, R.string.drawer_open, R.string.drawer_close );
+        navigationView.setCheckedItem( R.id.nav_main_page );
         menuItemId = R.id.nav_main_page;
-        getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+
+        // Watch for fragment changes
+        getFragmentManager().addOnBackStackChangedListener( new FragmentManager.OnBackStackChangedListener()
+        {
             @Override
-            public void onBackStackChanged() {
-                Fragment f = getFragmentManager().findFragmentById(R.id.mainFrag);
-                if (f instanceof MainPage) {
+            public void onBackStackChanged()
+            {
+                Fragment f = getFragmentManager().findFragmentById( R.id.mainFrag );
+                if ( f instanceof MainPage )
+                {
                     menuItemId = R.id.nav_main_page;
-                    navigationView.setCheckedItem(R.id.nav_main_page);
-                } else if (f instanceof MapsActivity) {
+                    navigationView.setCheckedItem( R.id.nav_main_page );
+                } else if ( f instanceof MapsActivity )
+                {
                     menuItemId = R.id.nav_maps;
-                    navigationView.setCheckedItem(R.id.nav_maps);
-                } else if (f instanceof CoinBookDetail) {
+                    navigationView.setCheckedItem( R.id.nav_maps );
+                } else if ( f instanceof CoinBookDetail )
+                {
                     menuItemId = R.id.nav_coin_book;
-                    navigationView.setCheckedItem(R.id.nav_coin_book);
-                } else if (f instanceof DisneyPage) {
-                    navigationView.setCheckedItem(R.id.nav_disneyland);
+                    navigationView.setCheckedItem( R.id.nav_coin_book );
+                } else if ( f instanceof DisneyPage )
+                {
+                    navigationView.setCheckedItem( R.id.nav_disneyland );
                     menuItemId = R.id.nav_disneyland;
-                } else if (f instanceof CaliforniaPage) {
-                    navigationView.setCheckedItem(R.id.nav_california);
+                } else if ( f instanceof CaliforniaPage )
+                {
+                    navigationView.setCheckedItem( R.id.nav_california );
                     menuItemId = R.id.nav_california;
-                } else if (f instanceof allCoins) {
+                } else if ( f instanceof allCoins )
+                {
                     menuItemId = R.id.nav_all_coins;
-                    navigationView.setCheckedItem(R.id.nav_all_coins);
-                } else if (f instanceof DowntownPage) {
-                    navigationView.setCheckedItem(R.id.nav_downtown);
+                    navigationView.setCheckedItem( R.id.nav_all_coins );
+                } else if ( f instanceof DowntownPage )
+                {
+                    navigationView.setCheckedItem( R.id.nav_downtown );
                     menuItemId = R.id.nav_downtown;
-                } else if (f instanceof about) {
-                    navigationView.setCheckedItem(R.id.nav_about);
+                } else if ( f instanceof about )
+                {
+                    navigationView.setCheckedItem( R.id.nav_about );
                     menuItemId = R.id.nav_about;
-                } else if (f instanceof tutorial) {
-                    navigationView.setCheckedItem(R.id.nav_tutorial);
+                } else if ( f instanceof tutorial )
+                {
+                    navigationView.setCheckedItem( R.id.nav_tutorial );
                     menuItemId = R.id.nav_tutorial;
-                } else if (f instanceof search) {
-                    navigationView.setCheckedItem(R.id.search_key);
+                } else if ( f instanceof search )
+                {
+                    navigationView.setCheckedItem( R.id.search_key );
                     menuItemId = R.id.nav_search;
-                } else if (f instanceof wantList) {
+                } else if ( f instanceof wantList )
+                {
                     //Do Nothing
-                }
-                else if(f instanceof Backup){
-                    navigationView.setCheckedItem(R.id.nav_backup);
+                } else if ( f instanceof Backup )
+                {
+                    navigationView.setCheckedItem( R.id.nav_backup );
                     menuItemId = R.id.nav_backup;
-                }
-                else if(f instanceof CustomCoinList){
-                    navigationView.setCheckedItem(R.id.nav_custom_coin);
+                } else if ( f instanceof CustomCoinList )
+                {
+                    navigationView.setCheckedItem( R.id.nav_custom_coin );
                     menuItemId = R.id.nav_custom_coin;
+                } else
+                {
+                    navigationView.setCheckedItem( menuItemId );
                 }
-                else {
-                    navigationView.setCheckedItem(menuItemId);
-                }
-
             }
-        });
+        } );
 
-        drawer.addDrawerListener(toggle);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
+        drawer.addDrawerListener( toggle );
+        getSupportActionBar().setDisplayHomeAsUpEnabled( true );
+        getSupportActionBar().setHomeButtonEnabled( true );
         toggle.syncState();
-
     }
 
-    public void updateImages() {
-        for (Coin coin : savedCoins) {
-            //outerloop:
-            for (Machine[] m : disneyMachines) {
-                for (Machine mach : m) {
-                    for (Coin c : mach.getCoins()) {
-                        if (c.getTitleCoin().equals(coin.getTitleCoin())) {
-                            if (!coin.getCoinFrontImg().equals(c.getCoinFrontImg())) {
-                                coin.setCoinFrontImg(c.getCoinFrontImg());
-            //                    break outerloop;
+    public void updateImages()
+    {
+        for ( Coin coin : savedCoins )
+        {
+            for ( Machine[] m : disneyMachines )
+            {
+                for ( Machine mach : m )
+                {
+                    for ( Coin c : mach.getCoins() )
+                    {
+                        if ( c.getTitleCoin().equals( coin.getTitleCoin() ) )
+                        {
+                            if ( !coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
+                            {
+                                coin.setCoinFrontImg( c.getCoinFrontImg() );
                             }
                         }
                     }
                 }
             }
-            //outerloop:
-            for (Machine[] m : calMachines) {
-                for (Machine mach : m) {
-                    for (Coin c : mach.getCoins()) {
-                        if (c.getTitleCoin().equals(coin.getTitleCoin())) {
-                            if (!coin.getCoinFrontImg().equals(c.getCoinFrontImg())) {
-                                coin.setCoinFrontImg(c.getCoinFrontImg());
-              //                  break outerloop;
+            for ( Machine[] m : calMachines )
+            {
+                for ( Machine mach : m )
+                {
+                    for ( Coin c : mach.getCoins() )
+                    {
+                        if ( c.getTitleCoin().equals( coin.getTitleCoin() ) )
+                        {
+                            if ( !coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
+                            {
+                                coin.setCoinFrontImg( c.getCoinFrontImg() );
                             }
                         }
                     }
                 }
             }
-            //outerloop:
-            for (Machine[] m : downtownMachines) {
-                for (Machine mach : m) {
-                    for (Coin c : mach.getCoins()) {
-                        if (c.getTitleCoin().equals(coin.getTitleCoin())) {
-                            if (!coin.getCoinFrontImg().equals(c.getCoinFrontImg())) {
-                                coin.setCoinFrontImg(c.getCoinFrontImg());
-            //                    break outerloop;
+            for ( Machine[] m : downtownMachines )
+            {
+                for ( Machine mach : m )
+                {
+                    for ( Coin c : mach.getCoins() )
+                    {
+                        if ( c.getTitleCoin().equals( coin.getTitleCoin() ) )
+                        {
+                            if ( !coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
+                            {
+                                coin.setCoinFrontImg( c.getCoinFrontImg() );
                             }
                         }
                     }
                 }
             }
 
-            //outerloop:
-            for (Machine[] m : retiredMachines) {
-                for (Machine mach : m) {
-                    for (Coin c : mach.getCoins()) {
-                        if (c.getTitleCoin().equals(coin.getTitleCoin())) {
-                            if (!coin.getCoinFrontImg().equals(c.getCoinFrontImg())) {
-                                coin.setCoinFrontImg(c.getCoinFrontImg());
-              //                  break outerloop;
+            for ( Machine[] m : retiredMachines )
+            {
+                for ( Machine mach : m )
+                {
+                    for ( Coin c : mach.getCoins() )
+                    {
+                        if ( c.getTitleCoin().equals( coin.getTitleCoin() ) )
+                        {
+                            if ( !coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
+                            {
+                                coin.setCoinFrontImg( c.getCoinFrontImg() );
                             }
                         }
                     }
                 }
             }
 
+            sharedPreference.saveCoins( getApplicationContext(), savedCoins );
+        }
+    }
 
+    public void updateTitles()
+    {
+        for ( Coin coin : savedCoins )
+        {
+            for ( Machine[] m : disneyMachines )
+            {
+                for ( Machine mach : m )
+                {
+                    for ( Coin c : mach.getCoins() )
+                    {
+                        if ( !c.getTitleCoin().equals( coin.getTitleCoin() ) )
+                        {
+                            if ( coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
+                            {
+                                coin.setTitleCoin( c.getTitleCoin() );
+                            }
+                        }
+                    }
+                }
+            }
+            for ( Machine[] m : calMachines )
+            {
+                for ( Machine mach : m )
+                {
+                    for ( Coin c : mach.getCoins() )
+                    {
+                        if ( !c.getTitleCoin().equals( coin.getTitleCoin() ) )
+                        {
+                            if ( coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
+                            {
+                                coin.setTitleCoin( c.getTitleCoin() );
+                            }
+                        }
+                    }
+                }
+            }
+            for ( Machine[] m : downtownMachines )
+            {
+                for ( Machine mach : m )
+                {
+                    for ( Coin c : mach.getCoins() )
+                    {
+                        if ( !c.getTitleCoin().equals( coin.getTitleCoin() ) )
+                        {
+                            if ( coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
+                            {
+                                coin.setTitleCoin( c.getTitleCoin() );
+                            }
+                        }
+                    }
+                }
+            }
 
-            sharedPreference.saveCoins(getApplicationContext(), savedCoins);
+            for ( Machine[] m : retiredMachines )
+            {
+                for ( Machine mach : m )
+                {
+                    for ( Coin c : mach.getCoins() )
+                    {
+                        if ( !c.getTitleCoin().equals( coin.getTitleCoin() ) )
+                        {
+                            if ( coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
+                            {
+                                coin.setTitleCoin( c.getTitleCoin() );
+                            }
+                        }
+                    }
+                }
+            }
+
+            sharedPreference.saveCoins( getApplicationContext(), savedCoins );
         }
     }
 
 
-    public void updateTitles() {
-        for (Coin coin : savedCoins) {
-            //outerloop:
-            for (Machine[] m : disneyMachines) {
-                for (Machine mach : m) {
-                    for (Coin c : mach.getCoins()) {
-                        if (!c.getTitleCoin().equals(coin.getTitleCoin())) {
-                            if (coin.getCoinFrontImg().equals(c.getCoinFrontImg())) {
-                                coin.setTitleCoin(c.getTitleCoin());
-                                //                    break outerloop;
-                            }
-                        }
-                    }
-                }
-            }
-            //outerloop:
-            for (Machine[] m : calMachines) {
-                for (Machine mach : m) {
-                    for (Coin c : mach.getCoins()) {
-                        if (!c.getTitleCoin().equals(coin.getTitleCoin())) {
-                            if (coin.getCoinFrontImg().equals(c.getCoinFrontImg())) {
-                                coin.setTitleCoin(c.getTitleCoin());
-                                //                  break outerloop;
-                            }
-                        }
-                    }
-                }
-            }
-            //outerloop:
-            for (Machine[] m : downtownMachines) {
-                for (Machine mach : m) {
-                    for (Coin c : mach.getCoins()) {
-                        if (!c.getTitleCoin().equals(coin.getTitleCoin())) {
-                            if (coin.getCoinFrontImg().equals(c.getCoinFrontImg())) {
-                                coin.setTitleCoin(c.getTitleCoin());
-                                //                    break outerloop;
-                            }
-                        }
-                    }
-                }
-            }
-
-            //outerloop:
-            for (Machine[] m : retiredMachines) {
-                for (Machine mach : m) {
-                    for (Coin c : mach.getCoins()) {
-                        if (!c.getTitleCoin().equals(coin.getTitleCoin())) {
-                            if (coin.getCoinFrontImg().equals(c.getCoinFrontImg())) {
-                                coin.setTitleCoin(c.getTitleCoin());
-                                //                  break outerloop;
-                            }
-                        }
-                    }
-                }
-            }
-
-
-
-            sharedPreference.saveCoins(getApplicationContext(), savedCoins);
-        }
-    }
-
-
-
-
-
-    public void updateCoinTotals() {
-        //SharedPreference sharedPreference = new SharedPreference();
-        savedCoins = sharedPreference.getCoins(appContext);
+    public static void updateCoinTotals()
+    {
+        SharedPreference sharedPreference = new SharedPreference();
+        savedCoins = sharedPreference.getCoins( appContext );
         numDisneyCoinsTotal = 0;
         numCalCoinsTotal = 0;
         numDowntownCoinsTotal = 0;
@@ -367,22 +391,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         numDowntownCoinsCollected = 0;
         numArcCoinsCollected = 0;
         numCoins = 0;
-        for (Machine[] m : disneyMachines) {
-            for (Machine mach : m) {
+        for ( Machine[] m : disneyMachines )
+        {
+            for ( Machine mach : m )
+            {
                 numDisneyCoinsTotal += mach.getCoins().length;
-                for (Coin c : mach.getCoins()) {
-                    if (savedCoins.contains(c)) {
+                for ( Coin c : mach.getCoins() )
+                {
+                    if ( savedCoins.contains( c ) )
+                    {
                         numDisneyCoinsCollected++;
                     }
                 }
             }
         }
 
-        for (Machine[] m : calMachines) {
-            for (Machine mach : m) {
+        for ( Machine[] m : calMachines )
+        {
+            for ( Machine mach : m )
+            {
                 numCalCoinsTotal += mach.getCoins().length;
-                for (Coin c : mach.getCoins()) {
-                    if (savedCoins.contains(c)) {
+                for ( Coin c : mach.getCoins() )
+                {
+                    if ( savedCoins.contains( c ) )
+                    {
                         numCalCoinsCollected++;
                     }
                 }
@@ -390,11 +422,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
-        for (Machine[] m : downtownMachines) {
-            for (Machine mach : m) {
+        for ( Machine[] m : downtownMachines )
+        {
+            for ( Machine mach : m )
+            {
                 numDowntownCoinsTotal += mach.getCoins().length;
-                for (Coin c : mach.getCoins()) {
-                    if (savedCoins.contains(c)) {
+                for ( Coin c : mach.getCoins() )
+                {
+                    if ( savedCoins.contains( c ) )
+                    {
                         numDowntownCoinsCollected++;
                     }
                 }
@@ -402,28 +438,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
-        for (Machine mach : retiredDisneylandMachines) {
+        for ( Machine mach : retiredDisneylandMachines )
+        {
             numArcCoinsTotal += mach.getCoins().length;
-            for (Coin c : mach.getCoins()) {
-                if (savedCoins.contains(c)) {
+            for ( Coin c : mach.getCoins() )
+            {
+                if ( savedCoins.contains( c ) )
+                {
                     numArcCoinsCollected++;
                 }
             }
         }
 
-        for (Machine mach : retiredCaliforniaMachines) {
+        for ( Machine mach : retiredCaliforniaMachines )
+        {
             numArcCoinsTotal += mach.getCoins().length;
-            for (Coin c : mach.getCoins()) {
-                if (savedCoins.contains(c)) {
+            for ( Coin c : mach.getCoins() )
+            {
+                if ( savedCoins.contains( c ) )
+                {
                     numArcCoinsCollected++;
                 }
             }
         }
 
-        for (Machine mach : retiredDowntownMachines) {
+        for ( Machine mach : retiredDowntownMachines )
+        {
             numArcCoinsTotal += mach.getCoins().length;
-            for (Coin c : mach.getCoins()) {
-                if (savedCoins.contains(c)) {
+            for ( Coin c : mach.getCoins() )
+            {
+                if ( savedCoins.contains( c ) )
+                {
                     numArcCoinsCollected++;
                 }
             }
@@ -435,165 +480,176 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         numCoinsTotal += numCurrentCoinsTotal + numArcCoinsTotal;
     }
 
-    void alert(String message) {
-        final Dialog b = new Dialog(MainActivity.this, R.style.CustomDialog);
-        b.setContentView(R.layout.exit_dialog);
-        b.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        // set the custom dialog components - text, image and button
+    void alert( String message )
+    {
+        final Dialog exitDialog = new Dialog( MainActivity.this, R.style.CustomDialog );
+        exitDialog.setContentView( R.layout.exit_dialog );
+        exitDialog.getWindow().setBackgroundDrawable( new ColorDrawable( Color.TRANSPARENT ) );
 
-        Button dialogButton = (Button) b.findViewById(R.id.btn_no);
-        Button dialogButton2 = (Button) b.findViewById(R.id.btn_yes);
-        // if button is clicked, close the custom dialog
+        Button noBtn = exitDialog.findViewById( R.id.btn_no );
+        Button yesBtn = exitDialog.findViewById( R.id.btn_yes );
 
-        navigationView.setCheckedItem(menuItemId);
+        navigationView.setCheckedItem( menuItemId );
 
-        dialogButton.setOnClickListener(new View.OnClickListener() {
+        noBtn.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                b.dismiss();
+            public void onClick( View view )
+            {
+                exitDialog.dismiss();
             }
-        });
+        } );
 
-        dialogButton2.setOnClickListener(new View.OnClickListener() {
+        yesBtn.setOnClickListener( new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                //super.onBackPressed();
-                b.dismiss();
+            public void onClick( View view )
+            {
+                getFragmentManager().popBackStack( null, FragmentManager.POP_BACK_STACK_INCLUSIVE );
+                exitDialog.dismiss();
                 finish();
             }
-        });
+        } );
 
-
-        b.show();
+        exitDialog.show();
     }
 
-
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        Fragment f = getFragmentManager().findFragmentById(R.id.mainFrag);
+    public void onBackPressed()
+    {
+        DrawerLayout drawer = findViewById( R.id.drawer_layout );
+        Fragment mainFragment = getFragmentManager().findFragmentById( R.id.mainFrag );
 
         // Close drawer if open
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else if (f instanceof MainPage) {
+        if ( drawer.isDrawerOpen( GravityCompat.START ) )
+        {
+            drawer.closeDrawer( GravityCompat.START );
+        } else if ( mainFragment instanceof MainPage )
+        {
             // Exit app if on Main Page
-            alert("Exit?");
+            alert( "Exit?" );
 
 
-        } else if (f instanceof DisneyPage || f instanceof CaliforniaPage || f instanceof DowntownPage || f instanceof tutorial) {
+        } else if ( mainFragment instanceof DisneyPage || mainFragment instanceof CaliforniaPage || mainFragment instanceof DowntownPage || mainFragment instanceof tutorial )
+        {
             // Exit to Main Page
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             Fragment main = new MainPage();
-            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.addToBackStack( null );
             fragmentTransaction.setCustomAnimations(
                     R.animator.fade_in,
                     R.animator.fade_out,
                     R.animator.fade_in,
-                    R.animator.fade_out);
-            fragmentTransaction.replace(R.id.mainFrag, main);
+                    R.animator.fade_out );
+            fragmentTransaction.replace( R.id.mainFrag, main );
             fragmentTransaction.commit();
-        }
-//        }else if(f instanceof MapsActivity){
-//
-//        }
-
-        else {
+        } else
+        {
             super.onBackPressed();
         }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu( Menu menu )
+    {
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest2.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public boolean onOptionsItemSelected( MenuItem item )
+    {
+        return item.getItemId() == R.id.action_settings || super.onOptionsItemSelected( item );
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected( MenuItem item )
+    {
         // Handle navigation view item clicks here.
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        DrawerLayout drawer = findViewById( R.id.drawer_layout );
+        drawer.closeDrawer( GravityCompat.START );
         int id = item.getItemId();
         fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment fragment = null;
 
-        if (id == R.id.nav_main_page) {
+        if ( id == R.id.nav_main_page )
+        {
             fragment = new MainPage();
             menuItemId = R.id.nav_main_page;
-        } else if (id == R.id.nav_exit) {
-            navigationView.setCheckedItem(menuItemId);
-            alert("Exit?");
-        } else if (id == R.id.nav_maps) {
+        } else if ( id == R.id.nav_exit )
+        {
+            navigationView.setCheckedItem( menuItemId );
+            alert( "Exit?" );
+        } else if ( id == R.id.nav_maps )
+        {
             menuItemId = R.id.nav_maps;
             fragment = new MapsActivity();
-        } else if (id == R.id.nav_coin_book) {
+        } else if ( id == R.id.nav_coin_book )
+        {
             menuItemId = R.id.nav_coin_book;
             fragment = new CoinBookDetail();
-        } else if (id == R.id.nav_disneyland) {
+        } else if ( id == R.id.nav_disneyland )
+        {
             menuItemId = R.id.nav_disneyland;
             fragment = new DisneyPage();
-        } else if (id == R.id.nav_california) {
+        } else if ( id == R.id.nav_california )
+        {
             menuItemId = R.id.nav_california;
             fragment = new CaliforniaPage();
-        } else if (id == R.id.nav_all_coins) {
+        } else if ( id == R.id.nav_all_coins )
+        {
             menuItemId = R.id.nav_all_coins;
             fragment = new allCoins();
             Bundle args = new Bundle();
-            args.putString("land", "Disneyland");
-            fragment.setArguments(args);
-        } else if (id == R.id.nav_downtown) {
+            args.putString( "land", "Disneyland" );
+            fragment.setArguments( args );
+        } else if ( id == R.id.nav_downtown )
+        {
             menuItemId = R.id.nav_downtown;
             fragment = new DowntownPage();
-        } else if (id == R.id.nav_email) {
+        } else if ( id == R.id.nav_email )
+        {
             DialogFragment frag = new EmailPage();
-            fragmentTransaction.add(frag, "email");
-            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.add( frag, "email" );
+            fragmentTransaction.addToBackStack( null );
             fragmentTransaction.commit();
-        } else if (id == R.id.nav_about) {
+        } else if ( id == R.id.nav_about )
+        {
             menuItemId = R.id.nav_about;
             fragment = new about();
-        } else if (id == R.id.nav_tutorial) {
+        } else if ( id == R.id.nav_tutorial )
+        {
             menuItemId = R.id.nav_tutorial;
             fragment = new tutorial();
-        } else if (id == R.id.nav_search) {
+        } else if ( id == R.id.nav_search )
+        {
             menuItemId = R.id.nav_search;
             fragment = new search();
-        } else if (id == R.id.nav_rate) {
-            RateThisApp.showRateDialog(this);
+        } else if ( id == R.id.nav_rate )
+        {
+            RateThisApp.showRateDialog( this );
             menuItemId = R.id.nav_rate;
             fragment = new MainPage();
-        } else if (id == R.id.nav_want_list) {
+        } else if ( id == R.id.nav_want_list )
+        {
             fragment = new wantList();
             menuItemId = R.id.nav_want_list;
-        }
-        else if (id == R.id.nav_backup){
+        } else if ( id == R.id.nav_backup )
+        {
             fragment = new Backup();
             menuItemId = R.id.nav_backup;
-        }
-        else if (id == R.id.nav_custom_coin) {
+        } else if ( id == R.id.nav_custom_coin )
+        {
             fragment = new CustomCoinList();
             menuItemId = R.id.nav_custom_coin;
         }
 
-        if (fragment != null) {
-            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            fragmentTransaction.remove(getFragmentManager().findFragmentById(R.id.mainFrag));
-            fragmentTransaction.replace(R.id.mainFrag, fragment);
-            fragmentTransaction.addToBackStack(null);
+        if ( fragment != null )
+        {
+            fragmentTransaction.setTransition( FragmentTransaction.TRANSIT_FRAGMENT_FADE );
+            fragmentTransaction.remove( getFragmentManager().findFragmentById( R.id.mainFrag ) );
+            fragmentTransaction.replace( R.id.mainFrag, fragment );
+            fragmentTransaction.addToBackStack( null );
             fragmentTransaction.commit();
         }
         return true;
@@ -601,45 +657,59 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Nullable
 // Find machine that coin belongs to
-    public static Machine find(Coin o1) {
-        for (Machine[] macs : disneyMachines) {
-            for (Machine mac : macs) {
-                List a = Arrays.asList(mac.getCoins());
-                if (a.contains(o1)) {
+    public static Machine find( Object o1 )
+    {
+        for ( Machine[] macs : disneyMachines )
+        {
+            for ( Machine mac : macs )
+            {
+                List a = Arrays.asList( mac.getCoins() );
+                if ( a.contains( o1 ) )
+                {
                     return mac;
                 }
             }
         }
-        for (Machine[] macs : calMachines) {
-            for (Machine mac : macs) {
-                List a = Arrays.asList(mac.getCoins());
-                if (a.contains(o1)) {
+        for ( Machine[] macs : calMachines )
+        {
+            for ( Machine mac : macs )
+            {
+                List a = Arrays.asList( mac.getCoins() );
+                if ( a.contains( o1 ) )
+                {
                     return mac;
                 }
             }
         }
-        for (Machine[] macs : downtownMachines) {
-            for (Machine mac : macs) {
-                List a = Arrays.asList(mac.getCoins());
-                if (a.contains(o1)) {
+        for ( Machine[] macs : downtownMachines )
+        {
+            for ( Machine mac : macs )
+            {
+                List a = Arrays.asList( mac.getCoins() );
+                if ( a.contains( o1 ) )
+                {
                     return mac;
                 }
             }
         }
 
-        for (Machine[] macs : retiredMachines) {
-            for (Machine mac : macs) {
-                List a = Arrays.asList(mac.getCoins());
-                if (a.contains(o1)) {
+        for ( Machine[] macs : retiredMachines )
+        {
+            for ( Machine mac : macs )
+            {
+                List a = Arrays.asList( mac.getCoins() );
+                if ( a.contains( o1 ) )
+                {
                     return mac;
                 }
             }
         }
-        return defaultMac[0];
+        return defaultMac[ 0 ];
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy()
+    {
         super.onDestroy();
         // very important:
 //        if (mBroadcastReceiver != null) {
@@ -654,12 +724,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onStart() {
+    protected void onStart()
+    {
         super.onStart();
         // Monitor launch times and interval from installation
-        RateThisApp.onStart(this);
+        RateThisApp.onStart( this );
         // If the criteria is satisfied, "Rate this app" dialog will be shown
-        RateThisApp.showRateDialogIfNeeded(this);
+        RateThisApp.showRateDialogIfNeeded( this );
     }
 
     //public class AnalyticsApplication extends Application {
@@ -670,18 +741,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      *
      * @return tracker
      */
-    synchronized public Tracker getDefaultTracker() {
-        if (mTracker == null) {
-            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-            // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
-            mTracker = analytics.newTracker(R.xml.global_tracker);
-            mTracker.enableAdvertisingIdCollection(true);
+    synchronized public Tracker getDefaultTracker()
+    {
+        if ( mTracker == null )
+        {
+            GoogleAnalytics analytics = GoogleAnalytics.getInstance( this );
+            mTracker = analytics.newTracker( R.xml.global_tracker );
+            mTracker.enableAdvertisingIdCollection( true );
 
         }
         return mTracker;
-        //  }
-
     }
-
-
 }

@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import org.askerov.dynamicgrid.DynamicGridView;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,12 +30,6 @@ import java.util.List;
 
 public class CustomCoinList extends Fragment implements Data, AdapterView.OnItemSelectedListener
 {
-
-    /**
-     * Created by mario_000 on 6/25/2016.
-     * Description: Fragment for displaying coins in current machine
-     */
-
     // References
     private ListAdapter mCoinAdapter;
     private SharedPreference sharedPreference = new SharedPreference();
@@ -43,9 +39,11 @@ public class CustomCoinList extends Fragment implements Data, AdapterView.OnItem
     private ImageView addCoinBtn;
     private TextView amtCollectedCustom;
     private ListView listCoins;
+    private DynamicGridView gridView;
+    private GridViewAdapter gridViewAdapter;
 
     // Data
-    private List< Coin > customCoins;
+    private List< CustomCoin > customCoins;
     private ArrayList customCoinsList = new ArrayList();
 
     // Spinner
@@ -76,10 +74,11 @@ public class CustomCoinList extends Fragment implements Data, AdapterView.OnItem
         View view = inflater.inflate( R.layout.custom_coin_list, container, false );
         MainActivity application = ( MainActivity ) getActivity();
         mTracker = application.getDefaultTracker();
-        mTracker.setScreenName("Page - Custom Coin List");
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        mTracker.setScreenName( "Page - Custom Coin List" );
+        mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
         getActivity().setTitle( "Custom Coin List" );
 
+        // Get custom coins
         customCoins = sharedPreference.getCustomCoins( getActivity() );
 
         // Link views
@@ -114,7 +113,7 @@ public class CustomCoinList extends Fragment implements Data, AdapterView.OnItem
         // Create coin adapter
         customCoinsList.clear();
         customCoinsList.addAll( customCoins );
-        mCoinAdapter = new ListAdapter( getActivity(), R.layout.row, customCoinsList );
+        mCoinAdapter = new ListAdapter<>( getActivity(), R.layout.row, customCoinsList );
         listCoins.setAdapter( mCoinAdapter );
 
         // Create spinner adapter
@@ -135,10 +134,10 @@ public class CustomCoinList extends Fragment implements Data, AdapterView.OnItem
         SharedPreferences.Editor prefEditor = sharedPref.edit();
         prefEditor.putInt( "userChoiceSpinner", pos );
         prefEditor.apply();
-        Collections.sort( customCoins, new Comparator< Coin >()
+        Collections.sort( customCoins, new Comparator< CustomCoin >()
         {
             @Override
-            public int compare( Coin o1, Coin o2 )
+            public int compare( CustomCoin o1, CustomCoin o2 )
             {
                 switch ( pos )
                 {
@@ -166,20 +165,20 @@ public class CustomCoinList extends Fragment implements Data, AdapterView.OnItem
         {
             mCoinAdapter.clear();
             // Sort by coin name A-Z
-            Collections.sort( customCoins, new Comparator< Coin >()
+            Collections.sort( customCoins, new Comparator< CustomCoin >()
             {
                 @Override
-                public int compare( Coin o1, Coin o2 )
+                public int compare( CustomCoin o1, CustomCoin o2 )
                 {
                     return o1.getTitleCoin().compareTo( o2.getTitleCoin() );
                 }
             } );
 
             // Sort by land name A-Z
-            Collections.sort( customCoins, new Comparator< Coin >()
+            Collections.sort( customCoins, new Comparator< CustomCoin >()
             {
                 @Override
-                public int compare( Coin o1, Coin o2 )
+                public int compare( CustomCoin o1, CustomCoin o2 )
                 {
                     return o1.getCoinPark().compareTo( o2.getCoinPark() );
                 }

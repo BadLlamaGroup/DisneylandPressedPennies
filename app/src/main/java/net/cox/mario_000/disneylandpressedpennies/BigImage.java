@@ -53,9 +53,9 @@ public class BigImage extends Activity
 
             // Get image resId number
             final int frontResId = getApplicationContext().getResources().getIdentifier( frontImg, "drawable", getApplicationContext().getPackageName() );
+            final int backResId;
             if ( frontResId != 0 )
             {
-                final int backResId;
                 if ( backImg == null )
                 {
                     backResId = getApplicationContext().getResources().getIdentifier( frontImg + "_backstamp", "drawable", getApplicationContext().getPackageName() );
@@ -64,32 +64,43 @@ public class BigImage extends Activity
                     backResId = getApplicationContext().getResources().getIdentifier( backImg, "drawable", getApplicationContext().getPackageName() );
                 }
 
+                // Display front image
+                Picasso.get().load( frontResId ).error( R.drawable.new_penny ).into( frontCoin );
+
+                // Create dimensions
                 BitmapFactory.Options dimensions = new BitmapFactory.Options();
                 dimensions.inJustDecodeBounds = true;
-                Bitmap mBitmap = BitmapFactory.decodeResource( getResources(), frontResId, dimensions );
+
+                // Check dimensions of front image
+                Bitmap frontBitmap = BitmapFactory.decodeResource( getApplicationContext().getResources(), frontResId, dimensions );
                 int frontHeight = dimensions.outHeight;
                 int frontWidth = dimensions.outWidth;
 
-                //Set orientation based on coin direction
+                // Check dimensions of back image
+                Bitmap backBitmap = BitmapFactory.decodeResource( getApplicationContext().getResources(), backResId, dimensions );
+                int backHeight = dimensions.outHeight;
+                int backWidth = dimensions.outWidth;
+
+                // Set orientation based on coin direction
                 if ( frontWidth > frontHeight )
                 {
-                    dimensions = new BitmapFactory.Options();
-                    dimensions.inJustDecodeBounds = true;
-                    mBitmap = BitmapFactory.decodeResource( getResources(), backResId, dimensions );
-                    int backHeight = dimensions.outHeight;
-                    int backWidth = dimensions.outWidth;
-
                     if ( backWidth < backHeight )
                     {
-                        Picasso.get().load( backResId ).error( R.drawable.new_penny_back ).fit().rotate( 90 ).into( backCoin );
+                        Picasso.get().load( backResId ).error( R.drawable.new_penny_back ).rotate( 90 ).into( backCoin );
                     } else
                     {
-                        Picasso.get().load( backResId ).error( R.drawable.new_penny_back ).fit().into( backCoin );
+                        Picasso.get().load( backResId ).error( R.drawable.new_penny_back ).into( backCoin );
                     }
 
                 } else
                 {
-                    Picasso.get().load( backResId ).error( R.drawable.new_penny ).fit().into( frontCoin );
+                    if ( backWidth > backHeight )
+                    {
+                        Picasso.get().load( backResId ).error( R.drawable.new_penny_back ).rotate( 90 ).into( backCoin );
+                    } else
+                    {
+                        Picasso.get().load( backResId ).error( R.drawable.new_penny_back ).into( backCoin );
+                    }
                 }
             } else
             {
@@ -100,7 +111,6 @@ public class BigImage extends Activity
                 Uri backImage = Uri.fromFile( new File( COIN_PATH + "/" + backImg ) );
                 Picasso.get().load( backImage ).error( R.drawable.new_penny_back ).fit().into( backCoin );
             }
-
 
             // Set animation
             Animation hyperspaceJump = AnimationUtils.loadAnimation( getApplicationContext(), R.anim.fade_in );

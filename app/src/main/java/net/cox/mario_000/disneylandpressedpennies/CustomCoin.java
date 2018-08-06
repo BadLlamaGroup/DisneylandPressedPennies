@@ -7,16 +7,24 @@ import java.util.Date;
  * Created by mario_000 on 6/25/2016.
  * Description: Class to create a Coin
  */
-public class Coin implements Serializable
+public class CustomCoin implements Serializable
 {
     private String titleCoin;
     private String coinFrontImg;
+    private String coinBackImg;
+    private String coinType;
+    private String coinPark;
+    private String notes;
     private Date dateCollected;
 
-    protected Coin( String titleCoin, String front, Date dateCollected )
+    protected CustomCoin( String titleCoin, String front, String back, String type, String park, String notes, Date dateCollected )
     {
         this.titleCoin = titleCoin;
-        this.coinFrontImg = front;
+        coinFrontImg = front;
+        coinBackImg = back;
+        coinType = type;
+        coinPark = park;
+        this.notes = notes;
         this.dateCollected = dateCollected;
     }
 
@@ -30,6 +38,11 @@ public class Coin implements Serializable
         this.coinFrontImg = coinFrontImg;
     }
 
+    public String getCoinBackImg()
+    {
+        return coinBackImg;
+    }
+
     public String getTitleCoin()
     {
         return titleCoin;
@@ -38,6 +51,21 @@ public class Coin implements Serializable
     public void setTitleCoin( String newTitle )
     {
         this.titleCoin = newTitle;
+    }
+
+    public String getCoinType()
+    {
+        return coinType;
+    }
+
+    public String getCoinPark()
+    {
+        return coinPark;
+    }
+
+    public String getNotes()
+    {
+        return notes;
     }
 
     public Date getDateCollected()
@@ -53,18 +81,12 @@ public class Coin implements Serializable
     @Override
     public boolean equals( Object obj )
     {
-        if( obj instanceof CustomCoin )
-        {
-            CustomCoin rhs = ( CustomCoin ) obj;
-            return this.titleCoin.equals( rhs.getTitleCoin() );
-        }
-        if ( !( obj instanceof Coin ) )
+        if ( !( obj instanceof CustomCoin ) )
             return false;
         if ( obj == this )
             return true;
 
-        Coin rhs = ( Coin ) obj;
+        CustomCoin rhs = ( CustomCoin ) obj;
         return this.titleCoin.equals( rhs.titleCoin );
     }
-
 }

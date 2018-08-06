@@ -16,7 +16,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
@@ -95,8 +94,8 @@ public class CustomCoinFragment extends Fragment
     private Spinner parkSpinner;
 
     // Coins
-    private Coin newCustomCoin;
-    private Coin savedCoin;
+    private CustomCoin newCustomCoin;
+    private CustomCoin savedCoin;
 
     // References
     private final SharedPreference sharedPreference = new SharedPreference();
@@ -132,6 +131,7 @@ public class CustomCoinFragment extends Fragment
         mTracker.setScreenName( "Page - Custom Coin Page" );
         mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
 
+        // Check permissions
         isStoragePermissionGranted();
 
         // Link views
@@ -170,7 +170,7 @@ public class CustomCoinFragment extends Fragment
 
         editTitle.setFilters( new InputFilter[]{ filter } );
 
-        // Listeners
+        // Set listeners
 
         editTitle.setOnClickListener( new View.OnClickListener()
         {
@@ -189,7 +189,6 @@ public class CustomCoinFragment extends Fragment
                 if ( checkCoinInfo() )
                 {
                     saveCoin();
-                    // Remove old images
                     removeOldCoinImages();
                 }
             }
@@ -211,17 +210,20 @@ public class CustomCoinFragment extends Fragment
         } );
 
         // Handle back press action
-        view.setFocusableInTouchMode(true);
+        view.setFocusableInTouchMode( true );
         view.requestFocus();
-        view.setOnKeyListener(new View.OnKeyListener() {
+        view.setOnKeyListener( new View.OnKeyListener()
+        {
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN ) {
+            public boolean onKey( View v, int keyCode, KeyEvent event )
+            {
+                if ( keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN )
+                {
                     cancelDialog();
                 }
                 return true;
             }
-        });
+        } );
 
         txtDateCollected.setOnClickListener( new View.OnClickListener()
         {
@@ -319,7 +321,7 @@ public class CustomCoinFragment extends Fragment
         {
             Gson gson = new Gson();
             String jsonCoin = extras.getString( "selectedCoin" );
-            savedCoin = gson.fromJson( jsonCoin, Coin.class );
+            savedCoin = gson.fromJson( jsonCoin, CustomCoin.class );
 
             // Display coin name in nav bar
             getActivity().setTitle( savedCoin.getTitleCoin() );
@@ -336,17 +338,13 @@ public class CustomCoinFragment extends Fragment
             int parkPos = parkAdapter.getPosition( savedCoin.getCoinPark() );
             parkSpinner.setSelection( parkPos );
 
-            // Set filepath
-            String root = Environment.getExternalStorageDirectory().toString();
-            File dir = new File( root + "/Pressed Coins at Disneyland/Coins" );
-
             // Set images
-            Uri frontImage = Uri.fromFile( new File( dir + "/" + savedCoin.getCoinFrontImg() ) );
+            Uri frontImage = Uri.fromFile( new File( COIN_PATH + "/" + savedCoin.getCoinFrontImg() ) );
             Picasso.get().load( frontImage ).error( R.drawable.new_penny ).fit().into( spinningCoinFront );
             Picasso.get().load( frontImage ).error( R.drawable.new_penny ).fit().into( editCoinFront );
             frontImageName = savedCoin.getCoinFrontImg();
 
-            Uri backImage = Uri.fromFile( new File( dir + "/" + savedCoin.getCoinBackImg() ) );
+            Uri backImage = Uri.fromFile( new File( COIN_PATH + "/" + savedCoin.getCoinBackImg() ) );
             Picasso.get().load( backImage ).error( R.drawable.new_penny_back ).fit().into( spinningCoinBack );
             Picasso.get().load( backImage ).error( R.drawable.new_penny_back ).fit().into( editCoinBack );
             backImageName = savedCoin.getCoinBackImg();
@@ -370,14 +368,15 @@ public class CustomCoinFragment extends Fragment
         } else
         {
             // Load default images
-            int resId = view.getContext().getResources().getIdentifier( "new_penny", "drawable", view.getContext().getPackageName() );
-            int resId2 = view.getContext().getResources().getIdentifier( "new_penny_back", "drawable", view.getContext().getPackageName() );
+            int frontResId = view.getContext().getResources().getIdentifier( "new_penny", "drawable", view.getContext().getPackageName() );
+            int backResId = view.getContext().getResources().getIdentifier( "new_penny_back", "drawable", view.getContext().getPackageName() );
 
-            Picasso.get().load( resId ).resize( 200, 300 ).into( spinningCoinFront );
-            Picasso.get().load( resId ).resize( 200, 300 ).into( editCoinFront );
-            Picasso.get().load( resId2 ).resize( 200, 300 ).into( spinningCoinBack );
-            Picasso.get().load( resId2 ).resize( 200, 300 ).into( editCoinBack );
+            Picasso.get().load( frontResId ).error( R.drawable.new_penny ).into( spinningCoinFront );
+            Picasso.get().load( frontResId ).error( R.drawable.new_penny ).into( editCoinFront );
+            Picasso.get().load( backResId ).error( R.drawable.new_penny_back ).into( spinningCoinBack );
+            Picasso.get().load( backResId ).error( R.drawable.new_penny_back ).into( editCoinBack );
 
+            // Set default names
             frontImageName = "new_penny";
             backImageName = "new_penny_back";
 
@@ -431,12 +430,12 @@ public class CustomCoinFragment extends Fragment
                     sharedPreference.removeCustomCoin( getActivity(), savedCoin );
                     deleteCoinImages();
                     getFragmentManager().popBackStackImmediate();
-                    mTracker.send(new HitBuilders.EventBuilder()
-                            .setCategory("Custom Coin Removed")
-                            .setAction("Removed")
-                            .setLabel(savedCoin.getTitleCoin())
-                            .setValue(1)
-                            .build());
+                    mTracker.send( new HitBuilders.EventBuilder()
+                            .setCategory( "Custom Coin Removed" )
+                            .setAction( "Removed" )
+                            .setLabel( savedCoin.getTitleCoin() )
+                            .setValue( 1 )
+                            .build() );
                 }
                 removeDialog.dismiss();
             }
@@ -541,10 +540,10 @@ public class CustomCoinFragment extends Fragment
     {
         boolean check = false;
         // Get collected coins list
-        List< Coin > coins = sharedPreference.getCustomCoins( getActivity().getApplicationContext() );
+        List< CustomCoin > coins = sharedPreference.getCustomCoins( getActivity().getApplicationContext() );
         if ( coins != null )
         {
-            for ( Coin coin : coins )
+            for ( CustomCoin coin : coins )
             {
                 // Check if coin matches coin already collected
                 if ( String.valueOf( coin.getTitleCoin() ).equals( checkName ) )
@@ -603,7 +602,6 @@ public class CustomCoinFragment extends Fragment
 
     private void saveCoin()
     {
-
         String newTitle = editTitle.getText().toString();
         String newNotes = editNotes.getText().toString();
         String coinType = coinTypeSpinner.getSelectedItem().toString();
@@ -616,7 +614,7 @@ public class CustomCoinFragment extends Fragment
             {
                 sharedPreference.removeCustomCoin( getActivity(), savedCoin );
                 renameImages();
-                savedCoin = new Coin( newTitle, frontImageName, backImageName, coinType, parkSelected, newNotes, myCalendar.getTime() );
+                savedCoin = new CustomCoin( newTitle, frontImageName, backImageName, coinType, parkSelected, newNotes, myCalendar.getTime() );
                 sharedPreference.addCustomCoin( getActivity(), savedCoin );
                 getFragmentManager().popBackStackImmediate();
             } else
@@ -629,19 +627,19 @@ public class CustomCoinFragment extends Fragment
         {
             // NEW COIN
             renameImages();
-            newCustomCoin = new Coin( newTitle, frontImageName, backImageName, coinType, parkSelected, newNotes, myCalendar.getTime() );
+            newCustomCoin = new CustomCoin( newTitle, frontImageName, backImageName, coinType, parkSelected, newNotes, myCalendar.getTime() );
             if ( !nameExists( newTitle ) )
             {
                 sharedPreference.addCustomCoin( getActivity(), newCustomCoin );
                 getFragmentManager().popBackStackImmediate();
             }
 
-            mTracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("Custom Coin Added")
-                    .setAction("Added")
-                    .setLabel(newCustomCoin.getTitleCoin())
-                    .setValue(1)
-                    .build());
+            mTracker.send( new HitBuilders.EventBuilder()
+                    .setCategory( "Custom Coin Added" )
+                    .setAction( "Added" )
+                    .setLabel( newCustomCoin.getTitleCoin() )
+                    .setValue( 1 )
+                    .build() );
         }
     }
 
@@ -738,7 +736,7 @@ public class CustomCoinFragment extends Fragment
         int n = 10000;
         n = generator.nextInt( n );
         String fname = "Image-" + n + ".png";
-        File file = new File( COIN_PATH, fname );
+        File savedImage = new File( COIN_PATH, fname );
         if ( selectedSide.equals( "Front" ) )
         {
             frontImageName = fname;
@@ -746,21 +744,21 @@ public class CustomCoinFragment extends Fragment
         {
             backImageName = fname;
         }
-        if ( file.exists() ) file.delete();
+        if ( savedImage.exists() ) savedImage.delete();
         try
         {
-            FileOutputStream out = new FileOutputStream( file );
+            FileOutputStream out = new FileOutputStream( savedImage );
             finalBitmap.compress( Bitmap.CompressFormat.PNG, 100, out );
             out.flush();
             out.close();
             if ( selectedSide.equals( "Front" ) )
             {
-                editCoinFront.setImageBitmap( finalBitmap );
-                spinningCoinFront.setImageBitmap( finalBitmap );
+                Picasso.get().load( savedImage ).error( R.drawable.new_penny ).fit().into( spinningCoinFront );
+                Picasso.get().load( savedImage ).error( R.drawable.new_penny ).fit().into( editCoinFront );
             } else
             {
-                editCoinBack.setImageBitmap( finalBitmap );
-                spinningCoinBack.setImageBitmap( finalBitmap );
+                Picasso.get().load( savedImage ).error( R.drawable.new_penny_back ).fit().into( spinningCoinBack );
+                Picasso.get().load( savedImage ).error( R.drawable.new_penny_back ).fit().into( editCoinBack );
             }
 
         } catch ( Exception e )

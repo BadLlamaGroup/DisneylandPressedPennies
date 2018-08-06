@@ -109,7 +109,6 @@ public class DowntownPage extends Fragment implements View.OnClickListener
             listOfLands[ landNum ].setText( collectedInLand + " / " + landTotal );
         }
 
-
         // Link views
         amount = myFragmentView.findViewById( R.id.amt );
         coinBook = myFragmentView.findViewById( R.id.coinBookBtn );

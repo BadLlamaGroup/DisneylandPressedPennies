@@ -29,13 +29,15 @@ import java.util.List;
 public class search extends Fragment implements Data
 {
     // Views
-    private ListView foundCoinsList;
+    ListView foundCoinsList;
     TextView numFound;
     TextView noResults;
+    EditText editSearch;
+    Button searchBtn;
 
     // Lists
     ArrayList foundCoins;
-    List< Coin > customCoins;
+    List< CustomCoin > customCoins;
 
     // References
     private final SharedPreference sharedPreference = new SharedPreference();
@@ -46,12 +48,10 @@ public class search extends Fragment implements Data
     @Override
     public void onResume()
     {
-        if ( foundCoins != null )
+        if ( foundCoins != null && foundCoinsList != null )
         {
             numFound.setText( String.valueOf( foundCoins.size() ) );
-        }
-        if ( foundCoinsList != null )
-        {
+            mCoinAdapter = new ListAdapter( getActivity(), R.layout.row, foundCoins );
             foundCoinsList.setAdapter( mCoinAdapter );
         }
         if ( state != null )
@@ -59,8 +59,6 @@ public class search extends Fragment implements Data
             foundCoinsList.onRestoreInstanceState( state );
         }
 
-        mTracker.setScreenName( "Page - Search" );
-        mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
         super.onResume();
     }
 
@@ -79,18 +77,21 @@ public class search extends Fragment implements Data
         getActivity().setTitle( "Search" );
         MainActivity application = ( MainActivity ) getActivity();
         mTracker = application.getDefaultTracker();
+        mTracker.setScreenName( "Page - Search" );
+        mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
 
         // Link views
-        final Button searchBtn = view.findViewById( R.id.btn_search );
-        final EditText editSearch = view.findViewById( R.id.search_key );
+        searchBtn = view.findViewById( R.id.btn_search );
+        editSearch = view.findViewById( R.id.search_key );
         foundCoinsList = view.findViewById( R.id.searchList );
         numFound = view.findViewById( R.id.numFound );
         noResults = view.findViewById( R.id.noneFound );
 
+        // Get custom coins
         customCoins = sharedPreference.getCustomCoins( view.getContext() );
 
+        // Hide keyboard
         final InputMethodManager inputMethodManager = ( InputMethodManager ) getActivity().getSystemService( Context.INPUT_METHOD_SERVICE );
-
         editSearch.setOnKeyListener( new View.OnKeyListener()
         {
             public boolean onKey( View v, int keyCode, KeyEvent event )
@@ -111,21 +112,23 @@ public class search extends Fragment implements Data
             }
         } );
 
+        // Set listeners
         editSearch.setOnClickListener( new View.OnClickListener()
         {
             @Override
             public void onClick( View view )
             {
+                // Reset search key
                 editSearch.setText( "" );
             }
         } );
-
 
         searchBtn.setOnClickListener( new View.OnClickListener()
         {
             @Override
             public void onClick( View view )
             {
+
                 foundCoins = new ArrayList<>();
 
                 for ( Machine[] macs : disneyMachines )
@@ -181,7 +184,7 @@ public class search extends Fragment implements Data
                     }
                 }
 
-                for ( Coin coin : customCoins )
+                for ( CustomCoin coin : customCoins )
                 {
                     if ( coin.getTitleCoin().toLowerCase().contains( editSearch.getText().toString().toLowerCase() ) )
                     {
@@ -189,6 +192,7 @@ public class search extends Fragment implements Data
                     }
                 }
 
+                // Set amount found
                 numFound.setText( String.valueOf( foundCoins.size() ) );
                 if ( foundCoins.size() == 0 )
                 {
@@ -198,25 +202,25 @@ public class search extends Fragment implements Data
                 {
                     foundCoinsList.setVisibility( View.VISIBLE );
                     noResults.setVisibility( View.INVISIBLE );
+
+                    // Create coin adapter
                     mCoinAdapter = new ListAdapter( getActivity(), R.layout.row, foundCoins );
                     foundCoinsList.setAdapter( mCoinAdapter );
                 }
                 inputMethodManager.hideSoftInputFromWindow( editSearch.getWindowToken(), 0 );
-
             }
         } );
 
-        TextView txtParkBanner = ( TextView ) view.findViewById( R.id.parkBanner );
+        TextView txtParkBanner = view.findViewById( R.id.parkBanner );
         txtParkBanner.setOnClickListener( new View.OnClickListener()
         {
             @Override
             public void onClick( View view )
             {
                 String url = "http://www.parkpennies.com";
-                Intent i = new Intent( Intent.ACTION_VIEW );
-                i.setData( Uri.parse( url ) );
-                startActivity( i );
-
+                Intent intent = new Intent( Intent.ACTION_VIEW );
+                intent.setData( Uri.parse( url ) );
+                startActivity( intent );
             }
         } );
 

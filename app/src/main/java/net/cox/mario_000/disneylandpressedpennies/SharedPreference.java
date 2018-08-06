@@ -14,59 +14,69 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SharedPreference {
-
+public class SharedPreference
+{
+    // Strings
     private static final String PREFS_NAME = "Coin_App";
     private static final String OWNED_COINS = "Have_Coin";
     private static final String WANT_COINS = "Want_Coin";
     private static final String CUSTOM_COINS = "Custom_Coin";
 
-    public SharedPreference() {
+    public SharedPreference()
+    {
         super();
     }
 
     // Save collected coins
-    public void saveCoins(Context context, List<Coin> coins) {
-        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME,
-                Context.MODE_PRIVATE);
+    public void saveCoins( Context context, List< Coin > coins )
+    {
+        SharedPreferences settings = context.getSharedPreferences( PREFS_NAME,
+                Context.MODE_PRIVATE );
         Editor editor = settings.edit();
         Gson gson = new Gson();
-        String jsonCoins = gson.toJson(coins);
-        editor.putString(OWNED_COINS, jsonCoins);
+        String jsonCoins = gson.toJson( coins );
+        editor.putString( OWNED_COINS, jsonCoins );
         editor.apply();
     }
 
     // Add coin to list
-    public void addCoin(Context context, Coin coin) {
-        List<Coin> coins = getCoins(context);
-        coins.add(coin);
-        saveCoins(context, coins);
+    public void addCoin( Context context, Coin coin )
+    {
+        List< Coin > coins = getCoins( context );
+        coins.add( coin );
+        saveCoins( context, coins );
     }
 
     // Remove coin from list
-    public void removeCoin(Context context, Coin coin) {
-        List<Coin> coins = getCoins(context);
-        if (coins != null) {
-            for (int i = coins.size() - 1; i >= 0; i--) {
-                if (coins.get(i).getTitleCoin().equals(coin.getTitleCoin())) {
-                    coins.remove(i);
+    public void removeCoin( Context context, Coin coin )
+    {
+        List< Coin > coins = getCoins( context );
+        if ( coins != null )
+        {
+            for ( int i = coins.size() - 1; i >= 0; i-- )
+            {
+                if ( coins.get( i ).getTitleCoin().equals( coin.getTitleCoin() ) )
+                {
+                    coins.remove( i );
                 }
             }
-            saveCoins(context, coins);
+            saveCoins( context, coins );
         }
     }
 
-    public List<Coin> getCoins(Context context) {
-        List<Coin> coins;
-        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME,
-                Context.MODE_PRIVATE);
+    public List< Coin > getCoins( Context context )
+    {
+        List< Coin > coins;
+        SharedPreferences settings = context.getSharedPreferences( PREFS_NAME,
+                Context.MODE_PRIVATE );
 
-        if (settings.contains(OWNED_COINS)) {
-            String jsonFavorites = settings.getString(OWNED_COINS, null);
+        if ( settings.contains( OWNED_COINS ) )
+        {
+            String jsonFavorites = settings.getString( OWNED_COINS, null );
             Gson gson = new Gson();
-            Coin[] collectedCoins = gson.fromJson(jsonFavorites, Coin[].class);
-            coins = Arrays.asList(collectedCoins);
-            coins = new ArrayList<>(coins);
+            Coin[] collectedCoins = gson.fromJson( jsonFavorites, Coin[].class );
+            coins = Arrays.asList( collectedCoins );
+            coins = new ArrayList<>( coins );
         } else
             return new ArrayList<>();
 
@@ -75,47 +85,55 @@ public class SharedPreference {
 
 
     // Save collected coins
-    public void saveWantedCoins(Context context, List<Coin> coins) {
-        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME,
-                Context.MODE_PRIVATE);
+    public void saveWantedCoins( Context context, List< Coin > coins )
+    {
+        SharedPreferences settings = context.getSharedPreferences( PREFS_NAME,
+                Context.MODE_PRIVATE );
         Editor editor = settings.edit();
         Gson gson = new Gson();
-        String jsonCoins = gson.toJson(coins);
-        editor.putString(WANT_COINS, jsonCoins);
+        String jsonCoins = gson.toJson( coins );
+        editor.putString( WANT_COINS, jsonCoins );
         editor.apply();
     }
 
     // Add coin to list
-    public void addWantedCoin(Context context, Coin coin) {
-        List<Coin> wantedCoins = getWantedCoins(context);
-        wantedCoins.add(coin);
-        saveWantedCoins(context, wantedCoins);
+    public void addWantedCoin( Context context, Coin coin )
+    {
+        List< Coin > wantedCoins = getWantedCoins( context );
+        wantedCoins.add( coin );
+        saveWantedCoins( context, wantedCoins );
     }
 
     // Remove coin from list
-    public void removeWantedCoin(Context context, Coin coin) {
-        List<Coin> wantedCoins = getWantedCoins(context);
-        if (wantedCoins != null) {
-            for (int i = wantedCoins.size() - 1; i >= 0; i--) {
-                if (wantedCoins.get(i).getTitleCoin().equals(coin.getTitleCoin())) {
-                    wantedCoins.remove(i);
+    public void removeWantedCoin( Context context, Coin coin )
+    {
+        List< Coin > wantedCoins = getWantedCoins( context );
+        if ( wantedCoins != null )
+        {
+            for ( int i = wantedCoins.size() - 1; i >= 0; i-- )
+            {
+                if ( wantedCoins.get( i ).getTitleCoin().equals( coin.getTitleCoin() ) )
+                {
+                    wantedCoins.remove( i );
                 }
             }
-            saveWantedCoins(context, wantedCoins);
+            saveWantedCoins( context, wantedCoins );
         }
     }
 
-    public List<Coin> getWantedCoins(Context context) {
-        List<Coin> coins;
-        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME,
-                Context.MODE_PRIVATE);
+    public List< Coin > getWantedCoins( Context context )
+    {
+        List< Coin > coins;
+        SharedPreferences settings = context.getSharedPreferences( PREFS_NAME,
+                Context.MODE_PRIVATE );
 
-        if (settings.contains(WANT_COINS)) {
-            String jsonFavorites = settings.getString(WANT_COINS, null);
+        if ( settings.contains( WANT_COINS ) )
+        {
+            String jsonFavorites = settings.getString( WANT_COINS, null );
             Gson gson = new Gson();
-            Coin[] collectedCoins = gson.fromJson(jsonFavorites, Coin[].class);
-            coins = Arrays.asList(collectedCoins);
-            coins = new ArrayList<>(coins);
+            Coin[] collectedCoins = gson.fromJson( jsonFavorites, Coin[].class );
+            coins = Arrays.asList( collectedCoins );
+            coins = new ArrayList<>( coins );
         } else
             return new ArrayList<>();
 
@@ -123,51 +141,73 @@ public class SharedPreference {
     }
 
     // Save custom coins
-    public void saveCustomCoins(Context context, List<Coin> coins) {
-        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME,
-                Context.MODE_PRIVATE);
+    public void saveCustomCoins( Context context, List< CustomCoin > coins )
+    {
+        SharedPreferences settings = context.getSharedPreferences( PREFS_NAME,
+                Context.MODE_PRIVATE );
         Editor editor = settings.edit();
         Gson gson = new Gson();
-        String jsonCoins = gson.toJson(coins);
-        editor.putString(CUSTOM_COINS, jsonCoins);
+        String jsonCoins = gson.toJson( coins );
+        editor.putString( CUSTOM_COINS, jsonCoins );
         editor.apply();
     }
 
     // Add coin to list
-    public void addCustomCoin(Context context, Coin coin) {
-        List<Coin> customCoins = getCustomCoins(context);
-        customCoins.add(coin);
-        saveCustomCoins(context, customCoins);
+    public void addCustomCoin( Context context, CustomCoin coin )
+    {
+        List< CustomCoin > customCoins = getCustomCoins( context );
+        customCoins.add( coin );
+        saveCustomCoins( context, customCoins );
     }
 
     // Remove coin from list
-    public void removeCustomCoin(Context context, Coin coin) {
-        List<Coin> customCoins = getCustomCoins(context);
-        if (customCoins != null) {
-            for (int i = customCoins.size() - 1; i >= 0; i--) {
-                if (customCoins.get(i).getTitleCoin().equals(coin.getTitleCoin())) {
-                    customCoins.remove(i);
+    public void removeCustomCoin( Context context, CustomCoin coin )
+    {
+        List< CustomCoin > customCoins = getCustomCoins( context );
+        if ( customCoins != null )
+        {
+            for ( int i = customCoins.size() - 1; i >= 0; i-- )
+            {
+                if ( customCoins.get( i ).getTitleCoin().equals( coin.getTitleCoin() ) )
+                {
+                    customCoins.remove( i );
                 }
             }
-            saveCustomCoins(context, customCoins);
+            saveCustomCoins( context, customCoins );
         }
     }
 
-    public List<Coin> getCustomCoins(Context context) {
-        List<Coin> coins;
-        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME,
-                Context.MODE_PRIVATE);
+    public List< CustomCoin > getCustomCoins( Context context )
+    {
+        List< CustomCoin > coins;
+        SharedPreferences settings = context.getSharedPreferences( PREFS_NAME,
+                Context.MODE_PRIVATE );
 
-        if (settings.contains(CUSTOM_COINS)) {
-            String jsonFavorites = settings.getString(CUSTOM_COINS, null);
+        if ( settings.contains( CUSTOM_COINS ) )
+        {
+            String jsonFavorites = settings.getString( CUSTOM_COINS, null );
             Gson gson = new Gson();
-            Coin[] collectedCoins = gson.fromJson(jsonFavorites, Coin[].class);
-            coins = Arrays.asList(collectedCoins);
-            coins = new ArrayList<>(coins);
+            CustomCoin[] collectedCoins = gson.fromJson( jsonFavorites, CustomCoin[].class );
+            coins = Arrays.asList( collectedCoins );
+            coins = new ArrayList<>( coins );
         } else
             return new ArrayList<>();
 
         return coins;
     }
-
 }
+
+/*
+class UserActionDeserializer implements JsonDeserializer<Coin>
+{
+    public Coin deserialize( Coin coin, Type typeOfT, JsonDeserializationContext context ) throws JsonParseException
+    {
+        return new Coin();
+    }
+
+    @Override
+    public Coin deserialize( JsonElement json, Type Coin, JsonDeserializationContext context ) throws JsonParseException
+    {
+        return new Coin();
+    }
+}*/

@@ -40,10 +40,12 @@
             fab:menu_animationDelayPerItem="55"
             fab:menu_backgroundColor="#801893d6"
             fab:menu_buttonSpacing="0dp"
-            fab:menu_colorNormal="@color/colorAccent"
+            fab:menu_colorNormal="@color/colorPrimary"
             fab:menu_colorPressed="@color/colorPrimaryDark"
             fab:menu_colorRipple="#99d4d4d4"
+            app:menu_icon="@drawable/menu_icon"
             fab:menu_fab_size="normal"
+            app:menu_buttonToggleAnimation="@anim/fab_scale_up"
             fab:menu_labels_colorNormal="#333"
             fab:menu_labels_colorPressed="#444"
             fab:menu_labels_colorRipple="#66efecec"
@@ -72,6 +74,8 @@
                 android:layout_height="wrap_content"
                 android:scaleType="centerInside"
                 android:src="@mipmap/mickey"
+                app:fab_showShadow="false"
+                app:fab_colorPressed="@color/colorPrimaryDark"
                 app:elevation="0dp"
                 fab:fab_colorNormal="#00000000"
                 fab:fab_label="Disneyland"
@@ -83,7 +87,9 @@
                 android:layout_height="wrap_content"
                 android:scaleType="centerInside"
                 android:src="@mipmap/mickey"
+                app:fab_showShadow="false"
                 app:elevation="0dp"
+                app:fab_colorPressed="@color/colorPrimaryDark"
                 fab:fab_colorNormal="#00000000"
                 fab:fab_label="California Adventure"
                 fab:fab_size="normal" />
@@ -94,6 +100,8 @@
                 android:layout_height="wrap_content"
                 android:scaleType="fitXY"
                 android:src="@mipmap/mickey"
+                app:fab_showShadow="false"
+                app:fab_colorPressed="@color/colorPrimaryDark"
                 app:elevation="0dp"
                 fab:fab_colorNormal="#00000000"
                 fab:fab_label="Downtown Disney"
@@ -105,6 +113,8 @@
                 android:layout_height="wrap_content"
                 android:scaleType="fitXY"
                 android:src="@mipmap/mickey"
+                app:fab_showShadow="false"
+                app:fab_colorPressed="@color/colorPrimaryDark"
                 app:elevation="0dp"
                 fab:fab_colorNormal="#00000000"
                 fab:fab_label="Retired Machines"
@@ -129,28 +139,6 @@
                 android:gravity="center"
                 android:padding="5dp"
                 android:id="@+id/parkBanner" />
-            <!--<Button-->
-                <!--android:id="@+id/btnParkPennies"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_gravity="center"-->
-                <!--android:background="@drawable/border"-->
-                <!--android:gravity="center"-->
-                <!--android:paddingEnd="5dp"-->
-                <!--android:paddingStart="5dp"-->
-                <!--android:text="ParkPennies.com"-->
-                <!--android:textAllCaps="false" />-->
-
-            <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_gravity="center_horizontal"-->
-                <!--android:gravity="center"-->
-                <!--android:padding="5dp"-->
-                <!--android:text="Coin images courtesy of ParkPennies. Visit for updates and more."-->
-                <!--android:textAlignment="center"-->
-                <!--android:textColor="@android:color/black" />-->
-
         </LinearLayout>
 
 

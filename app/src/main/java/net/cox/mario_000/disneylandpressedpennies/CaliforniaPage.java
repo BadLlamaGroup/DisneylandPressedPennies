@@ -46,7 +46,6 @@ public class CaliforniaPage extends Fragment implements View.OnClickListener
         amount.setText( numCalCoinsCollected + " / " + numCalCoinsTotal );
     }
 
-
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState )
     {
