@@ -72,14 +72,20 @@
         any notes you have on that particular coin. Lastly, you can always edit any custom coin you have saved.\n</string>
 
     <string name="whatsnew">
-        Machine Update:
-        \n\nCalifornia Adventure:\n-Added \'Bing Bong\'s Sweet Stuff\'
-        \n\nFixes:\n-Coin List now shows Collected before date.
-        \n\nNews:\n-Make sure to check out Pixar Fest before it ends Sep 03.
+        GREAT NEWS:
+        \nCustom coin option now available. They will be fully integrated with the existing coins.
+        Check out the tutorials page for new instructions.\n\nThis is a long-awaited feature we are proud to now offer. We hope
+        you enjoy expanding your collection even further now.\n\nGOOD NEWS:
+        \nMore Pixar coins available.\n-Updated \'Penny Arcade #2\'\n-Updated \'Bonanza Outfitters Sidewalk\'
+        \n\nChanges:\n-More efficient image loading.\n-Calendar opens to saved coin collected date.\n-PDF export is
+        more organized now.\n-Coin book \'Custom\' changed to \'Organized\' to prevent confusion.
+        \n\nFinal News:\n-Make sure to check out Pixar Fest before it ends Sep 03.
         \n\nThank you for your continued support.
     </string>
 
     <string-array name="new_coins">
+        <item>Penny Arcade #2</item>
+        <item>Bonanza Outfitters Sidewalk</item>
         <item>Knick\'s Knacks</item>
         <item>Bing Bong\'s Sweet Stuff</item>
 

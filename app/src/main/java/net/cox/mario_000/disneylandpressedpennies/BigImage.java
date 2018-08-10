@@ -53,17 +53,10 @@ public class BigImage extends Activity
 
             // Get image resId number
             final int frontResId = getApplicationContext().getResources().getIdentifier( frontImg, "drawable", getApplicationContext().getPackageName() );
-            final int backResId;
+            String test = backImg == null ? frontImg + "_backstamp" : backImg;
+            final int backResId = getApplicationContext().getResources().getIdentifier( test, "drawable", getApplicationContext().getPackageName() );
             if ( frontResId != 0 )
             {
-                if ( backImg == null )
-                {
-                    backResId = getApplicationContext().getResources().getIdentifier( frontImg + "_backstamp", "drawable", getApplicationContext().getPackageName() );
-                } else
-                {
-                    backResId = getApplicationContext().getResources().getIdentifier( backImg, "drawable", getApplicationContext().getPackageName() );
-                }
-
                 // Display front image
                 Picasso.get().load( frontResId ).error( R.drawable.new_penny ).into( frontCoin );
 
@@ -132,7 +125,8 @@ public class BigImage extends Activity
                 @Override
                 public void onClick( View v )
                 {
-                    if ( !( mSetRightOut.isRunning() || mSetLeftIn.isRunning() ) )
+                    // Check if coin is currently flipping
+                    if ( !( mSetRightOut.isRunning() || mSetLeftIn.isRunning() ) && frontResId != backResId )
                     {
                         flipCoin();
                     }

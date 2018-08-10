@@ -20,6 +20,12 @@ public interface Data
             new Coin( "Castle - Walt Quote: \"If You Can Dream It\"", "penny_arcade_castle", null )
     };
     Coin[] pennyArcade2Penny = new Coin[]{
+            new Coin( "Miguel and Dante", "penny_arcade_2_coco", null ),
+            new Coin( "Remy and Linguini", "penny_arcade_2_delicious", null ),
+            new Coin( "Woody and Buzz", "penny_arcade_2_toy_story", null )
+    };
+
+    Coin[] retiredPennyArcade2Penny = new Coin[]{
             new Coin( "Main Street Electrical Parade America", "penny_arcade_2_america", null ),
             new Coin( "Main Street Electrical Parade Pete's Dragon", "penny_arcade_2_dragon", null ),
             new Coin( "Main Street Electrical Parade Mushroom", "penny_arcade_2_butterfly", null )
@@ -128,6 +134,12 @@ public interface Data
     };
 
     Coin[] bonanzaSidewalkPenny = new Coin[]{
+            new Coin( "Edna & Jack Jack", "bonanza_sidewalk_edna", null ),
+            new Coin( "Russel & Dug", "bonanza_sidewalk_russel_dug", null ),
+            new Coin( "Marlin & Nemo", "bonanza_sidewalk_marlin_nemo", null )
+    };
+
+    Coin[] retiredBonanzaSidewalkPenny = new Coin[]{
             new Coin( "Mickey at Rivers of America", "bonanza_sidewalk_rivers", null ),
             new Coin( "Fly Fisherman Mickey", "bonanza_sidewalk_fisherman", null ),
             new Coin( "Mark Twain Riverboat", "bonanza_sidewalk_mark_twain", null )
@@ -475,7 +487,7 @@ public interface Data
 
     Machine[] mainCoins = new Machine[]{
             new Machine( "Main Street", "Penny Arcade #1", "Penny", "penny_arcade_mac", "penny_arcade_backstamp", "penny_arcade_preview", pennyArcadeQuarter, new LatLng( 33.811262, -117.919002 ) ),
-            new Machine( "Main Street", "Penny Arcade #2", "Penny", "penny_arcade_2_mac", "penny_arcade_2_backstamp", "penny_arcade_2_preview", pennyArcade2Penny, new LatLng( 33.811262, -117.919072 ) ),
+            new Machine( "Main Street", "Penny Arcade #2", "Penny", "penny_arcade_2_mac", "pixar_fest_backstamp", "penny_arcade_2_preview", pennyArcade2Penny, new LatLng( 33.811262, -117.919072 ) ),
             new Machine( "Main Street", "Opera House Exit #1", "Penny", "opera_1_mac", "opera_backstamp", "opera_1_preview", operaExit1Penny, new LatLng( 33.810270, -117.918520 ) ),
             new Machine( "Main Street", "Opera House Exit #2", "Penny", "opera_2_mac", "opera_backstamp", "opera_2_preview", operaExit2Penny, new LatLng( 33.810270, -117.918490 ) ),
             new Machine( "Main Street", "Opera House Exit #3", "Penny", "opera_3_mac", "opera_backstamp", "opera_3_preview", operaExit3Penny, new LatLng( 33.810270, -117.918460 ) ),
@@ -501,7 +513,7 @@ public interface Data
     Machine[] frontierCoins = new Machine[]{
             new Machine( "Frontierland", "Pioneer Mercantile", "Penny", "pioneer_mac", "frontierland_backstamp", "pioneer_preview", pioneerPenny, new LatLng( 33.812073, -117.919809 ) ),
             new Machine( "Frontierland", "Bonanza Outfitters", "Penny", "bonanza_outfitters_mac", "bonanza_backstamp", "bonanza_outfitters_preview", bonanzaPenny, new LatLng( 33.812084, -117.919902 ) ),
-            new Machine( "Frontierland", "Bonanza Outfitters Sidewalk", "Penny", "bonanza_sidewalk_mac", "frontierland_backstamp", "bonanza_sidewalk_preview", bonanzaSidewalkPenny, new LatLng( 33.812090, -117.919961 ) ),
+            new Machine( "Frontierland", "Bonanza Outfitters Sidewalk", "Penny", "bonanza_sidewalk_mac", "pixar_fest_backstamp", "bonanza_sidewalk_preview", bonanzaSidewalkPenny, new LatLng( 33.812090, -117.919961 ) ),
             new Machine( "Frontierland", "Westward Ho Trading Post", "Penny", "westward_ho_mac", "frontierland_backstamp", "westward_ho_preview", westwardHoPenny, new LatLng( 33.812154, -117.919752 ) )
     };
 
@@ -593,8 +605,10 @@ public interface Data
     Machine[] retiredDisneylandMachines = new Machine[]{
             new Machine( "Main Street", "Opera House Exit #4 - Retired", "Nickel", "old_opera_4_mac", "old_opera_4_backstamp", "old_opera_4_preview", oldOperaExit4Nickel, new LatLng( 33.810270, -117.918430 ) ),
             new Machine( "Main Street", "Opera House Exit #4 - Retired #2", "Nickel", "opera_4_mac", "opera_4_backstamp", "old_opera_4_preview_1", retiredOperaExit4Nickel, new LatLng( 33.810270, -117.918430 ) ),
-            new Machine( "Tomorrowland", "Buzz Lightyear Exit #1 - Retired", "Penny", "buzz_exit_1_2_mac", "buzz_exit_1_backstamp", "buzz_exit_1_preview_retired", retiredBuzzExit1Penny, new LatLng( 33.812229, -117.917520 ) ),
-            new Machine( "Main Street", "Penny Arcade #3 - Retired", "Nickel", "penny_arcade_3_mac", "penny_arcade_3_backstamp", "penny_arcade_3_preview", retiredPennyArcade3Nickel, new LatLng( 33.811262, -117.919102 ) )
+            new Machine( "Main Street", "Penny Arcade #2 - Retired", "Penny", "old_penny_arcade_2_mac", "penny_arcade_2_backstamp", "old_penny_arcade_2_preview", retiredPennyArcade2Penny, new LatLng( 33.811262, -117.919072 ) ),
+            new Machine( "Main Street", "Penny Arcade #3 - Retired", "Nickel", "penny_arcade_3_mac", "penny_arcade_3_backstamp", "penny_arcade_3_preview", retiredPennyArcade3Nickel, new LatLng( 33.811262, -117.919102 ) ),
+            new Machine( "Frontierland", "Bonanza Outfitters Sidewalk - Retired", "Penny", "bonanza_sidewalk_mac", "frontierland_backstamp", "old_bonanza_sidewalk_preview", retiredBonanzaSidewalkPenny, new LatLng( 33.812090, -117.919961 ) ),
+            new Machine( "Tomorrowland", "Buzz Lightyear Exit #1 - Retired", "Penny", "buzz_exit_1_2_mac", "buzz_exit_1_backstamp", "buzz_exit_1_preview_retired", retiredBuzzExit1Penny, new LatLng( 33.812229, -117.917520 ) )
     };
 
     Machine[] retiredCaliforniaMachines = new Machine[]{

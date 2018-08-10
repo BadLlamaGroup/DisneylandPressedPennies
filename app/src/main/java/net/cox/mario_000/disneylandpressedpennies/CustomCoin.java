@@ -33,11 +33,6 @@ public class CustomCoin implements Serializable
         return coinFrontImg;
     }
 
-    public void setCoinFrontImg( String coinFrontImg )
-    {
-        this.coinFrontImg = coinFrontImg;
-    }
-
     public String getCoinBackImg()
     {
         return coinBackImg;
@@ -46,11 +41,6 @@ public class CustomCoin implements Serializable
     public String getTitleCoin()
     {
         return titleCoin;
-    }
-
-    public void setTitleCoin( String newTitle )
-    {
-        this.titleCoin = newTitle;
     }
 
     public String getCoinType()
@@ -71,11 +61,6 @@ public class CustomCoin implements Serializable
     public Date getDateCollected()
     {
         return dateCollected;
-    }
-
-    public void setDateCollected( Date dateCollected )
-    {
-        this.dateCollected = dateCollected;
     }
 
     @Override

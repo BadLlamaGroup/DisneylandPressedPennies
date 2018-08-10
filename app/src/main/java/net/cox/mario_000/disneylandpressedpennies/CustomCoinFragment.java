@@ -132,7 +132,7 @@ public class CustomCoinFragment extends Fragment
         mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
 
         // Check permissions
-        isStoragePermissionGranted();
+        checkStoragePermissionGranted();
 
         // Link views
         spinningCoinFront = view.findViewById( R.id.spinningCoinFront );
@@ -446,8 +446,8 @@ public class CustomCoinFragment extends Fragment
 
     public void cancelDialog()
     {
-        final Dialog removeDialog = new Dialog( context, R.style.CustomDialog );
         // Set up dialog window
+        final Dialog removeDialog = new Dialog( context, R.style.CustomDialog );
         removeDialog.setContentView( R.layout.coin_remove_dialog );
         removeDialog.setTitle( "Title..." );
         removeDialog.getWindow().setBackgroundDrawable( new ColorDrawable( Color.TRANSPARENT ) );
@@ -459,7 +459,7 @@ public class CustomCoinFragment extends Fragment
 
         // Set data
         description.setText( "Are you sure you wish to cancel?" );
-        warningMsg.setText( "You will lose all changes for this coin." );
+        warningMsg.setText( "You will lose your current changes." );
 
         // Link buttons
         Button noBtn = removeDialog.findViewById( R.id.btn_no );
@@ -502,6 +502,12 @@ public class CustomCoinFragment extends Fragment
                 return name.matches( "Image.*\\.png" );
             }
         } );
+
+        if ( files == null )
+        {
+            return;
+        }
+
         for ( final File file : files )
         {
             if ( !file.delete() )
@@ -767,7 +773,7 @@ public class CustomCoinFragment extends Fragment
         }
     }
 
-    public void isStoragePermissionGranted()
+    public void checkStoragePermissionGranted()
     {
         if ( Build.VERSION.SDK_INT >= 23 )
         {
