@@ -173,7 +173,7 @@ public class singleCoin extends Fragment implements Data, View.OnClickListener
                     Toast.makeText( getActivity().getApplicationContext(), "Date Updated", Toast.LENGTH_SHORT ).show();
                     coin.setDateCollected( myCalendar.getTime() );
                     sharedPreference.addCoin( getActivity().getApplicationContext(), coin );
-                    //txtDate.setText( dateFormat.format( myCalendar.getTime() ) );
+                    txtDate.setText( dateFormat.format( myCalendar.getTime() ) );
                 } else
                 {
                     Toast.makeText( getActivity().getApplicationContext(), "Date Selected", Toast.LENGTH_SHORT ).show();
@@ -185,11 +185,15 @@ public class singleCoin extends Fragment implements Data, View.OnClickListener
 
         txtDate.setOnClickListener( new View.OnClickListener()
         {
-
             @Override
             public void onClick( View v )
             {
                 // Open calendar window
+                if ( coin.getDateCollected() != null )
+                {
+                    myCalendar.setTime( coin.getDateCollected() );
+                }
+
                 new DatePickerDialog( getActivity(), onDateSetListener, myCalendar
                         .get( Calendar.YEAR ), myCalendar.get( Calendar.MONTH ),
                         myCalendar.get( Calendar.DAY_OF_MONTH ) ).show();

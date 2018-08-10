@@ -144,6 +144,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             e.printStackTrace();
         }
 
+        //new whatsNew( this ).show();
+
         updateImages();
         updateTitles();
         updateCoinTotals();

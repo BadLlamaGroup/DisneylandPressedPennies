@@ -196,18 +196,3 @@ public class SharedPreference
         return coins;
     }
 }
-
-/*
-class UserActionDeserializer implements JsonDeserializer<Coin>
-{
-    public Coin deserialize( Coin coin, Type typeOfT, JsonDeserializationContext context ) throws JsonParseException
-    {
-        return new Coin();
-    }
-
-    @Override
-    public Coin deserialize( JsonElement json, Type Coin, JsonDeserializationContext context ) throws JsonParseException
-    {
-        return new Coin();
-    }
-}*/

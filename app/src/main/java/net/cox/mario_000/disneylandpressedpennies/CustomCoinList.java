@@ -3,7 +3,11 @@ package net.cox.mario_000.disneylandpressedpennies;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v13.app.FragmentCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +81,9 @@ public class CustomCoinList extends Fragment implements Data, AdapterView.OnItem
         mTracker.setScreenName( "Page - Custom Coin List" );
         mTracker.send( new HitBuilders.ScreenViewBuilder().build() );
         getActivity().setTitle( "Custom Coin List" );
+
+        // Check permissions
+        checkStoragePermissionGranted();
 
         // Get custom coins
         customCoins = sharedPreference.getCustomCoins( getActivity() );
@@ -204,5 +211,26 @@ public class CustomCoinList extends Fragment implements Data, AdapterView.OnItem
     public void onNothingSelected( AdapterView< ? > adapterView )
     {
 
+    }
+
+    public void checkStoragePermissionGranted()
+    {
+        if ( Build.VERSION.SDK_INT >= 23 )
+        {
+            if ( ContextCompat.checkSelfPermission( getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE ) != PackageManager.PERMISSION_GRANTED )
+            {
+                FragmentCompat.requestPermissions( this, new String[]{ android.Manifest.permission.WRITE_EXTERNAL_STORAGE }, 1 );
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult( int requestCode, String[] permissions, int[] grantResults )
+    {
+        super.onRequestPermissionsResult( requestCode, permissions, grantResults );
+        if ( grantResults[ 0 ] != PackageManager.PERMISSION_GRANTED )
+        {
+            getFragmentManager().popBackStackImmediate();
+        }
     }
 }

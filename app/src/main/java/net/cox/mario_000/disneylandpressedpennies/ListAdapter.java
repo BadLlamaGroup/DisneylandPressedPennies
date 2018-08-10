@@ -210,6 +210,7 @@ public class ListAdapter< T > extends ArrayAdapter< T >
                     final CustomCoin coin = ( CustomCoin ) tempCoins.get( position );
                     if ( customCoins.contains( coin ) )
                     {
+                        // Get saved custom coin
                         int index = customCoins.indexOf( coin );
                         final CustomCoin customCoin = customCoins.get( index );
 
@@ -230,7 +231,6 @@ public class ListAdapter< T > extends ArrayAdapter< T >
                         {
                             holder.collected.setText( "Not yet collected" );
                         }
-
 
                         // Set detail listener
                         row.setOnClickListener( new View.OnClickListener()
@@ -253,7 +253,6 @@ public class ListAdapter< T > extends ArrayAdapter< T >
                                 bundle.putString( "selectedCoin", jsonCoin );
                                 fragment.setArguments( bundle );
                                 fragmentTransaction.replace( R.id.mainFrag, fragment );
-
                                 fragmentTransaction.addToBackStack( null );
                                 fragmentTransaction.commit();
                             }

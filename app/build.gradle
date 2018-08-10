@@ -15,15 +15,15 @@ android {
         applicationId "net.cox.mario_000.disneylandpressedpennies"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 61
-        versionName "1.61"
+        versionCode 62
+        versionName "1.62"
     }
     buildTypes {
         release {
             minifyEnabled true
             shrinkResources true
             signingConfig signingConfigs.config
-            debuggable true
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     'proguard-rules.pro'
         }
