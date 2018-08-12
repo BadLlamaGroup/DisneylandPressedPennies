@@ -24,7 +24,6 @@ public interface Data
             new Coin( "Remy and Linguini", "penny_arcade_2_delicious", null ),
             new Coin( "Woody and Buzz", "penny_arcade_2_toy_story", null )
     };
-
     Coin[] retiredPennyArcade2Penny = new Coin[]{
             new Coin( "Main Street Electrical Parade America", "penny_arcade_2_america", null ),
             new Coin( "Main Street Electrical Parade Pete's Dragon", "penny_arcade_2_dragon", null ),

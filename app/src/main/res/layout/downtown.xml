@@ -20,7 +20,6 @@
             android:id="@+id/coinBookBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
             android:orientation="vertical">
@@ -54,7 +53,6 @@
             android:id="@+id/mapBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
             android:orientation="vertical">
@@ -182,7 +180,7 @@
                     android:text="WORLD OF DISNEY"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -191,11 +189,11 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="8dp"
                     android:gravity="center"
                     android:text="0 / 3"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
 
 
             </RelativeLayout>
@@ -219,11 +217,6 @@
                 android:layout_height="2dp"
                 android:background="@android:color/black" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@android:color/black" />
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -238,7 +231,7 @@
                     android:text="NEAR WETZELS PRETZELS"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
 
@@ -248,11 +241,11 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="8dp"
                     android:gravity="center"
                     android:text="0 / 3"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
 
 
             </RelativeLayout>
@@ -291,7 +284,7 @@
                     android:text="Near Tortilla Jo's"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
 
@@ -301,11 +294,11 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="8dp"
                     android:gravity="center"
                     android:text="0 / 3"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
 
 
             </RelativeLayout>
@@ -329,17 +322,6 @@
                 android:layout_height="2dp"
                 android:background="@android:color/black" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@android:color/black" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@android:color/black" />
-
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -354,7 +336,7 @@
                     android:text="DISNEYLAND HOTEL"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
 
@@ -364,11 +346,11 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="8dp"
                     android:gravity="center"
                     android:text="0 / 3"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
 
 
             </RelativeLayout>
@@ -407,7 +389,7 @@
                     android:text="GRAND CALIFORNIAN HOTEL"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
 
@@ -417,11 +399,11 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="8dp"
                     android:gravity="center"
                     android:text="0 / 3"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
 
 
             </RelativeLayout>
@@ -461,7 +443,7 @@
                     android:text="PARADISE PIER HOTEL"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -470,11 +452,11 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="8dp"
                     android:gravity="center"
                     android:text="0 / 3"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
 
 
             </RelativeLayout>

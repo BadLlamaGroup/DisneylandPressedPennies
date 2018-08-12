@@ -124,6 +124,8 @@ public class MachineAdapter extends ArrayAdapter< Machine > implements View.OnCl
         } else
         {
             new_mac_bg.setBackgroundColor( Color.WHITE );
+            new_coins_img.setVisibility( View.INVISIBLE );
+
         }
 
         return row;

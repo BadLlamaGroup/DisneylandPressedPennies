@@ -20,17 +20,16 @@
             android:id="@+id/coinBookBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
             <Button
-                android:clickable="false"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:background="@drawable/book" />
+                android:background="@drawable/book"
+                android:clickable="false" />
 
 
             <TextView
@@ -46,7 +45,6 @@
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:background="@android:color/darker_gray" />
 
@@ -60,11 +58,11 @@
             android:orientation="vertical">
 
             <Button
-                android:clickable="false"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:background="@drawable/find_map_black" />
+                android:background="@drawable/find_map_black"
+                android:clickable="false" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -93,11 +91,11 @@
             android:orientation="vertical">
 
             <Button
-                android:clickable="false"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:background="@drawable/list" />
+                android:background="@drawable/list"
+                android:clickable="false" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -183,7 +181,7 @@
                     android:text="Buena Vista Street"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -192,11 +190,11 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="8dp"
                     android:gravity="center"
                     android:text="0 / 3"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
 
             </RelativeLayout>
 
@@ -235,7 +233,7 @@
                     android:text="GRIZZLY PEAK AIRFIELDS"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -244,11 +242,11 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="8dp"
                     android:gravity="center"
                     android:text="0 / 3"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
 
             </RelativeLayout>
 
@@ -289,7 +287,7 @@
                     android:text="GRIZZLY PEAK REC AREA"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -298,11 +296,11 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="8dp"
                     android:gravity="center"
                     android:text="0 / 3"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
 
             </RelativeLayout>
 
@@ -339,7 +337,7 @@
                     android:text="PIXAR PIER"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -348,11 +346,11 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="8dp"
                     android:gravity="center"
                     android:text="0 / 3"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
 
 
             </RelativeLayout>
@@ -390,7 +388,7 @@
                     android:text="HOLLYWOOD LAND"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -399,11 +397,11 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="8dp"
                     android:gravity="center"
                     android:text="0 / 3"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
 
 
             </RelativeLayout>
@@ -441,7 +439,7 @@
                     android:text="CARS LAND"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -450,11 +448,11 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="8dp"
                     android:gravity="center"
                     android:text="0 / 3"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
 
 
             </RelativeLayout>
