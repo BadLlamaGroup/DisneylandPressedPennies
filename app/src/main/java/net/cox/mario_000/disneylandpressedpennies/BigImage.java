@@ -34,6 +34,9 @@ public class BigImage extends Activity
     private AnimatorSet mSetLeftIn;
     private boolean mIsBackVisible;
 
+    // Data
+    boolean custom;
+
     @Override
     protected void onCreate( Bundle savedInstanceState )
     {
@@ -55,7 +58,7 @@ public class BigImage extends Activity
             final int frontResId = getApplicationContext().getResources().getIdentifier( frontImg, "drawable", getApplicationContext().getPackageName() );
             String test = backImg == null ? frontImg + "_backstamp" : backImg;
             final int backResId = getApplicationContext().getResources().getIdentifier( test, "drawable", getApplicationContext().getPackageName() );
-            if ( frontResId != 0 )
+            if ( frontResId != 0 && backResId != 0 )
             {
                 // Display front image
                 Picasso.get().load( frontResId ).error( R.drawable.new_penny ).into( frontCoin );
@@ -97,6 +100,8 @@ public class BigImage extends Activity
                 }
             } else
             {
+                custom = true;
+
                 // Set images
                 Uri frontImage = Uri.fromFile( new File( COIN_PATH + "/" + frontImg ) );
                 Picasso.get().load( frontImage ).error( R.drawable.new_penny ).fit().into( frontCoin );
@@ -126,7 +131,7 @@ public class BigImage extends Activity
                 public void onClick( View v )
                 {
                     // Check if coin is currently flipping
-                    if ( !( mSetRightOut.isRunning() || mSetLeftIn.isRunning() ) && frontResId != backResId )
+                    if ( !( mSetRightOut.isRunning() || mSetLeftIn.isRunning() ) && ( frontResId != backResId || custom ) )
                     {
                         flipCoin();
                     }
