@@ -17,7 +17,7 @@ import com.google.gson.Gson;
  * Created by mario_000 on 6/25/2016.
  * Description: Fragment for displaying machines in land
  */
-public class MachineDetail extends Fragment implements Data, AdapterView.OnItemClickListener
+public class LandDetail extends Fragment implements Data, AdapterView.OnItemClickListener
 {
     // Data
     private MachineAdapter mMachineAdapter;

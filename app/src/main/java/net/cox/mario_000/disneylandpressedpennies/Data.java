@@ -158,10 +158,16 @@ public interface Data
             new Coin( "Pirate Face & Crossed Swords", "pieces_of_eight_face", null )
     };
 
-    Coin[] portRoyalQuarter = new Coin[]{
+    Coin[] oldPortRoyalQuarter = new Coin[]{
             new Coin( "Haunted Mansion Banner", "port_royal_banner", null ),
             new Coin( "Haunted Mansion Logo", "port_royal_logo", null ),
             new Coin( "Haunted Mansion Ride", "port_royal_ride", null )
+    };
+
+    Coin[] portRoyalQuarter = new Coin[]{
+            new Coin( "Nightmare Before Christmas - Jack Skellington", "port_royal_jack_skellington", null ),
+            new Coin( "Nightmare Before Christmas - Oogie Boogie", "port_royal_oogie_boogie", null ),
+            new Coin( "Nightmare Before Christmas - Zero", "port_royal_zero", null )
     };
 
     //CRITTER COUNTRY
@@ -518,7 +524,7 @@ public interface Data
 
     Machine[] newOrleansCoins = new Machine[]{
             new Machine( "New Orleans Square", "Pieces of Eight Gift Shop", "Penny", "pieces_of_eight_mac", "pieces_of_eight_backstamp", "pieces_of_eight_preview", piecesOfEightPenny, new LatLng( 33.811074, -117.921083 ) ),
-            new Machine( "New Orleans Square", "Port Royal Curios & Curiosities", "Quarter", "port_royal_mac", null, "port_royal_preview", portRoyalQuarter, new LatLng( 33.811177, -117.921046 ) )
+            new Machine( "New Orleans Square", "Port Royal Curios & Curiosities", "Quarter", "port_royal_mac", "port_royal_nightmare_before_christmas_backstamp", "port_royal_preview", portRoyalQuarter, new LatLng( 33.811177, -117.921046 ) )
     };
 
     Machine[] critterCountryCoins = new Machine[]{
@@ -607,6 +613,7 @@ public interface Data
             new Machine( "Main Street", "Penny Arcade #2 - Retired", "Penny", "old_penny_arcade_2_mac", "penny_arcade_2_backstamp", "old_penny_arcade_2_preview", retiredPennyArcade2Penny, new LatLng( 33.811262, -117.919072 ) ),
             new Machine( "Main Street", "Penny Arcade #3 - Retired", "Nickel", "penny_arcade_3_mac", "penny_arcade_3_backstamp", "penny_arcade_3_preview", retiredPennyArcade3Nickel, new LatLng( 33.811262, -117.919102 ) ),
             new Machine( "Frontierland", "Bonanza Outfitters Sidewalk - Retired", "Penny", "bonanza_sidewalk_mac", "frontierland_backstamp", "old_bonanza_sidewalk_preview", retiredBonanzaSidewalkPenny, new LatLng( 33.812090, -117.919961 ) ),
+            new Machine( "New Orleans Square", "Port Royal Curios & Curiosities - Retired", "Quarter", "port_royal_mac", null, "old_port_royal_preview", oldPortRoyalQuarter, new LatLng( 33.811177, -117.921046 ) ),
             new Machine( "Tomorrowland", "Buzz Lightyear Exit #1 - Retired", "Penny", "buzz_exit_1_2_mac", "buzz_exit_1_backstamp", "buzz_exit_1_preview_retired", retiredBuzzExit1Penny, new LatLng( 33.812229, -117.917520 ) )
     };
 

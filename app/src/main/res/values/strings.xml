@@ -72,14 +72,12 @@
         any notes you have on that particular coin. Lastly, you can always edit any custom coin you have saved.\n</string>
 
     <string name="whatsnew">
-        GREAT NEWS:
-        \nCustom coin option now available. They will be fully integrated with the existing coins.
-        Check out the tutorials page for new instructions.\n\nThis is a long-awaited feature we are proud to now offer. We hope
-        you enjoy expanding your collection even further now.\n\nGOOD NEWS:
-        \nMore Pixar coins available.\n-Updated \'Penny Arcade #2\'\n-Updated \'Bonanza Outfitters Sidewalk\'
-        \n\nChanges:\n-More efficient image loading.\n-Calendar opens to saved coin collected date.\n-PDF export is
-        more organized now.\n-Coin book \'Custom\' changed to \'Organized\' to prevent confusion.
-        \n\nFinal News:\n-Make sure to check out Pixar Fest before it ends Sep 03.
+        NEWS:
+        \nCustom coin option still available. They will be fully integrated with the existing coins.
+        Check out the tutorials page for new instructions.\nThis is a long-awaited feature we are proud to now offer.
+        \n\n-Updated\n \'Port Royal Curios &amp; Curiosities\'
+        \n\nChanges:\n-Back button pressed in map now closes an open machine info window instead of exiting map.
+        \n\nFinal News:\n-Make sure to visit for Halloween Time at Disneyland.
         \n\nThank you for your continued support.
     </string>
 
@@ -88,6 +86,7 @@
         <item>Bonanza Outfitters Sidewalk</item>
         <item>Knick\'s Knacks</item>
         <item>Bing Bong\'s Sweet Stuff</item>
+        <item>Port Royal Curios &amp; Curiosities</item>
 
     </string-array>
 

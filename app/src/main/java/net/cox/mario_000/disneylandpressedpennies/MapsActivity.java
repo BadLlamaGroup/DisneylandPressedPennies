@@ -17,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +78,8 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
     // References
     private Tracker mTracker;
     private SharedPreference sharedPreference = new SharedPreference();
+    private boolean infoWindowOpen;
+    private Marker openMarker;
 
     private boolean isGooglePlayServicesAvailable( Activity activity )
     {
@@ -143,6 +146,25 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
             mMapView.onResume();
             mMapView.getMapAsync( this );
         }
+
+        mMapView.setFocusableInTouchMode( true );
+        mMapView.requestFocus();
+        mMapView.setOnKeyListener( new View.OnKeyListener()
+        {
+            @Override
+            public boolean onKey( View v, int keyCode, KeyEvent event )
+            {
+                if ( keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN ) {
+                    if ( infoWindowOpen && openMarker != null ) {
+                        animateCamera( openMarker.getPosition(), defaultZoomLevel );
+                        openMarker.hideInfoWindow();
+                    } else {
+                        getFragmentManager().popBackStackImmediate();
+                    }
+                }
+                return true;
+            }
+        } );
 
         return myFragmentView;
 
@@ -214,6 +236,8 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
                 {
                     animateCamera( marker.getPosition(), defaultZoomLevel );
                 }
+                openMarker = null;
+                infoWindowOpen = false;
             }
         } );
         mGoogleMap.setOnMarkerClickListener( new GoogleMap.OnMarkerClickListener()
@@ -227,6 +251,8 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
                 {
                     animateCamera( marker.getPosition(), zoomedInLevel );
                 }
+                openMarker = marker;
+                infoWindowOpen = true;
                 return false;
             }
         } );
@@ -535,6 +561,7 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
                                     if ( last.getMachineName().equals( markerOptions.getTitle() ) )
                                     {
                                         lastMarker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
+                                        openMarker = lastMarker;
                                         lastMarker.showInfoWindow();
                                     }
                                 } else if ( selectedMac != null )
@@ -610,6 +637,7 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
                                     if ( last.getMachineName().equals( markerOptions.getTitle() ) )
                                     {
                                         lastMarker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
+                                        openMarker = lastMarker;
                                         lastMarker.showInfoWindow();
                                     }
                                 } else if ( selectedMac != null )
@@ -685,6 +713,7 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
                                     if ( last.getMachineName().equals( markerOptions.getTitle() ) )
                                     {
                                         lastMarker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
+                                        openMarker = lastMarker;
                                         lastMarker.showInfoWindow();
                                     }
                                 } else if ( selectedMac != null )

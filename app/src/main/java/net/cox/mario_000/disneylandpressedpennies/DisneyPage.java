@@ -194,7 +194,7 @@ public class DisneyPage extends Fragment implements View.OnClickListener
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Bundle bundle = new Bundle();
         bundle.putInt( "land", view.getId() );
-        MachineDetail fragment = new MachineDetail();
+        LandDetail fragment = new LandDetail();
         fragment.setArguments( bundle );
         fragmentTransaction.setCustomAnimations(
                 R.animator.fade_in,
