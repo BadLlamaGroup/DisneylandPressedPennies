@@ -651,4 +651,8 @@ public interface Data
     Machine[][] retiredMachines = new Machine[][]{
             retiredDisneylandMachines, retiredCaliforniaMachines, retiredDowntownMachines
     };
+
+    Machine[][][] allMachines = new Machine[][][]{
+            disneyMachines, downtownMachines, calMachines, retiredMachines
+    };
 }

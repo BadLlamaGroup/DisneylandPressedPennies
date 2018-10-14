@@ -153,6 +153,27 @@ public class MainPage extends Fragment implements View.OnClickListener
             }
         } );
 
+        /* CHECK FOR DUPLICATE COINS */
+
+//        List listCoins = new ArrayList(  );
+//        List duplicateCoins = new ArrayList(  );
+//
+//        for ( Machine[][] parkMac : allMachines ){
+//            for ( Machine[] areaMac : parkMac ){
+//                for ( Machine mac : areaMac ){
+//                    for ( Coin coin : mac.getCoins() ){
+//                        if( listCoins.contains( coin.getTitleCoin() ) && !duplicateCoins.contains( coin.getTitleCoin() ) ){
+//                            duplicateCoins.add( coin.getTitleCoin() );
+//                        }
+//                        else {
+//                            listCoins.add( coin.getTitleCoin() );
+//                        }
+//
+//                    }
+//                }
+//            }
+//        }
+
         return myFragmentView;
     }
 
