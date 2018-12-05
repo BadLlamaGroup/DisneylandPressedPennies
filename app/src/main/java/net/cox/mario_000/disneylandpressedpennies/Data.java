@@ -580,8 +580,8 @@ public interface Data
     // DOWNTOWN DISNEY
 
     Machine[] worldDisneyCoins = new Machine[]{
-            new Machine( "World of Disney", "East Door", "Penny", "wod_east_mac", "wod_backstamp", "wod_restrooms_preview", WodEastDoorPenny, new LatLng( 33.8086787, -117.9207830 ) ),
-            new Machine( "World of Disney", "Center Door", "Penny", "wod_center_mac", "wod_backstamp", "wod_east_door_preview", WodCenterDoorPenny, new LatLng( 33.8086341, -117.9211732 ) )
+            new Machine( "World of Disney", "Middle of WOD", "Penny", "wod_mac", "wod_backstamp", "wod_restrooms_preview", WodEastDoorPenny, new LatLng( 33.8086787, -117.9207830 ) ),
+            new Machine( "World of Disney", "Inside WOD", "Penny", "wod_mac", "wod_backstamp", "wod_east_door_preview", WodCenterDoorPenny, new LatLng( 33.8086341, -117.9211732 ) )
     };
 
     Machine[] wetzelsCoins = new Machine[]{

@@ -82,18 +82,11 @@
     </string>
 
     <string-array name="new_coins">
-        <item>Penny Arcade #2</item>
-        <item>Bonanza Outfitters Sidewalk</item>
-        <item>Knick\'s Knacks</item>
-        <item>Bing Bong\'s Sweet Stuff</item>
-        <item>Port Royal Curios &amp; Curiosities</item>
-
+        <item>Middle of WOD</item>
+        <item>Inside WOD</item>
     </string-array>
 
     <string-array name="off_mac">
-        <item>East Door</item>
-        <item>ESPN Zone</item>
-
     </string-array>
 
 </resources>
