@@ -15,8 +15,8 @@ android {
         applicationId "net.cox.mario_000.disneylandpressedpennies"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 63
-        versionName "1.63"
+        versionCode 64
+        versionName "1.64"
     }
     buildTypes {
         release {

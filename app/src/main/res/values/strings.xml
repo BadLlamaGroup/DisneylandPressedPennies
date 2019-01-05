@@ -73,20 +73,25 @@
 
     <string name="whatsnew">
         NEWS:
-        \nCustom coin option still available. They will be fully integrated with the existing coins.
-        Check out the tutorials page for new instructions.\nThis is a long-awaited feature we are proud to now offer.
-        \n\n-Updated\n \'Port Royal Curios &amp; Curiosities\'
-        \n\nChanges:\n-Back button pressed in map now closes an open machine info window instead of exiting map.
-        \n\nFinal News:\n-Make sure to visit for Halloween Time at Disneyland.
+        \nHoliday nickels are now available
+        \n\n-New\n  \'Trolley Treats Holiday\'
+        \n  \'Penny Arcade Holiday\'
+        \n\n-Updated\n  \'Port Royal Curios &amp; Curiosities\'
+        \n  Both World of Disney machines
+        \n\nChanges:\n-Updated World of Disney images
         \n\nThank you for your continued support.
     </string>
 
     <string-array name="new_coins">
-        <item>Middle of WOD</item>
-        <item>Inside WOD</item>
+        <item>First Machine</item>
+        <item>Second Machine</item>
+        <item>Trolley Treats Holiday</item>
+        <item>Penny Arcade Holiday</item>
     </string-array>
 
     <string-array name="off_mac">
+        <item>Trolley Treats</item>
+        <item>White Water Snacks</item>
     </string-array>
 
 </resources>

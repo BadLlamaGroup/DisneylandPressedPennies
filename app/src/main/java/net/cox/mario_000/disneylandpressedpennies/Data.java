@@ -24,6 +24,11 @@ public interface Data
             new Coin( "Remy and Linguini", "penny_arcade_2_delicious", null ),
             new Coin( "Woody and Buzz", "penny_arcade_2_toy_story", null )
     };
+    Coin[] pennyArcadeHolidayNickel = new Coin[]{
+            new Coin( "Holiday Mickey 2018", "", null ),
+            new Coin( "Holiday Minnie 2018", "", null ),
+            new Coin( "Holiday Donald 2018", "", null )
+    };
     Coin[] retiredPennyArcade2Penny = new Coin[]{
             new Coin( "Main Street Electrical Parade America", "penny_arcade_2_america", null ),
             new Coin( "Main Street Electrical Parade Pete's Dragon", "penny_arcade_2_dragon", null ),
@@ -271,6 +276,12 @@ public interface Data
             new Coin( "2018 Red Car Trolley", "trolley_treats_red_car_trolley", null )
     };
 
+    Coin[] trolleyHolidayNickel = new Coin[]{
+            new Coin( "2018 Mickey with mistletoe", "", null ),
+            new Coin( "2018 Minnie waiting for a kiss", "", null ),
+            new Coin( "2018 Donald with Christmas gift", "", null )
+    };
+
     Coin[] fiveDime1Penny = new Coin[]{
             new Coin( "Walt & Mickey Storytellers", "five_dime_1_storytellers", null ),
             new Coin( "Oswald", "five_dime_1_oswald", null ),
@@ -378,13 +389,13 @@ public interface Data
 
     // WORLD OF DISNEY
 
-    Coin[] WodCenterDoorPenny = new Coin[]{
+    Coin[] WodFirstMachinePenny = new Coin[]{
             new Coin( "Mickey Mouse", "wod_center_mickey", null ),
             new Coin( "Dancing Goofy", "wod_center_goofy", null ),
             new Coin( "Donald Duck", "wod_center_donald", null )
     };
 
-    Coin[] WodEastDoorPenny = new Coin[]{
+    Coin[] WodSecondMachinePenny = new Coin[]{
             new Coin( "Pooh", "wod_east_pooh", null ),
             new Coin( "Dumbo", "wod_east_dumbo", null ),
             new Coin( "Pinocchio", "wod_east_pinocchio", null )
@@ -491,8 +502,9 @@ public interface Data
     // DISNEYLAND
 
     Machine[] mainCoins = new Machine[]{
-            new Machine( "Main Street", "Penny Arcade #1", "Penny", "penny_arcade_mac", "penny_arcade_backstamp", "penny_arcade_preview", pennyArcadeQuarter, new LatLng( 33.811262, -117.919002 ) ),
-            new Machine( "Main Street", "Penny Arcade #2", "Penny", "penny_arcade_2_mac", "pixar_fest_backstamp", "penny_arcade_2_preview", pennyArcade2Penny, new LatLng( 33.811262, -117.919072 ) ),
+            new Machine( "Main Street", "Penny Arcade #1", "Penny", "penny_arcade_mac", "penny_arcade_backstamp", "penny_arcade_preview", pennyArcadeQuarter, new LatLng( 33.811262, -117.919072 ) ),
+            new Machine( "Main Street", "Penny Arcade #2", "Penny", "penny_arcade_2_mac", "pixar_fest_backstamp", "penny_arcade_2_preview", pennyArcade2Penny, new LatLng( 33.811202, -117.919072 ) ),
+            new Machine( "Main Street", "Penny Arcade Holiday", "Nickel", "penny_arcade_holiday_mac", "", "penny_arcade_holiday_preview", pennyArcadeHolidayNickel, new LatLng( 33.811262, -117.919112 ) ),
             new Machine( "Main Street", "Opera House Exit #1", "Penny", "opera_1_mac", "opera_backstamp", "opera_1_preview", operaExit1Penny, new LatLng( 33.810270, -117.918520 ) ),
             new Machine( "Main Street", "Opera House Exit #2", "Penny", "opera_2_mac", "opera_backstamp", "opera_2_preview", operaExit2Penny, new LatLng( 33.810270, -117.918490 ) ),
             new Machine( "Main Street", "Opera House Exit #3", "Penny", "opera_3_mac", "opera_backstamp", "opera_3_preview", operaExit3Penny, new LatLng( 33.810270, -117.918460 ) ),
@@ -547,6 +559,7 @@ public interface Data
             new Machine( "Buena Vista Street", "Kingswell Camera Shop #2", "Penny", "trolley_treats_1_mac", "buena_vista_backstamp", "trolley_treats_1_preview", kingswell2Penny, new LatLng( 33.808261, -117.919177 ) ),
             new Machine( "Buena Vista Street", "Julius Katz & Sons", "Penny", "katz_mac", "buena_vista_backstamp", "julius_katz_preview", katzPenny, new LatLng( 33.808172, -117.919027 ) ),
             new Machine( "Buena Vista Street", "Trolley Treats", "Nickel", "trolley_treats_mac", "trolley_treats_backstamp", "trolley_treats_preview", trolleyNickel, new LatLng( 33.807985, -117.919082 ) ),
+            new Machine( "Buena Vista Street", "Trolley Treats Holiday", "Nickel", "trolley_treats_holiday_mac", "", "trolley_treats_holiday_preview", trolleyHolidayNickel, new LatLng( 33.807985, -117.919112 ) ),
             new Machine( "Buena Vista Street", "Los Feliz Five & Dime #1", "Penny", "five_dime_1_mac", "buena_vista_backstamp", "five_dime_1_preview", fiveDime1Penny, new LatLng( 33.808353, -117.918642 ) ),
             new Machine( "Buena Vista Street", "Los Feliz Five & Dime #2", "Penny", "five_dime_2_mac", "buena_vista_backstamp", "five_dime_2_preview", fiveDime2Penny, new LatLng( 33.808353, -117.918602 ) ),
             new Machine( "Buena Vista Street", "Big Top Toys", "Penny", "big_top_toys_mac", "buena_vista_backstamp", "big_top_preview", bigTopPenny, new LatLng( 33.808222, -117.918702 ) )
@@ -580,8 +593,8 @@ public interface Data
     // DOWNTOWN DISNEY
 
     Machine[] worldDisneyCoins = new Machine[]{
-            new Machine( "World of Disney", "Middle of WOD", "Penny", "wod_mac", "wod_backstamp", "wod_restrooms_preview", WodEastDoorPenny, new LatLng( 33.8086787, -117.9207830 ) ),
-            new Machine( "World of Disney", "Inside WOD", "Penny", "wod_mac", "wod_backstamp", "wod_east_door_preview", WodCenterDoorPenny, new LatLng( 33.8086341, -117.9211732 ) )
+            new Machine( "World of Disney", "First Machine", "Penny", "wod_mac", "wod_backstamp", "wod_east_door_preview", WodFirstMachinePenny, new LatLng( 33.8086341, -117.9211732 ) ),
+            new Machine( "World of Disney", "Second Machine", "Penny", "wod_mac", "wod_backstamp", "wod_restrooms_preview", WodSecondMachinePenny, new LatLng( 33.8086787, -117.9207830 ) )
     };
 
     Machine[] wetzelsCoins = new Machine[]{

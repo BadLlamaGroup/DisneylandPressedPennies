@@ -119,7 +119,7 @@ public class MachineAdapter extends ArrayAdapter< Machine > implements View.OnCl
         } else if ( Arrays.asList( offMachine ).contains( machine.getMachineName() ) )
         {
             new_mac_bg.setBackgroundColor( Color.YELLOW );
-            holder.location.setText( String.format( "%s - %s", String.valueOf( machine.getMachineName() ), "Inaccessible" ) );
+            holder.location.setText( String.format( "%s - %s", String.valueOf( machine.getMachineName() ), "Offstage" ) );
             off_mac_img.setVisibility( View.VISIBLE );
         } else
         {

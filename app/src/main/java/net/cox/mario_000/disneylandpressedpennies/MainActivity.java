@@ -144,10 +144,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             e.printStackTrace();
         }
 
-        //new whatsNew( this ).show();
+        // FORCE UPDATE SCREEN TO SHOW
+        //new whatsNew( this ).forceShow();
 
         updateImages();
-        updateTitles();
+        //updateTitles();
         updateCoinTotals();
 
         // Create menu drawer
@@ -313,11 +314,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 {
                     for ( Coin c : mach.getCoins() )
                     {
-                        if ( !c.getTitleCoin().equals( coin.getTitleCoin() ) )
+                        if ( !c.getTitleCoin().equals( "" ) && !coin.getTitleCoin().equals( "" ) )
                         {
-                            if ( coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
+                            if ( !c.getTitleCoin().equals( coin.getTitleCoin() ) )
                             {
-                                coin.setTitleCoin( c.getTitleCoin() );
+                                if ( coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
+                                {
+                                    coin.setTitleCoin( c.getTitleCoin() );
+                                }
                             }
                         }
                     }
@@ -329,11 +333,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 {
                     for ( Coin c : mach.getCoins() )
                     {
-                        if ( !c.getTitleCoin().equals( coin.getTitleCoin() ) )
+                        if ( !c.getTitleCoin().equals( "" ) && !coin.getTitleCoin().equals( "" ) )
                         {
-                            if ( coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
+                            if ( !c.getTitleCoin().equals( coin.getTitleCoin() ) )
                             {
-                                coin.setTitleCoin( c.getTitleCoin() );
+                                if ( coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
+                                {
+                                    coin.setTitleCoin( c.getTitleCoin() );
+                                }
                             }
                         }
                     }
@@ -345,11 +352,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 {
                     for ( Coin c : mach.getCoins() )
                     {
-                        if ( !c.getTitleCoin().equals( coin.getTitleCoin() ) )
+                        if ( !c.getTitleCoin().equals( "" ) && !coin.getTitleCoin().equals( "" ) )
                         {
-                            if ( coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
+                            if ( !c.getTitleCoin().equals( coin.getTitleCoin() ) )
                             {
-                                coin.setTitleCoin( c.getTitleCoin() );
+                                if ( coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
+                                {
+                                    coin.setTitleCoin( c.getTitleCoin() );
+                                }
                             }
                         }
                     }
@@ -362,11 +372,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 {
                     for ( Coin c : mach.getCoins() )
                     {
-                        if ( !c.getTitleCoin().equals( coin.getTitleCoin() ) )
+                        if ( !c.getTitleCoin().equals( "" ) && !coin.getTitleCoin().equals( "" ) )
                         {
-                            if ( coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
+                            if ( !c.getTitleCoin().equals( coin.getTitleCoin() ) )
                             {
-                                coin.setTitleCoin( c.getTitleCoin() );
+                                if ( coin.getCoinFrontImg().equals( c.getCoinFrontImg() ) )
+                                {
+                                    coin.setTitleCoin( c.getTitleCoin() );
+                                }
                             }
                         }
                     }

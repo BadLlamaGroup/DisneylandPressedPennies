@@ -83,7 +83,7 @@ class CoinBookImageAdapter extends PagerAdapter
 
             // Get image resId number
             final int frontResId = context.getResources().getIdentifier( frontImg, "drawable", context.getPackageName() );
-            final int backResId;
+            int backResId;
             // Get machine for coin
             Machine currentMac = find( currentCoin );
             String backImg = currentMac.getBackstampImg();
@@ -96,8 +96,19 @@ class CoinBookImageAdapter extends PagerAdapter
                 backResId = context.getResources().getIdentifier( backImg, "drawable", context.getPackageName() );
             }
 
-            // Display front image
-            Picasso.get().load( frontResId ).error( R.drawable.new_penny ).into( coinFront );
+            if ( frontResId == 0 )
+            {
+                Picasso.get().load( R.drawable.new_penny ).into( coinFront );
+            } else
+            {
+                // Display front image
+                Picasso.get().load( frontResId ).error( R.drawable.new_penny ).into( coinFront );
+            }
+
+            if ( backResId == 0 )
+            {
+                backResId = context.getResources().getIdentifier( "new_penny_back", "drawable", context.getPackageName() );
+            }
 
             // Create dimensions
             BitmapFactory.Options dimensions = new BitmapFactory.Options();

@@ -127,7 +127,13 @@ public class allCoinsAdapter extends ArrayAdapter< Coin >
 
             // Set image and res id
             int frontResId = context.getResources().getIdentifier( coin.getCoinFrontImg(), "drawable", context.getPackageName() );
-            Picasso.get().load( frontResId ).error( R.drawable.new_searching ).into( holder.imageView );
+            if( frontResId == 0 ){
+                Picasso.get().load( R.drawable.new_penny ).into( holder.imageView );
+            }else
+            {
+                // Display front image
+                Picasso.get().load( frontResId ).error( R.drawable.new_penny ).into( holder.imageView );
+            }
 
             setToGray( holder.imageView );
 
@@ -249,7 +255,7 @@ public class allCoinsAdapter extends ArrayAdapter< Coin >
                 holder.separator.setText( mac.getMachineName() + " - NEW" );
             } else if ( Arrays.asList( offMachine ).contains( mac.getMachineName() ) )
             {
-                holder.separator.setText( mac.getMachineName() + " - Inaccessible" );
+                holder.separator.setText( mac.getMachineName() + " - Offstage" );
             } else
             {
                 holder.separator.setText( mac.getMachineName() );

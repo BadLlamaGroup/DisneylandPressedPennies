@@ -74,4 +74,35 @@ public class whatsNew
             e.printStackTrace();
         }
     }
+
+
+    public void forceShow()
+    {
+        try
+        {
+            // Get the versionCode of the Package, which must be different (incremented) in each release on the market in the AndroidManifest.xml
+            final PackageInfo packageInfo = mActivity.getPackageManager().getPackageInfo( mActivity.getPackageName(), PackageManager.GET_ACTIVITIES );
+
+                final String title = mActivity.getString( R.string.app_name ) + " v" + packageInfo.versionName;
+
+                final String message = mActivity.getString( R.string.whatsnew );
+
+                // Show the News since last version
+                AlertDialog.Builder builder = new AlertDialog.Builder( mActivity )
+                        .setTitle( title )
+                        .setMessage( message )
+                        .setPositiveButton( android.R.string.ok, new Dialog.OnClickListener()
+                        {
+
+                            public void onClick( DialogInterface dialogInterface, int i )
+                            {
+                                dialogInterface.dismiss();
+                            }
+                        } );
+                builder.create().show();
+        } catch ( PackageManager.NameNotFoundException e )
+        {
+            e.printStackTrace();
+        }
+    }
 }

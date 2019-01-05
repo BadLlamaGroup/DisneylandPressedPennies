@@ -139,7 +139,12 @@ public class ListAdapter< T > extends ArrayAdapter< T >
                     final Coin coin = ( Coin ) tempCoins.get( position );
                     //Set image and res id
                     int frontResId = context.getResources().getIdentifier( coin.getCoinFrontImg(), "drawable", context.getPackageName() );
-                    Picasso.get().load( frontResId ).error( R.drawable.new_penny ).into( holder.imageView );
+                    if( frontResId == 0 ){
+                        Picasso.get().load( R.drawable.new_penny ).into( holder.imageView );
+                    }else{
+                        Picasso.get().load( frontResId ).error( R.drawable.new_penny ).into( holder.imageView );
+                    }
+
                     holder.imageView.setOnClickListener( PopupListener );
 
                     // Find machine that coin belongs to

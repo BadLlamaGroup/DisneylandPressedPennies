@@ -234,8 +234,19 @@ public class singleCoin extends Fragment implements Data, View.OnClickListener
                 backResId = view.getContext().getResources().getIdentifier( machine.getBackstampImg(), "drawable", view.getContext().getPackageName() );
             }
 
-            // Display front image
-            Picasso.get().load( frontResId ).error( R.drawable.new_penny ).into( coinFront );
+            if ( frontResId == 0 )
+            {
+                Picasso.get().load( R.drawable.new_penny ).into( coinFront );
+            } else
+            {
+                // Display front image
+                Picasso.get().load( frontResId ).error( R.drawable.new_penny ).into( coinFront );
+            }
+
+            if ( backResId == 0 )
+            {
+                backResId = view.getContext().getResources().getIdentifier( "new_penny_back", "drawable", view.getContext().getPackageName() );
+            }
 
             // Create dimensions
             BitmapFactory.Options dimensions = new BitmapFactory.Options();
