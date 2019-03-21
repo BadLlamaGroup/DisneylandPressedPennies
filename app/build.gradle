@@ -15,8 +15,8 @@ android {
         applicationId "net.cox.mario_000.disneylandpressedpennies"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 64
-        versionName "1.64"
+        versionCode 66
+        versionName "1.66"
     }
     buildTypes {
         release {
@@ -50,4 +50,5 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.google.maps.android:android-maps-utils:0.5+'
 }

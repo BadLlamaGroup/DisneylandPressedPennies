@@ -149,11 +149,6 @@ public class LandDetail extends Fragment implements Data, AdapterView.OnItemClic
                     tempCoins = wetzelsCoins;
                     landTitle = "Near Wetzels Pretzels";
                     break;
-                case R.id.grandCalifornianBtn:
-                    logoImg = "grand_californian";
-                    tempCoins = grandCalifornianCoins;
-                    landTitle = "Grand Californian Hotel";
-                    break;
                 case R.id.disneyHotelBtn:
                     logoImg = "disneyland_hotel";
                     tempCoins = disneylandHotelCoins;

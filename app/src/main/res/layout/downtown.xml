@@ -375,57 +375,57 @@
                 android:background="@android:color/black" />
 
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimary"
-                android:orientation="horizontal">
+            <!--<RelativeLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:background="@color/colorPrimary"-->
+                <!--android:orientation="horizontal">-->
 
-                <TextView
-                    style="?android:listSeparatorTextViewStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/colorPrimary"
-                    android:text="GRAND CALIFORNIAN HOTEL"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-
-                <TextView
-                    android:id="@+id/txt_grandCal_collected"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="8dp"
-                    android:gravity="center"
-                    android:text="0 / 3"
-                    android:textColor="@android:color/black"
-                    android:textSize="15sp" />
+                <!--<TextView-->
+                    <!--style="?android:listSeparatorTextViewStyle"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:background="@color/colorPrimary"-->
+                    <!--android:text="GRAND CALIFORNIAN HOTEL"-->
+                    <!--android:textAlignment="center"-->
+                    <!--android:textColor="@android:color/black"-->
+                    <!--android:textSize="18sp"-->
+                    <!--android:textStyle="bold" />-->
 
 
-            </RelativeLayout>
+                <!--<TextView-->
+                    <!--android:id="@+id/txt_grandCal_collected"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_alignParentEnd="true"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:layout_marginEnd="8dp"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="0 / 3"-->
+                    <!--android:textColor="@android:color/black"-->
+                    <!--android:textSize="15sp" />-->
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@android:color/black" />
 
-            <ImageButton
-                android:id="@+id/grandCalifornianBtn"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:padding="0dp"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/grand_californian2" />
+            <!--</RelativeLayout>-->
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@android:color/black" />
+            <!--<View-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="2dp"-->
+                <!--android:background="@android:color/black" />-->
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/grandCalifornianBtn"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:padding="0dp"-->
+                <!--android:scaleType="fitXY"-->
+                <!--app:srcCompat="@drawable/grand_californian2" />-->
+
+            <!--<View-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="2dp"-->
+                <!--android:background="@android:color/black" />-->
 
 
             <RelativeLayout

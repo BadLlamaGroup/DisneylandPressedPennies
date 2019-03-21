@@ -71,27 +71,26 @@
         you can choose between the three lands or choose other. You can also select the coin type and the date you collected it. You may also enter
         any notes you have on that particular coin. Lastly, you can always edit any custom coin you have saved.\n</string>
 
+    <!--<string name="whatsnew">-->
+        <!--\nChanges:\n-Added holiday nickel images-->
+        <!--\n\nThank you for your continued support.-->
+    <!--</string>-->
+
     <string name="whatsnew">
         NEWS:
-        \nHoliday nickels are now available
-        \n\n-New\n  \'Trolley Treats Holiday\'
-        \n  \'Penny Arcade Holiday\'
-        \n\n-Updated\n  \'Port Royal Curios &amp; Curiosities\'
-        \n  Both World of Disney machines
-        \n\nChanges:\n-Updated World of Disney images
-        \n\nThank you for your continued support.
+        \n Best Friends Forever series ended
+        \n\n-Retired\n  \'Nightmare Before Christmas\'
+        \n  \'Bonanza Sidewalk\'
+        \n  \'Penny Arcade #2\'
+        \n  \'White Water Snacks\'
+        \n\nChanges:\n-Reorganized retired coins. Now includes retired date to keep everything more organized.
+        \n\nThank you for 2 AMAZING YEARS of support.
     </string>
 
     <string-array name="new_coins">
-        <item>First Machine</item>
-        <item>Second Machine</item>
-        <item>Trolley Treats Holiday</item>
-        <item>Penny Arcade Holiday</item>
     </string-array>
 
     <string-array name="off_mac">
-        <item>Trolley Treats</item>
-        <item>White Water Snacks</item>
     </string-array>
 
 </resources>

@@ -62,7 +62,6 @@ public class DowntownPage extends Fragment implements View.OnClickListener
         ImageButton wodBtn = myFragmentView.findViewById( R.id.wodBtn );
         ImageButton pinTradersBtn = myFragmentView.findViewById( R.id.tortillaJoBtn );
         ImageButton wetzelsBtn = myFragmentView.findViewById( R.id.wetzelsBtn );
-        ImageButton grandCalifornianBtn = myFragmentView.findViewById( R.id.grandCalifornianBtn );
         ImageButton disneyBtn = myFragmentView.findViewById( R.id.disneyHotelBtn );
         ImageButton paradiseHotelBtn = myFragmentView.findViewById( R.id.paradiseHotelBtn );
 
@@ -70,7 +69,6 @@ public class DowntownPage extends Fragment implements View.OnClickListener
         wodBtn.setOnClickListener( this );
         pinTradersBtn.setOnClickListener( this );
         wetzelsBtn.setOnClickListener( this );
-        grandCalifornianBtn.setOnClickListener( this );
         disneyBtn.setOnClickListener( this );
         paradiseHotelBtn.setOnClickListener( this );
 
@@ -79,10 +77,9 @@ public class DowntownPage extends Fragment implements View.OnClickListener
         TextView txtWetzels = myFragmentView.findViewById( R.id.txt_wetzels_collected );
         TextView txtPin = myFragmentView.findViewById( R.id.txt_pin_collected );
         TextView txtDisneyHotel = myFragmentView.findViewById( R.id.txt_disneyHotel_collected );
-        TextView txtGrandCal = myFragmentView.findViewById( R.id.txt_grandCal_collected );
         TextView txtPierHotel = myFragmentView.findViewById( R.id.txt_pierHotel_collected );
 
-        TextView[] listOfLands = new TextView[]{ txtWod, txtWetzels, txtPin, txtDisneyHotel, txtGrandCal, txtPierHotel };
+        TextView[] listOfLands = new TextView[]{ txtWod, txtWetzels, txtPin, txtDisneyHotel, txtPierHotel };
 
         // Get collected total for each land
         int collectedInLand;
