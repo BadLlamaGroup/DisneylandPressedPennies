@@ -18,9 +18,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.constraint.ConstraintLayout;
-import android.support.v13.app.FragmentCompat;
-import android.support.v4.content.ContextCompat;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.view.GestureDetector;
@@ -56,6 +53,10 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.legacy.app.FragmentCompat;
 
 import static android.app.Activity.RESULT_OK;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.COIN_PATH;

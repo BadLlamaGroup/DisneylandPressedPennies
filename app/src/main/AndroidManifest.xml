@@ -13,7 +13,7 @@
 
     <application
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_new"
         android:label="@string/app_name"
         tools:replace="android:label"
         android:largeHeap="true"
@@ -74,13 +74,13 @@
             android:value= "@string/google_maps_key" />
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.example.android.fileprovider"
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="net.cox.mario_000.disneylandpressedpennies.disneylandfileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"></meta-data>
+                android:resource="@xml/provider_paths" />
         </provider>
 
 

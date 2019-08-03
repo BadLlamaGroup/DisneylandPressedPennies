@@ -2,11 +2,12 @@ package net.cox.mario_000.disneylandpressedpennies;
 
 import android.content.Context;
 import android.database.DataSetObserver;
-import android.support.v7.widget.AppCompatSpinner;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SpinnerAdapter;
+
+import androidx.appcompat.widget.AppCompatSpinner;
 
 /**
  * Created by mario_000 on 7/15/2018.

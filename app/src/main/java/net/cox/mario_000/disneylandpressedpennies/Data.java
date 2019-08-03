@@ -27,11 +27,18 @@ public interface Data
     ///////////////////////////     MAIN STREET COINS     ///////////////////////////
     /////////////////////////////////////////////////////////////////////////////////
 
-    Coin[] pennyArcadeQuarter = new Coin[]{
+    Coin[] pennyArcade1Quarter = new Coin[]{
             new Coin( "Peter Pan - Walt Quote: \"Leave Today\"", "penny_arcade_peter_pan", null ),
             new Coin( "Mickey - Walt Quote: \"Do The Impossible\"", "penny_arcade_mickey", null ),
             new Coin( "Castle - Walt Quote: \"If You Can Dream It\"", "penny_arcade_castle", null )
     };
+
+    Coin[] pennyArcade2Penny = new Coin[]{
+            new Coin( "Mary Poppins with umbrella", "penny_arcade_2_mary_with_umbrella", null ),
+            new Coin( "Mary Poppins flying", "penny_arcade_2_mary_flying", null ),
+            new Coin( "Mary Poppins with penguins", "penny_arcade_2_mary_penguins", null )
+    };
+
     Coin[] operaExit1Penny = new Coin[]{
             new Coin( "Fantasyland Tinker Bell", "opera_1_bell", null ),
             new Coin( "Toontown Mickey", "opera_1_mickey", null ),
@@ -430,7 +437,8 @@ public interface Data
     /////////////////////////
 
     Machine[] mainCoins = new Machine[]{
-            new Machine( "Main Street", "Penny Arcade #1", "Penny", "penny_arcade_mac", "penny_arcade_backstamp", "penny_arcade_preview", pennyArcadeQuarter, new LatLng( 33.811262, -117.919072 ) ),
+            new Machine( "Main Street", "Penny Arcade #1", "Quarter", "penny_arcade_mac", "penny_arcade_backstamp", "penny_arcade_preview", pennyArcade1Quarter, new LatLng( 33.811262, -117.919072 ) ),
+            new Machine( "Main Street", "Penny Arcade #2", "Penny", "penny_arcade_2_mac", "penny_arcade_2_backstamp", "penny_arcade_2_preview", pennyArcade2Penny, new LatLng( 33.811282, -117.919092 ) ),
             new Machine( "Main Street", "Opera House Exit #1", "Penny", "opera_1_mac", "opera_backstamp", "opera_1_preview", operaExit1Penny, new LatLng( 33.810270, -117.918520 ) ),
             new Machine( "Main Street", "Opera House Exit #2", "Penny", "opera_2_mac", "opera_backstamp", "opera_2_preview", operaExit2Penny, new LatLng( 33.810270, -117.918490 ) ),
             new Machine( "Main Street", "Opera House Exit #3", "Penny", "opera_3_mac", "opera_backstamp", "opera_3_preview", operaExit3Penny, new LatLng( 33.810270, -117.918460 ) ),
@@ -774,5 +782,13 @@ public interface Data
 
     Machine[][] retiredMachines = new Machine[][]{
             retiredDisneylandMachines, retiredCaliforniaMachines, retiredDowntownMachines
+    };
+
+
+    String[] waltQuotes = new String[]{
+            "wisdom_0", "wisdom_1", "wisdom_2", "wisdom_3", "wisdom_4", "wisdom_5", "wisdom_6",
+            "wisdom_7", "wisdom_8", "wisdom_9", "wisdom_10", "wisdom_11", "wisdom_12", "wisdom_13",
+            "wisdom_14", "wisdom_15", "wisdom_16", "wisdom_17", "wisdom_18", "wisdom_19", "wisdom_20",
+            "wisdom_21", "wisdom_22", "wisdom_23", "wisdom_24", "wisdom_25"
     };
 }

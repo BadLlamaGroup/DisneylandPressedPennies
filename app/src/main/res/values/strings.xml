@@ -71,23 +71,18 @@
         you can choose between the three lands or choose other. You can also select the coin type and the date you collected it. You may also enter
         any notes you have on that particular coin. Lastly, you can always edit any custom coin you have saved.\n</string>
 
-    <!--<string name="whatsnew">-->
-        <!--\nChanges:\n-Added holiday nickel images-->
-        <!--\n\nThank you for your continued support.-->
-    <!--</string>-->
-
-    <string name="whatsnew">
-        NEWS:
-        \n Best Friends Forever series ended
-        \n\n-Retired\n  \'Nightmare Before Christmas\'
-        \n  \'Bonanza Sidewalk\'
-        \n  \'Penny Arcade #2\'
-        \n  \'White Water Snacks\'
-        \n\nChanges:\n-Reorganized retired coins. Now includes retired date to keep everything more organized.
-        \n\nThank you for 2 AMAZING YEARS of support.
+    <string name="whatsnew"><b>GREAT NEWS:</b>\nBad Llama Group now has a website!\n<b><a href="http://www.badllamagroup.wixsite.com/website">Visit Bad Llama HQ</a></b>\n\nThere is a forum to discuss anything and everything,
+        from our collections to general Disney talk. This will also be an excellent place to discuss new ideas and suggestions.
+        It will give you a direct line to me, so I look forward to hearing from all of you soon.
+        In addition to that, it has a brief history of how the apps came to be and some of my story, for those that are interested ;)
+        \n\nChanges:\n-None :( Waiting on Galaxy\'s Edge&#8230;
+        \n\nFixes:\n-Upgraded some nerdy tech stuff
+        \n\nThank you for your support, remember to use your 3 wishes wisely.
     </string>
+    <string name="website"><u>Visit Bad Llama Group HQ</u></string>
 
     <string-array name="new_coins">
+        <item>Penny Arcade #2</item>
     </string-array>
 
     <string-array name="off_mac">

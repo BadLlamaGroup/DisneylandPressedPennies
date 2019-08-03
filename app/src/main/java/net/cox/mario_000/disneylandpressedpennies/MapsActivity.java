@@ -12,11 +12,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v13.app.FragmentCompat;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,14 +41,23 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
+import com.google.maps.android.clustering.ClusterItem;
+import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.legacy.app.FragmentCompat;
 
 public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMyLocationButtonClickListener
 {
     // Map
     private GoogleApiClient mGoogleApiClient;
     private GoogleMap mGoogleMap;
+    private ClusterManager< MyItem > mClusterManager;
 
     // Location
     private LocationRequest mLocationRequest;
@@ -154,11 +158,14 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
             @Override
             public boolean onKey( View v, int keyCode, KeyEvent event )
             {
-                if ( keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN ) {
-                    if ( infoWindowOpen && openMarker != null ) {
+                if ( keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN )
+                {
+                    if ( infoWindowOpen && openMarker != null )
+                    {
                         animateCamera( openMarker.getPosition(), defaultZoomLevel );
                         openMarker.hideInfoWindow();
-                    } else {
+                    } else
+                    {
                         getFragmentManager().popBackStackImmediate();
                     }
                 }
@@ -216,19 +223,24 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
                 switch ( marker.getSnippet() )
                 {
                     case "4 coins left":
-                        marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_CYAN ) );
+                        marker.setIcon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_4_left ) );
+                        //marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_CYAN ) );
                         break;
                     case "3 coins left":
-                        marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_YELLOW ) );
+                        marker.setIcon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_3_left ) );
+                        //marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_YELLOW ) );
                         break;
                     case "2 coins left":
-                        marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_ORANGE ) );
+                        marker.setIcon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_2_left ) );
+                        //marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_ORANGE ) );
                         break;
                     case "1 coin left":
-                        marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_AZURE ) );
+                        marker.setIcon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_1_left ) );
+                        //marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_AZURE ) );
                         break;
                     case "All Collected":
-                        marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_GREEN ) );
+                        marker.setIcon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_0_left ) );
+                        //marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_GREEN ) );
                         break;
                 }
 
@@ -245,7 +257,8 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
             @Override
             public boolean onMarkerClick( final Marker marker )
             {
-                marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
+                //marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.balloon_selected));
+                //marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
                 final float zoom = mGoogleMap.getCameraPosition().zoom;
                 if ( zoom <= zoomedInLevel )
                 {
@@ -256,6 +269,9 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
                 return false;
             }
         } );
+
+        mClusterManager = new ClusterManager<>( getActivity(), mGoogleMap );
+        mClusterManager.cluster();
     }
 
     @Override
@@ -533,34 +549,43 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
                                 {
                                     case 0:
                                         markerOptions.snippet( "All Collected" );
-                                        markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_GREEN ) );
+                                        markerOptions.icon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_0_left ) );
+                                        //markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_GREEN ) );
                                         break;
                                     case 1:
                                         markerOptions.snippet( "1 coin left" );
-                                        markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_AZURE ) );
+                                        markerOptions.icon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_1_left ) );
+                                        //markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_AZURE ) );
                                         break;
                                     case 2:
                                         markerOptions.snippet( "2 coins left" );
-                                        markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_ORANGE ) );
+                                        markerOptions.icon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_2_left ) );
+                                        //markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_ORANGE ) );
                                         break;
                                     case 3:
                                         markerOptions.snippet( "3 coins left" );
-                                        markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_YELLOW ) );
+                                        markerOptions.icon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_3_left ) );
+                                        //markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_YELLOW ) );
                                         break;
                                     case 4:
                                         markerOptions.snippet( "4 coins left" );
-                                        markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_CYAN ) );
+                                        markerOptions.icon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_4_left ) );
+                                        //markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_CYAN ) );
                                         break;
                                     default:
                                         markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_CYAN ) );
                                         break;
                                 }
                                 Marker lastMarker = mGoogleMap.addMarker( markerOptions );
+
+                                //MyItem a = new MyItem( machine.getPosition().latitude, machine.getPosition().longitude );
+                                //mClusterManager.addItem( a );
                                 if ( last != null )
                                 {
                                     if ( last.getMachineName().equals( markerOptions.getTitle() ) )
                                     {
-                                        lastMarker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
+                                        //lastMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.balloon_selected));
+                                        //lastMarker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
                                         openMarker = lastMarker;
                                         lastMarker.showInfoWindow();
                                     }
@@ -568,7 +593,8 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
                                 {
                                     if ( selectedMac.getMachineName().equals( markerOptions.getTitle() ) )
                                     {
-                                        lastMarker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
+                                        //lastMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.balloon_selected));
+                                        //lastMarker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
                                         lastMarker.showInfoWindow();
                                     }
                                 }
@@ -609,23 +635,28 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
                                 {
                                     case 0:
                                         markerOptions.snippet( "All Collected" );
-                                        markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_GREEN ) );
+                                        markerOptions.icon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_0_left ) );
+                                        //markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_GREEN ) );
                                         break;
                                     case 1:
                                         markerOptions.snippet( "1 coin left" );
-                                        markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_AZURE ) );
+                                        markerOptions.icon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_1_left ) );
+                                        //markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_AZURE ) );
                                         break;
                                     case 2:
                                         markerOptions.snippet( "2 coins left" );
-                                        markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_ORANGE ) );
+                                        markerOptions.icon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_2_left ) );
+                                        //markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_ORANGE ) );
                                         break;
                                     case 3:
                                         markerOptions.snippet( "3 coins left" );
-                                        markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_YELLOW ) );
+                                        markerOptions.icon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_3_left ) );
+                                        //markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_YELLOW ) );
                                         break;
                                     case 4:
                                         markerOptions.snippet( "4 coins left" );
-                                        markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_CYAN ) );
+                                        markerOptions.icon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_4_left ) );
+                                        //markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_CYAN ) );
                                         break;
                                     default:
                                         markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_CYAN ) );
@@ -636,7 +667,8 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
                                 {
                                     if ( last.getMachineName().equals( markerOptions.getTitle() ) )
                                     {
-                                        lastMarker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
+                                        //lastMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.balloon_selected));
+                                        //lastMarker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
                                         openMarker = lastMarker;
                                         lastMarker.showInfoWindow();
                                     }
@@ -644,7 +676,8 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
                                 {
                                     if ( selectedMac.getMachineName().equals( markerOptions.getTitle() ) )
                                     {
-                                        lastMarker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
+                                        //lastMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.balloon_selected));
+                                        //lastMarker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
                                         lastMarker.showInfoWindow();
                                     }
                                 }
@@ -684,23 +717,28 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
                                 {
                                     case 0:
                                         markerOptions.snippet( "All Collected" );
-                                        markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_GREEN ) );
+                                        markerOptions.icon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_0_left ) );
+                                        //markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_GREEN ) );
                                         break;
                                     case 1:
                                         markerOptions.snippet( "1 coin left" );
-                                        markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_AZURE ) );
+                                        markerOptions.icon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_1_left ) );
+                                        //markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_AZURE ) );
                                         break;
                                     case 2:
                                         markerOptions.snippet( "2 coins left" );
-                                        markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_ORANGE ) );
+                                        markerOptions.icon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_2_left ) );
+                                        //markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_ORANGE ) );
                                         break;
                                     case 3:
                                         markerOptions.snippet( "3 coins left" );
-                                        markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_YELLOW ) );
+                                        markerOptions.icon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_3_left ) );
+                                        //markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_YELLOW ) );
                                         break;
                                     case 4:
                                         markerOptions.snippet( "4 coins left" );
-                                        markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_CYAN ) );
+                                        markerOptions.icon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_4_left ) );
+                                        //markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_CYAN ) );
                                         break;
                                     default:
                                         markerOptions.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_CYAN ) );
@@ -712,7 +750,8 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
                                 {
                                     if ( last.getMachineName().equals( markerOptions.getTitle() ) )
                                     {
-                                        lastMarker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
+                                        //lastMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.balloon_selected));
+                                        //lastMarker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
                                         openMarker = lastMarker;
                                         lastMarker.showInfoWindow();
                                     }
@@ -720,7 +759,8 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
                                 {
                                     if ( selectedMac.getMachineName().equals( markerOptions.getTitle() ) )
                                     {
-                                        lastMarker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
+                                        //lastMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.balloon_selected));
+                                        //lastMarker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
                                         lastMarker.showInfoWindow();
                                     }
                                 }
@@ -743,4 +783,41 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
         return false;
     }
 
+    public class MyItem implements ClusterItem
+    {
+        private LatLng mPosition;
+        private String mTitle = "";
+        private String mSnippet = "";
+
+        public MyItem( double lat, double lng )
+        {
+            mPosition = new LatLng( lat, lng );
+        }
+
+        public MyItem( double lat, double lng, String title, String snippet )
+        {
+            mPosition = new LatLng( lat, lng );
+            mTitle = title;
+            mSnippet = snippet;
+        }
+
+        @Override
+        public LatLng getPosition()
+        {
+            return mPosition;
+        }
+
+        @Override
+        public String getTitle()
+        {
+            return mTitle;
+        }
+
+        @Override
+        public String getSnippet()
+        {
+            return mSnippet;
+        }
+    }
 }
+

@@ -3,12 +3,15 @@ package net.cox.mario_000.disneylandpressedpennies;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +27,7 @@ import com.google.android.gms.analytics.Tracker;
 import java.util.List;
 import java.util.Random;
 
+import static net.cox.mario_000.disneylandpressedpennies.Data.waltQuotes;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.numArcCoinsCollected;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.numCalCoinsCollected;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.numCalCoinsTotal;
@@ -108,6 +112,43 @@ public class MainPage extends Fragment implements View.OnClickListener
         calCollected.setText( numCalCoinsCollected + " / " + numCalCoinsTotal );
         downtownCollected.setText( numDowntownCoinsCollected + " / " + numDowntownCoinsTotal );
 
+        // Link to WDW
+        TextView txtWDWLink = myFragmentView.findViewById( R.id.txt_website_link );
+        txtWDWLink.setOnClickListener( new View.OnClickListener()
+        {
+            @Override
+            public void onClick( View v )
+            {
+                String url = "http://www.badllamagroup.wixsite.com/website";
+                Intent intent = new Intent( Intent.ACTION_VIEW, Uri.parse( url ) );
+                getActivity().startActivity( intent );
+            }
+        } );
+
+        // Walt's Quotes
+        final ImageView imgWisdom = myFragmentView.findViewById( R.id.wisdom_image );
+        int quoteNum = new Random().nextInt( waltQuotes.length );
+        int wisdomResId = getResources().getIdentifier( waltQuotes[ quoteNum ] , "drawable", getActivity().getPackageName() );
+        if( wisdomResId != 0 )
+        {
+            imgWisdom.setImageResource( wisdomResId );
+        }
+
+        imgWisdom.setOnClickListener( new View.OnClickListener()
+        {
+            @Override
+            public void onClick( View view )
+            {
+                int quoteNum = new Random().nextInt( waltQuotes.length );
+                int wisdomResId = getResources().getIdentifier( waltQuotes[ quoteNum ] , "drawable", getActivity().getPackageName() );
+                if( wisdomResId != 0 )
+                {
+                    imgWisdom.setImageResource( wisdomResId );
+                }
+            }
+        } );
+
+
         // Set hidden mickey listener
         View appTitle = myFragmentView.findViewById( R.id.txtName );
         numClicked = 0;
@@ -126,14 +167,14 @@ public class MainPage extends Fragment implements View.OnClickListener
                             .setAction( "Activated" )
                             .setValue( 1 )
                             .build() );
-                    Toast.makeText( getActivity().getApplicationContext(), "HIDDEN MICKEYS!!!", Toast.LENGTH_SHORT ).show();
+                    Toast.makeText( getActivity().getApplicationContext(), "HIDDEN STREET RATS!!!", Toast.LENGTH_SHORT ).show();
                     final ConfettoGenerator confettoGenerator = new ConfettoGenerator()
                     {
                         @Override
                         public Confetto generateConfetto( Random random )
                         {
-                            final Bitmap bitmap = BitmapFactory.decodeResource( getResources(), R.drawable.mickey );
-                            return new BitmapConfetto( bitmap );
+                            final Bitmap bitmap = BitmapFactory.decodeResource( getResources(), R.drawable.aladdin );
+                            return new BitmapConfetto( Bitmap.createScaledBitmap(bitmap, 350, 350, false) );
                         }
                     };
                     final ConfettiSource confettiSource = new ConfettiSource( 0, -200, container.getWidth(), -200 );
@@ -143,6 +184,7 @@ public class MainPage extends Fragment implements View.OnClickListener
                             .setVelocityX( 0, 50 )
                             .setVelocityY( 500 )
                             .setRotationalVelocity( 180, 180 )
+                            .setTouchEnabled( true )
                             .animate();
                     numClicked = 0;
                 } else

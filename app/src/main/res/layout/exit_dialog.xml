@@ -11,7 +11,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/disney_icon" />
+        android:src="@drawable/disney_icon_new" />
 
     <TextView
         android:id="@+id/title2"

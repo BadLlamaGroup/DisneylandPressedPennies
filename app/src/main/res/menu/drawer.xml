@@ -112,6 +112,13 @@
             <group android:checkableBehavior="single">
                 <item
 
+                    android:id="@+id/nav_website"
+
+                    android:icon="@drawable/website_icon"
+
+                    android:title="Visit Website" />
+                <item
+
                     android:id="@+id/nav_tutorial"
 
                     android:icon="@drawable/tutorial"
@@ -124,6 +131,14 @@
                     android:icon="@drawable/about"
 
                     android:title="About" />
+
+                <item
+
+                    android:id="@+id/nav_whats_new"
+
+                    android:icon="@drawable/whats_new_icon"
+
+                    android:title="What's New?" />
 
                 <item
 

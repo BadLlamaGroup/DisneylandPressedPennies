@@ -14,8 +14,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v13.app.FragmentCompat;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +50,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import static android.content.Context.MODE_PRIVATE;
 import static net.cox.mario_000.disneylandpressedpennies.Data.calMachines;
@@ -368,7 +369,7 @@ public class Backup extends Fragment
         {
             if ( ContextCompat.checkSelfPermission( getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE ) != PackageManager.PERMISSION_GRANTED )
             {
-                FragmentCompat.requestPermissions( this, new String[]{ android.Manifest.permission.WRITE_EXTERNAL_STORAGE }, 1 );
+                requestPermissions( new String[]{ android.Manifest.permission.WRITE_EXTERNAL_STORAGE }, 1 );
 
             }
         }
@@ -629,19 +630,34 @@ public class Backup extends Fragment
 
     private void viewPdf( File myFile )
     {
-        Intent intent = new Intent( Intent.ACTION_VIEW );
-        intent.setDataAndType( Uri.fromFile( myFile ), "application/pdf" );
-        intent.setFlags( Intent.FLAG_ACTIVITY_NO_HISTORY );
+//        Intent intent = new Intent( Intent.ACTION_VIEW );
+//        intent.setDataAndType( Uri.fromFile( myFile ), "application/pdf" );
+//        intent.setFlags( Intent.FLAG_ACTIVITY_NO_HISTORY );
+//
+//        Intent chooser = Intent.createChooser( intent, "Open with:" );
+//
+//        if ( intent.resolveActivity( getActivity().getPackageManager() ) != null )
+//        {
+//            startActivity( chooser );
+//        } else
+//        {
+//            Toast.makeText( getActivity(), "PDF Reader not installed...", Toast.LENGTH_LONG ).show();
+//            Intent goToMarket = new Intent( Intent.ACTION_VIEW ).setData( Uri.parse( "market://search?q=PDF" ) );
+//            startActivity( goToMarket );
+//        }
 
+        Uri photoURI = FileProvider.getUriForFile( getActivity(), getActivity().getApplicationContext().getPackageName() + ".disneylandfileprovider", myFile );
+        Intent intent = new Intent( Intent.ACTION_VIEW );
+        intent.addFlags( Intent.FLAG_GRANT_READ_URI_PERMISSION );
+        intent.addFlags( Intent.FLAG_ACTIVITY_NO_HISTORY );
+        intent.setDataAndType( photoURI, "application/pdf" );
         Intent chooser = Intent.createChooser( intent, "Open with:" );
 
-        if ( intent.resolveActivity( getActivity().getPackageManager() ) != null )
-        {
+        if ( intent.resolveActivity( getActivity().getPackageManager() ) != null ) {
             startActivity( chooser );
-        } else
-        {
+        } else {
             Toast.makeText( getActivity(), "PDF Reader not installed...", Toast.LENGTH_LONG ).show();
-            Intent goToMarket = new Intent( Intent.ACTION_VIEW ).setData( Uri.parse( "market://search?q=PDF" ) );
+            Intent goToMarket = new Intent( Intent.ACTION_VIEW ).setData( Uri.parse( "market://Search?q=PDF" ) );
             startActivity( goToMarket );
         }
     }

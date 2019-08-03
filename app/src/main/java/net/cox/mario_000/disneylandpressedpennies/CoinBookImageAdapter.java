@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
-import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +21,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.List;
+
+import androidx.viewpager.widget.PagerAdapter;
 
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.COIN_PATH;
 import static net.cox.mario_000.disneylandpressedpennies.MainActivity.find;

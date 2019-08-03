@@ -43,4 +43,16 @@
         <item name="android:windowMinWidthMinor">90%</item>
     </style>
 
+    <style name="WhatsNewDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:foregroundGravity">center</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/Widget.AppCompat.Button.Colored</item>
+        <item name="android:windowBackground">@drawable/border</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
 </resources>

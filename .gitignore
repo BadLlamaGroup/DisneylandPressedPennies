@@ -1,12 +1,12 @@
 *.iml
 .gradle
 /local.properties
-/.idea/workspace.xml
-/.idea/libraries
+/.idea
 .DS_Store
 /build
 /captures
 /dynamicgrid/
-.idea/caches/build_file_checksums.ser
 app/release/app-release.apk
-.tmp.drivedownload/
+*.jks
+
+/app/release/output.json

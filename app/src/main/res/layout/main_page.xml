@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/main3"
     android:orientation="vertical"
-    android:weightSum="2.5">
+    android:weightSum="3.5">
 
     <View
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
         android:id="@+id/californiaMain"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.1"
         android:background="@android:color/transparent"
         android:orientation="horizontal"
         android:weightSum="3">
@@ -55,8 +55,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginEnd="5dp"
                 android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:background="@android:color/black" />
 
             <LinearLayout
@@ -94,8 +94,8 @@
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="5dp"
             android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:background="@android:color/black" />
 
         <LinearLayout
@@ -135,8 +135,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginEnd="5dp"
                 android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:background="@android:color/black" />
 
             <LinearLayout
@@ -174,8 +174,8 @@
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="5dp"
             android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:background="@android:color/black" />
 
         <LinearLayout
@@ -215,8 +215,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginEnd="5dp"
                 android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:background="@android:color/black" />
 
             <LinearLayout
@@ -283,12 +283,35 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight=".75" />
+        android:layout_weight=".2" />
 
-    <View
+    <ImageView
+        android:id="@+id/wisdom_image"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight=".5"
-        android:id="@+id/txtName"/>
+        android:layout_weight="1"
+        android:padding="5dp"
+        android:cropToPadding="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/wisdom_0"/>
+
+    <TextView
+        android:id="@+id/txt_website_link"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".50"
+        android:autoLink="web"
+        android:gravity="center"
+        android:text="@string/website"
+        android:textAlignment="center"
+        android:textColor="@color/colorGreen"
+        android:textColorLink="@color/colorPrimaryDark"
+        android:textSize="20sp" />
+
+    <View
+        android:id="@+id/txtName"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".7" />
 
 </LinearLayout>
