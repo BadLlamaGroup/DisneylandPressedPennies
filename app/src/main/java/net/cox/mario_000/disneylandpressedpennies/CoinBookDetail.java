@@ -445,6 +445,15 @@ public class CoinBookDetail extends Fragment implements AdapterView.OnItemSelect
                 listAdapter.notifyDataSetChanged();
             } else
             {
+                gridViewAdapter.clear();
+                gridViewAdapter.add( savedCoins );
+                gridViewAdapter.notifyDataSetChanged();
+
+                listAdapter.removeSeparatorItem();
+                listAdapter.clear();
+                listAdapter.addAll( savedCoins );
+                listAdapter.notifyDataSetChanged();
+
                 spinnerCustomOrderList = new ArrayList<>();
                 spinnerCustomOrderList.addAll( savedCoins );
             }
