@@ -242,6 +242,8 @@ public class MapsActivity extends Fragment implements Data, GoogleMap.OnInfoWind
                         marker.setIcon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_0_left ) );
                         //marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_GREEN ) );
                         break;
+                    default:
+                        marker.setIcon( BitmapDescriptorFactory.fromResource( R.drawable.balloon_0_left ) );
                 }
 
                 if ( zoom > defaultZoomLevel )
