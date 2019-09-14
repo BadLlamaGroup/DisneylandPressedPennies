@@ -48,8 +48,8 @@ public class whatsNew
 
     private void createQuote(){
         StringBuilder quoteBuilder = new StringBuilder();
-        quoteBuilder.append( "“I can show you the world”" + '\n' );
-        quoteBuilder.append( "- Aladdin" );
+        quoteBuilder.append( "“I am Mrs. Nezbit!”" + '\n' );
+        quoteBuilder.append( "- Buzz" );
         quote = quoteBuilder.toString();
     }
 
@@ -91,7 +91,7 @@ public class whatsNew
                                     @Override
                                     public Confetto generateConfetto( Random random )
                                     {
-                                        final Bitmap bitmap = BitmapFactory.decodeResource( mActivity.getResources(), R.drawable.aladdin );
+                                        final Bitmap bitmap = BitmapFactory.decodeResource( mActivity.getResources(), R.drawable.buzz );
                                         return new BitmapConfetto( Bitmap.createScaledBitmap(bitmap, 350, 350, false) );
                                     }
                                 };
@@ -100,6 +100,25 @@ public class whatsNew
                                 new ConfettiManager( mActivity, confettoGenerator, confettiSource, viewGroup )
                                         .setEmissionDuration( 6000 )
                                         .setEmissionRate( 3 )
+                                        .setVelocityX( 0, 50 )
+                                        .setVelocityY( 500 )
+                                        .setRotationalVelocity( 180, 180 )
+                                        .setTouchEnabled( true )
+                                        .animate();
+
+                                final ConfettoGenerator extraCharacterGenerator = new ConfettoGenerator()
+                                {
+                                    @Override
+                                    public Confetto generateConfetto( Random random )
+                                    {
+                                        final Bitmap bitmap = BitmapFactory.decodeResource( mActivity.getResources(), R.drawable.buzz_woody );
+                                        return new BitmapConfetto( Bitmap.createScaledBitmap(bitmap, 350, 350, false) );
+                                    }
+                                };
+                                final ConfettiSource extraCharacterSource = new ConfettiSource( 0, -200, width, -200 );
+                                new ConfettiManager( mActivity, extraCharacterGenerator, extraCharacterSource, viewGroup )
+                                        .setEmissionDuration( 3000 )
+                                        .setEmissionRate( 2 )
                                         .setVelocityX( 0, 50 )
                                         .setVelocityY( 500 )
                                         .setRotationalVelocity( 180, 180 )

@@ -208,24 +208,6 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
         tabLayout.getTabAt( 2 ).setText( "Downtown Disney" );
 
         // Add coins with separators
-        if ( !selectedLand.equals( RETIRED ) )
-        {
-            // Add custom coins
-            tabLayout.getTabAt( tabNum ).setText( "Custom" );
-            List< CustomCoin > coins = sharedPreference.getCustomCoins( getActivity().getApplicationContext() );
-            ArrayList customCoinsList = new ArrayList();
-            for ( CustomCoin coin : coins )
-            {
-                if ( coin.getCoinPark().equals( selectedLand ) )
-                {
-                    customCoinsList.add( coin );
-                }
-            }
-
-            ListAdapter customCoinAdapter = new ListAdapter<>( getActivity(), R.layout.row, customCoinsList );
-            lists.get( tabNum ).setAdapter( customCoinAdapter );
-            tabNum++;
-        }
 
         // Add normal coins
         for ( Machine[] machine : machines )
@@ -249,6 +231,24 @@ public class allCoins extends Fragment implements Data, View.OnClickListener
             }
             lists.get( tabNum ).setAdapter( coinAdapter );
             tabNum++;
+        }
+
+        if ( !selectedLand.equals( RETIRED ) )
+        {
+            // Add custom coins
+            tabLayout.getTabAt( tabNum ).setText( "Custom" );
+            List< CustomCoin > coins = sharedPreference.getCustomCoins( getActivity().getApplicationContext() );
+            ArrayList customCoinsList = new ArrayList();
+            for ( CustomCoin coin : coins )
+            {
+                if ( coin.getCoinPark().equals( selectedLand ) )
+                {
+                    customCoinsList.add( coin );
+                }
+            }
+
+            ListAdapter customCoinAdapter = new ListAdapter<>( getActivity(), R.layout.row, customCoinsList );
+            lists.get( tabNum ).setAdapter( customCoinAdapter );
         }
     }
 

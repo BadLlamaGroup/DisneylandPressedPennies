@@ -167,14 +167,14 @@ public class MainPage extends Fragment implements View.OnClickListener
                             .setAction( "Activated" )
                             .setValue( 1 )
                             .build() );
-                    Toast.makeText( getActivity().getApplicationContext(), "HIDDEN STREET RATS!!!", Toast.LENGTH_SHORT ).show();
+                    Toast.makeText( getActivity().getApplicationContext(), "HIDDEN MICKEYS!!!", Toast.LENGTH_SHORT ).show();
                     final ConfettoGenerator confettoGenerator = new ConfettoGenerator()
                     {
                         @Override
                         public Confetto generateConfetto( Random random )
                         {
-                            final Bitmap bitmap = BitmapFactory.decodeResource( getResources(), R.drawable.aladdin );
-                            return new BitmapConfetto( Bitmap.createScaledBitmap(bitmap, 350, 350, false) );
+                            final Bitmap bitmap = BitmapFactory.decodeResource( getResources(), R.drawable.mickey );
+                            return new BitmapConfetto( bitmap );
                         }
                     };
                     final ConfettiSource confettiSource = new ConfettiSource( 0, -200, container.getWidth(), -200 );
