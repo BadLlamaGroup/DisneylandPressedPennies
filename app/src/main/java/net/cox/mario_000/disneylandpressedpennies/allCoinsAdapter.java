@@ -159,11 +159,13 @@ public class allCoinsAdapter extends ArrayAdapter< Coin >
             if ( Arrays.asList( newCoins ).contains( mac.getMachineName() ) )
             {
                 holder.row_new_bg.setBackgroundColor( Color.CYAN );
-                //holder.new_coins_img.setVisibility( View.VISIBLE );
+                holder.new_coins_img.setVisibility( View.VISIBLE );
+                holder.off_mac_img.setVisibility( View.INVISIBLE );
             } else if ( Arrays.asList( offMachine ).contains( mac.getMachineName() ) )
             {
                 holder.row_new_bg.setBackgroundColor( Color.YELLOW );
-                //holder.off_mac_img.setVisibility( View.VISIBLE );
+                holder.off_mac_img.setVisibility( View.VISIBLE );
+                holder.new_coins_img.setVisibility( View.INVISIBLE );
             } else
             {
                 holder.description.setTextColor( Color.GRAY );
@@ -171,6 +173,8 @@ public class allCoinsAdapter extends ArrayAdapter< Coin >
                 holder.collected.setTextColor( Color.GRAY );
                 holder.row_new_bg.setBackgroundColor( Color.WHITE );
                 holder.collected.setText( "Not yet collected" );
+                holder.new_coins_img.setVisibility( View.INVISIBLE );
+                holder.off_mac_img.setVisibility( View.INVISIBLE );
             }
 
             if ( collectedCoins.contains( coin ) )

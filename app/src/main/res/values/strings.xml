@@ -68,21 +68,26 @@
         Click add coin to open a new page to create a new coin. This page will also keep track of how many custom coins you have.\n\n<b>Adding Custom Coin:</b>\nClick
         add coin in Custom Coin List to open this page. Click on an image to choose a picture for your coin, the sides are labeled above each image.
         You may take a new picture with the camera or choose one from your device. After that, you will enter a name for your new coin. Below that,
-        you can choose between the three lands or choose other. You can also select the coin type and the date you collected it. You may also enter
+        you can choose betwdaeen the three lands or choose other. You can also select the coin type and the date you collected it. You may also enter
         any notes you have on that particular coin. Lastly, you can always edit any custom coin you have saved.\n</string>
 
     <string name="whatsnew">
-        New:\n-None :( Waiting on Galaxy\'s Edge&#8230;
-        \n\nRetired:\n-Opera House Exit #4\n-Trolley Treats\n-Trolley Treats Holiday
-        \n\nFixes:\n-Moved custom coins tab in Coin List to the far right
-        \n\nThank you for your support to infinity and beyond.
+        New:\n-Penny Arcade Holiday\n-Port Royal Curios &amp; Curiosities\n-Kingswell Camera Shop Holiday\n-Jolly Trolley Treats Holiday
+        \n\nFixes:\n-Icons for new and offstage machines
+        \n\nThank you for your support and remember, you so totally rock &#8230; duuuude!
     </string>
     <string name="website"><u>Visit Bad Llama Group HQ</u></string>
 
     <string-array name="new_coins">
+        <item>Penny Arcade - Holiday 2019</item>
+        <item>Port Royal Curios &amp; Curiosities</item>
+        <item>Kingswell Camera Shop - Holiday 2019</item>
+        <item>Jolly Trolley Treats - Year 2019</item>
     </string-array>
 
     <string-array name="off_mac">
+        <item>Fairy Tale Treasures</item>
+        <item>Kingswell Camera Shop</item>
     </string-array>
 
 </resources>

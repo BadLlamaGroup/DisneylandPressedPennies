@@ -48,8 +48,8 @@ public class whatsNew
 
     private void createQuote(){
         StringBuilder quoteBuilder = new StringBuilder();
-        quoteBuilder.append( "“I am Mrs. Nezbit!”" + '\n' );
-        quoteBuilder.append( "- Buzz" );
+        quoteBuilder.append( "“Righteous! Righteous!”" + '\n' );
+        quoteBuilder.append( "- Crush" );
         quote = quoteBuilder.toString();
     }
 
@@ -91,14 +91,14 @@ public class whatsNew
                                     @Override
                                     public Confetto generateConfetto( Random random )
                                     {
-                                        final Bitmap bitmap = BitmapFactory.decodeResource( mActivity.getResources(), R.drawable.buzz );
-                                        return new BitmapConfetto( Bitmap.createScaledBitmap(bitmap, 350, 350, false) );
+                                        final Bitmap bitmap = BitmapFactory.decodeResource( mActivity.getResources(), R.drawable.crush );
+                                        return new BitmapConfetto( Bitmap.createScaledBitmap(bitmap, 360, 300, false) );
                                     }
                                 };
                                 final ConfettiSource confettiSource = new ConfettiSource( 0, -200, width, -200 );
                                 ViewGroup viewGroup = mActivity.findViewById(android.R.id.content);
                                 new ConfettiManager( mActivity, confettoGenerator, confettiSource, viewGroup )
-                                        .setEmissionDuration( 6000 )
+                                        .setEmissionDuration( 5000 )
                                         .setEmissionRate( 3 )
                                         .setVelocityX( 0, 50 )
                                         .setVelocityY( 500 )
@@ -111,14 +111,14 @@ public class whatsNew
                                     @Override
                                     public Confetto generateConfetto( Random random )
                                     {
-                                        final Bitmap bitmap = BitmapFactory.decodeResource( mActivity.getResources(), R.drawable.buzz_woody );
-                                        return new BitmapConfetto( Bitmap.createScaledBitmap(bitmap, 350, 350, false) );
+                                        final Bitmap bitmap = BitmapFactory.decodeResource( mActivity.getResources(), R.drawable.crush_squirt );
+                                        return new BitmapConfetto( Bitmap.createScaledBitmap(bitmap, 250, 250, false) );
                                     }
                                 };
                                 final ConfettiSource extraCharacterSource = new ConfettiSource( 0, -200, width, -200 );
                                 new ConfettiManager( mActivity, extraCharacterGenerator, extraCharacterSource, viewGroup )
-                                        .setEmissionDuration( 3000 )
-                                        .setEmissionRate( 2 )
+                                        .setEmissionDuration( 2000 )
+                                        .setEmissionRate( 1 )
                                         .setVelocityX( 0, 50 )
                                         .setVelocityY( 500 )
                                         .setRotationalVelocity( 180, 180 )

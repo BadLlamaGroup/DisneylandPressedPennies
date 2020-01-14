@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:text="HAVE FUN AND GOOD LUCK!"
+            android:text="HAVE FUN COLLECTING!"
             android:textSize="14sp"
             android:textAllCaps="true"
             android:textStyle="bold"
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"
             android:background="@drawable/outline"
-            android:text="Got it" />
+            android:text="Let's Go" />
 
     </LinearLayout>
 </ScrollView>

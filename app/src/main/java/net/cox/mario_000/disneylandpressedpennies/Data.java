@@ -39,6 +39,12 @@ public interface Data
             new Coin( "Mary Poppins with penguins", "penny_arcade_2_mary_penguins", null )
     };
 
+    Coin[] pennyArcadeHoliday2019Nickel = new Coin[]{
+            new Coin( "Minnie and Mickey in love", "penny_arcade_holiday_2019_minnie_and_mickey_in_love", null ),
+            new Coin( "Mickey Noel", "penny_arcade_holiday_2019_mickey_noel", null ),
+            new Coin( "Minnie joy", "penny_arcade_holiday_2019_minnie_joy", null )
+    };
+
     Coin[] operaExit1Penny = new Coin[]{
             new Coin( "Fantasyland Tinker Bell", "opera_1_bell", null ),
             new Coin( "Toontown Mickey", "opera_1_mickey", null ),
@@ -143,6 +149,12 @@ public interface Data
             new Coin( "Pirate Face & Crossed Swords", "pieces_of_eight_face", null )
     };
 
+    Coin[] portRoyalQuarter = new Coin[]{
+            new Coin( "Phineas Queeg", "port_royal_phineas_queeg", null ),
+            new Coin( "Ezra Dobbins", "port_royal_ezra_dobbins", null ),
+            new Coin( "Gus Gracey", "port_royal_gus_gracey", null )
+    };
+
     /////////////////////////////////////////////////////////////////////////////////
     ////////////////////////     CRITTER COUNTRY COINS     //////////////////////////
     /////////////////////////////////////////////////////////////////////////////////
@@ -212,22 +224,28 @@ public interface Data
             new Coin( "Hank and Dory", "kingswell_hank", null )
     };
 
-    Coin[] katzPenny = new Coin[]{
-            new Coin( "World of Color", "katz_world_of_color", null ),
-            new Coin( "The Little Mermaid Adventure", "katz_little_mermaid", null ),
-            new Coin( "Midway Mania!", "katz_midway", null )
-    };
-
     Coin[] kingswell2Penny = new Coin[]{
             new Coin( "Red Car Trolley", "trolley_1_red_car", null ),
             new Coin( "Mickey Mouse on Trolley", "trolley_1_mickey", null ),
             new Coin( "Disney California Adventure", "trolley_1_california", null )
     };
 
-    Coin[] ramonesPenny = new Coin[]{
-            new Coin( "Cars Land", "ramones_cars", null ),
-            new Coin( "Radiator Springs Chamber of Commerce", "ramones_chamber_com", null ),
-            new Coin( "Champions Speed Shop", "ramones_champions_shop", null )
+    Coin[] kingswellHoliday2019Nickel = new Coin[]{
+            new Coin( "Celebrate the Season - Tinker Bell", "kingswell_holiday_2019_tinker_bell", null ),
+            new Coin( "Snow Bros - Chip N Dale", "kingswell_holiday_2019_chip_n_dale", null ),
+            new Coin( "Mickey feeding reindeer", "kingswell_holiday_2019_mickey_feeding_reindeer", null )
+    };
+
+    Coin[] katzPenny = new Coin[]{
+            new Coin( "World of Color", "katz_world_of_color", null ),
+            new Coin( "The Little Mermaid Adventure", "katz_little_mermaid", null ),
+            new Coin( "Midway Mania!", "katz_midway", null )
+    };
+
+    Coin[] trolleyTreatsYear2019Nickel = new Coin[]{
+            new Coin( "2019 Mickey", "trolley_treats_2019_mickey", null ),
+            new Coin( "2019 Minnie", "trolley_treats_2019_minnie", null ),
+            new Coin( "2019 Pluto", "trolley_treats_2019_pluto", null )
     };
 
     Coin[] fiveDime1Penny = new Coin[]{
@@ -281,6 +299,17 @@ public interface Data
             new Coin( "Peter Quill - Star Lord", "collectors_gifts_peter", null ),
             new Coin( "Pet Rodent Rocket", "collectors_gifts_rocket", null ),
             new Coin( "Flora Colossus Groot", "collectors_gifts_groot", null )
+    };
+
+    /////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////      CARS LAND COINS       ///////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////
+
+
+    Coin[] ramonesPenny = new Coin[]{
+            new Coin( "Cars Land", "ramones_cars", null ),
+            new Coin( "Radiator Springs Chamber of Commerce", "ramones_chamber_com", null ),
+            new Coin( "Champions Speed Shop", "ramones_champions_shop", null )
     };
 
     /////////////////////////////////////////////////////////////////////////////////
@@ -420,8 +449,9 @@ public interface Data
     /////////////////////////
 
     Machine[] mainCoins = new Machine[]{
-            new Machine( "Main Street", "Penny Arcade #1", "Quarter", "penny_arcade_mac", "penny_arcade_backstamp", "penny_arcade_preview", pennyArcade1Quarter, new LatLng( 33.811262, -117.919072 ) ),
-            new Machine( "Main Street", "Penny Arcade #2", "Penny", "penny_arcade_2_mac", "penny_arcade_2_backstamp", "penny_arcade_2_preview", pennyArcade2Penny, new LatLng( 33.811282, -117.919092 ) ),
+            new Machine( "Main Street", "Penny Arcade #1", "Quarter", "penny_arcade_mac", "penny_arcade_backstamp", "penny_arcade_preview", pennyArcade1Quarter, new LatLng( 33.811302, -117.919092 ) ),
+            new Machine( "Main Street", "Penny Arcade #2", "Penny", "penny_arcade_2_mac", "penny_arcade_2_backstamp", "penny_arcade_2_preview", pennyArcade2Penny, new LatLng( 33.811272, -117.919092 ) ),
+            new Machine( "Main Street", "Penny Arcade - Holiday 2019", "Nickel", "penny_arcade_holiday_mac", "penny_arcade_holiday_2019_backstamp", "penny_arcade_holiday_2019_preview", pennyArcadeHoliday2019Nickel, new LatLng( 33.811242, -117.919092 ) ),
             new Machine( "Main Street", "Opera House Exit #1", "Penny", "opera_1_mac", "opera_backstamp", "opera_1_preview", operaExit1Penny, new LatLng( 33.810270, -117.918520 ) ),
             new Machine( "Main Street", "Opera House Exit #2", "Penny", "opera_2_mac", "opera_backstamp", "opera_2_preview", operaExit2Penny, new LatLng( 33.810270, -117.918490 ) ),
             new Machine( "Main Street", "Opera House Exit #3", "Penny", "opera_3_mac", "opera_backstamp", "opera_3_preview", operaExit3Penny, new LatLng( 33.810270, -117.918460 ) ),
@@ -450,7 +480,8 @@ public interface Data
     };
 
     Machine[] newOrleansCoins = new Machine[]{
-            new Machine( "New Orleans Square", "Pieces of Eight Gift Shop", "Penny", "pieces_of_eight_mac", "pieces_of_eight_backstamp", "pieces_of_eight_preview", piecesOfEightPenny, new LatLng( 33.811074, -117.921083 ) )
+            new Machine( "New Orleans Square", "Pieces of Eight Gift Shop", "Penny", "pieces_of_eight_mac", "pieces_of_eight_backstamp", "pieces_of_eight_preview", piecesOfEightPenny, new LatLng( 33.811074, -117.921083 ) ),
+            new Machine( "New Orleans Square", "Port Royal Curios & Curiosities", "Quarter", "port_royal_mac", "port_royal_50th_backstamp", "port_royal_50th_preview", portRoyalQuarter, new LatLng( 33.811177, -117.921046 ) )
     };
 
     Machine[] critterCountryCoins = new Machine[]{
@@ -473,7 +504,9 @@ public interface Data
     Machine[] buenaVistaCoins = new Machine[]{
             new Machine( "Buena Vista Street", "Kingswell Camera Shop", "Penny", "kingswell_mac", "kingswell_backstamp", "kingswell_preview", kingswellPenny, new LatLng( 33.808261, -117.919217 ) ),
             new Machine( "Buena Vista Street", "Kingswell Camera Shop #2", "Penny", "trolley_treats_1_mac", "buena_vista_backstamp", "trolley_treats_1_preview", kingswell2Penny, new LatLng( 33.808261, -117.919177 ) ),
+            new Machine( "Buena Vista Street", "Kingswell Camera Shop - Holiday 2019", "Nickel", "kingswell_mac", "kingswell_holiday_2019_backstamp", "kingswell_holiday_2019_preview", kingswellHoliday2019Nickel, new LatLng( 33.808261, -117.919247 ) ),
             new Machine( "Buena Vista Street", "Julius Katz & Sons", "Penny", "katz_mac", "buena_vista_backstamp", "julius_katz_preview", katzPenny, new LatLng( 33.808172, -117.919027 ) ),
+            new Machine( "Buena Vista Street", "Jolly Trolley Treats - Year 2019", "Nickel", "trolley_treats_2019_mac", "california_adventure_backstamp", "trolley_treats_2019_preview", trolleyTreatsYear2019Nickel, new LatLng( 33.807985, -117.919112 ) ),
             new Machine( "Buena Vista Street", "Los Feliz Five & Dime #1", "Penny", "five_dime_1_mac", "buena_vista_backstamp", "five_dime_1_preview", fiveDime1Penny, new LatLng( 33.808353, -117.918642 ) ),
             new Machine( "Buena Vista Street", "Los Feliz Five & Dime #2", "Penny", "five_dime_2_mac", "buena_vista_backstamp", "five_dime_2_preview", fiveDime2Penny, new LatLng( 33.808353, -117.918602 ) ),
             new Machine( "Buena Vista Street", "Big Top Toys", "Penny", "big_top_toys_mac", "buena_vista_backstamp", "big_top_preview", bigTopPenny, new LatLng( 33.808222, -117.918702 ) )
@@ -738,13 +771,13 @@ public interface Data
     };
 
     Machine[] retiredCaliforniaMachines = new Machine[]{
+            new Machine( "Buena Vista Street", "Trolley Treats - Retired 9/11/19", "Nickel", "retired_trolley_treats_mac_9_11_19", "retired_trolley_treats_backstamp_9_11_19", "retired_trolley_treats_preview_9_11_19", retiredTrolleyNickel_9_11_19, new LatLng( 33.807985, -117.919082 ) ),
             new Machine( "Buena Vista Street", "Trolley Treats #2 - Retired 1/24/18", "Nickel", "retired_trolley_treats_2_mac_1_24_18", "retired_california_adventure_nickel_backstamp_1_24_18", "retired_trolley_treats_2_preview_1_24_18", retiredTrolley2Nickel_1_24_18, new LatLng( 33.807985, -117.919042 ) ),
+            new Machine( "Buena Vista Street", "Trolley Treats Holiday - Retired 9/11/19", "Nickel", "retired_trolley_treats_holiday_mac_9_11_19", "retired_trolley_treats_holiday_backstamp_9_11_19", "retired_trolley_treats_holiday_preview_9_11_19", retiredTrolleyHolidayNickel_9_11_19, new LatLng( 33.807985, -117.919112 ) ),
             new Machine( "Buena Vista Street", "Kingswell Camera Shop #2 - Retired 1/24/18", "Nickel", "retired_kingswell_2_mac_1_24_18", "retired_kingswell_2_backstamp_1_24_18", "retired_kingswell_2_preview_1_24_18", retiredKingswell2Nickel_1_24_18, new LatLng( 33.808261, -117.919247 ) ),
             new Machine( "Hollywood Land", "Studio Store - Retired 2/22/17", "Dime", "retired_studio_mac_2_22_17", "retired_studio_backstamp_2_22_17", "retired_studio_store_preview_2_22_17", retiredStudioStoreDime_2_22_17, new LatLng( 33.808089, -117.917663 ) ),
             new Machine( "Paradise Pier", "Treasures In Paradise - Retired 1/8/18", "Penny", "retired_treasures_in_paradise_mac_1_8_18", "retired_treasures_backstamp_1_8_18", "retired_treasures_in_paradise_preview_1_8_18", retiredTreasuresPenny_1_8_18, new LatLng( 33.805332, -117.920737 ) ),
-            new Machine( "Paradise Pier", "Sideshow Shirts - Retired 1/8/18", "Penny", "retired_sideshow_mac_1_8_18", "retired_sideshow_backstamp_1_8_18", "retired_sideshow_preview_1_8_18", retiredSideshowPenny_1_8_18, new LatLng( 33.804927, -117.922604 ) ),
-            new Machine( "Buena Vista Street", "Trolley Treats - Retired 9/11/19", "Nickel", "retired_trolley_treats_mac_9_11_19", "retired_trolley_treats_backstamp_9_11_19", "retired_trolley_treats_preview_9_11_19", retiredTrolleyNickel_9_11_19, new LatLng( 33.807985, -117.919082 ) ),
-            new Machine( "Buena Vista Street", "Trolley Treats Holiday - Retired 9/11/19", "Nickel", "retired_trolley_treats_holiday_mac_9_11_19", "retired_trolley_treats_holiday_backstamp_9_11_19", "retired_trolley_treats_holiday_preview_9_11_19", retiredTrolleyHolidayNickel_9_11_19, new LatLng( 33.807985, -117.919112 ) )
+            new Machine( "Paradise Pier", "Sideshow Shirts - Retired 1/8/18", "Penny", "retired_sideshow_mac_1_8_18", "retired_sideshow_backstamp_1_8_18", "retired_sideshow_preview_1_8_18", retiredSideshowPenny_1_8_18, new LatLng( 33.804927, -117.922604 ) )
     };
 
     Machine[] retiredDowntownMachines = new Machine[]{

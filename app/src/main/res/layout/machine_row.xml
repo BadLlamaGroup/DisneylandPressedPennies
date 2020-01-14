@@ -36,7 +36,7 @@
         android:src="@drawable/new_coins"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="10dp"
         android:visibility="invisible"/>
 
     <ImageView
@@ -47,7 +47,7 @@
         android:src="@drawable/construction_mickey"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="10dp"
         android:visibility="invisible"/>
 
     <TextView

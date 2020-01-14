@@ -116,16 +116,18 @@ public class MachineAdapter extends ArrayAdapter< Machine > implements View.OnCl
         {
             new_mac_bg.setBackgroundColor( Color.CYAN );
             new_coins_img.setVisibility( View.VISIBLE );
+            off_mac_img.setVisibility( View.INVISIBLE );
         } else if ( Arrays.asList( offMachine ).contains( machine.getMachineName() ) )
         {
             new_mac_bg.setBackgroundColor( Color.YELLOW );
             holder.location.setText( String.format( "%s - %s", String.valueOf( machine.getMachineName() ), "Offstage" ) );
             off_mac_img.setVisibility( View.VISIBLE );
+            new_coins_img.setVisibility( View.INVISIBLE );
         } else
         {
             new_mac_bg.setBackgroundColor( Color.WHITE );
             new_coins_img.setVisibility( View.INVISIBLE );
-
+            off_mac_img.setVisibility( View.INVISIBLE );
         }
 
         return row;
