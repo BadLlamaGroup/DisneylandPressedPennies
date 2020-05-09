@@ -29,7 +29,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/crush" />
+            app:srcCompat="@drawable/duke_caboom" />
 
     </LinearLayout>
 

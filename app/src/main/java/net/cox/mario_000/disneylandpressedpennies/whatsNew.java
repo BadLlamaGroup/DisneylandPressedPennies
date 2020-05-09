@@ -48,8 +48,8 @@ public class whatsNew
 
     private void createQuote(){
         StringBuilder quoteBuilder = new StringBuilder();
-        quoteBuilder.append( "“Righteous! Righteous!”" + '\n' );
-        quoteBuilder.append( "- Crush" );
+        quoteBuilder.append( "“Duke Caboom, Canada's greatest stuntman.”" + '\n' );
+        quoteBuilder.append( "- Duke Caboom" );
         quote = quoteBuilder.toString();
     }
 
@@ -91,8 +91,8 @@ public class whatsNew
                                     @Override
                                     public Confetto generateConfetto( Random random )
                                     {
-                                        final Bitmap bitmap = BitmapFactory.decodeResource( mActivity.getResources(), R.drawable.crush );
-                                        return new BitmapConfetto( Bitmap.createScaledBitmap(bitmap, 360, 300, false) );
+                                        final Bitmap bitmap = BitmapFactory.decodeResource( mActivity.getResources(), R.drawable.duke_caboom );
+                                        return new BitmapConfetto( Bitmap.createScaledBitmap(bitmap, 300, 300, false) );
                                     }
                                 };
                                 final ConfettiSource confettiSource = new ConfettiSource( 0, -200, width, -200 );
@@ -111,14 +111,14 @@ public class whatsNew
                                     @Override
                                     public Confetto generateConfetto( Random random )
                                     {
-                                        final Bitmap bitmap = BitmapFactory.decodeResource( mActivity.getResources(), R.drawable.crush_squirt );
-                                        return new BitmapConfetto( Bitmap.createScaledBitmap(bitmap, 250, 250, false) );
+                                        final Bitmap bitmap = BitmapFactory.decodeResource( mActivity.getResources(), R.drawable.duke_caboom_flag );
+                                        return new BitmapConfetto( Bitmap.createScaledBitmap(bitmap, 250, 125, false) );
                                     }
                                 };
                                 final ConfettiSource extraCharacterSource = new ConfettiSource( 0, -200, width, -200 );
                                 new ConfettiManager( mActivity, extraCharacterGenerator, extraCharacterSource, viewGroup )
-                                        .setEmissionDuration( 2000 )
-                                        .setEmissionRate( 1 )
+                                        .setEmissionDuration( 4000 )
+                                        .setEmissionRate( 2 )
                                         .setVelocityX( 0, 50 )
                                         .setVelocityY( 500 )
                                         .setRotationalVelocity( 180, 180 )
