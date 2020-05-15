@@ -48,8 +48,8 @@ public class whatsNew
 
     private void createQuote(){
         StringBuilder quoteBuilder = new StringBuilder();
-        quoteBuilder.append( "“Duke Caboom, Canada's greatest stuntman.”" + '\n' );
-        quoteBuilder.append( "- Duke Caboom" );
+        quoteBuilder.append( "Thank you to all the frontline heroes and essential workers, we would be lost without you. Stay safe and stay strong, we will be back in Disney parks soon." + '\n'  );
+        quoteBuilder.append( "- Eric" );
         quote = quoteBuilder.toString();
     }
 
@@ -86,39 +86,77 @@ public class whatsNew
                                 mActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
                                 int width = displayMetrics.widthPixels;
 
-                                final ConfettoGenerator confettoGenerator = new ConfettoGenerator()
+                                final ConfettoGenerator characterGenerator = new ConfettoGenerator()
                                 {
                                     @Override
                                     public Confetto generateConfetto( Random random )
                                     {
-                                        final Bitmap bitmap = BitmapFactory.decodeResource( mActivity.getResources(), R.drawable.duke_caboom );
-                                        return new BitmapConfetto( Bitmap.createScaledBitmap(bitmap, 300, 300, false) );
+                                        final Bitmap bitmap = BitmapFactory.decodeResource( mActivity.getResources(), R.drawable.frontline_construction );
+                                        return new BitmapConfetto( Bitmap.createScaledBitmap(bitmap, 200, 300, false) );
                                     }
                                 };
                                 final ConfettiSource confettiSource = new ConfettiSource( 0, -200, width, -200 );
                                 ViewGroup viewGroup = mActivity.findViewById(android.R.id.content);
-                                new ConfettiManager( mActivity, confettoGenerator, confettiSource, viewGroup )
+                                new ConfettiManager( mActivity, characterGenerator, confettiSource, viewGroup )
                                         .setEmissionDuration( 5000 )
-                                        .setEmissionRate( 3 )
+                                        .setEmissionRate( 1 )
                                         .setVelocityX( 0, 50 )
                                         .setVelocityY( 500 )
                                         .setRotationalVelocity( 180, 180 )
                                         .setTouchEnabled( true )
                                         .animate();
 
-                                final ConfettoGenerator extraCharacterGenerator = new ConfettoGenerator()
+                                final ConfettoGenerator extraCharacter = new ConfettoGenerator()
                                 {
                                     @Override
                                     public Confetto generateConfetto( Random random )
                                     {
-                                        final Bitmap bitmap = BitmapFactory.decodeResource( mActivity.getResources(), R.drawable.duke_caboom_flag );
-                                        return new BitmapConfetto( Bitmap.createScaledBitmap(bitmap, 250, 125, false) );
+                                        final Bitmap bitmap = BitmapFactory.decodeResource( mActivity.getResources(), R.drawable.frontline_farmer );
+                                        return new BitmapConfetto( Bitmap.createScaledBitmap(bitmap, 200, 300, false) );
                                     }
                                 };
-                                final ConfettiSource extraCharacterSource = new ConfettiSource( 0, -200, width, -200 );
-                                new ConfettiManager( mActivity, extraCharacterGenerator, extraCharacterSource, viewGroup )
-                                        .setEmissionDuration( 4000 )
-                                        .setEmissionRate( 2 )
+
+                                new ConfettiManager( mActivity, extraCharacter, confettiSource, viewGroup )
+                                        .setEmissionDuration( 5000 )
+                                        .setEmissionRate( 1 )
+                                        .setVelocityX( 0, 50 )
+                                        .setVelocityY( 500 )
+                                        .setRotationalVelocity( 180, 180 )
+                                        .setTouchEnabled( true )
+                                        .animate();
+
+                                final ConfettoGenerator extraCharacter2 = new ConfettoGenerator()
+                                {
+                                    @Override
+                                    public Confetto generateConfetto( Random random )
+                                    {
+                                        final Bitmap bitmap = BitmapFactory.decodeResource( mActivity.getResources(), R.drawable.frontline_fireman );
+                                        return new BitmapConfetto( Bitmap.createScaledBitmap(bitmap, 200, 300, false) );
+                                    }
+                                };
+
+                                new ConfettiManager( mActivity, extraCharacter2, confettiSource, viewGroup )
+                                        .setEmissionDuration( 5000 )
+                                        .setEmissionRate( 1 )
+                                        .setVelocityX( 0, 50 )
+                                        .setVelocityY( 500 )
+                                        .setRotationalVelocity( 180, 180 )
+                                        .setTouchEnabled( true )
+                                        .animate();
+
+                                final ConfettoGenerator extraCharacter3 = new ConfettoGenerator()
+                                {
+                                    @Override
+                                    public Confetto generateConfetto( Random random )
+                                    {
+                                        final Bitmap bitmap = BitmapFactory.decodeResource( mActivity.getResources(), R.drawable.frontline_police );
+                                        return new BitmapConfetto( Bitmap.createScaledBitmap(bitmap, 200, 300, false) );
+                                    }
+                                };
+
+                                new ConfettiManager( mActivity, extraCharacter3, confettiSource, viewGroup )
+                                        .setEmissionDuration( 5000 )
+                                        .setEmissionRate( 1 )
                                         .setVelocityX( 0, 50 )
                                         .setVelocityY( 500 )
                                         .setRotationalVelocity( 180, 180 )

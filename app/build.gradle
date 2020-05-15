@@ -14,8 +14,8 @@ android {
         applicationId "net.cox.mario_000.disneylandpressedpennies"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 75
-        versionName "Duke Caboom"
+        versionCode 76
+        versionName "Heroes"
     }
     buildTypes {
         release {

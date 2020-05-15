@@ -133,33 +133,33 @@ public class Backup extends Fragment
         txtCheck = view.findViewById( R.id.txtResult );
 
         // Check for previous backup
-        checkBackup();
+        //checkBackup();
 
         // Set listeners
-        backupBtn.setOnClickListener( new View.OnClickListener()
-        {
-            @Override
-            public void onClick( View view )
-            {
-                showNoticeDialog( view );
-            }
-        } );
-        restoreBtn.setOnClickListener( new View.OnClickListener()
-        {
-            @Override
-            public void onClick( View view )
-            {
-                showNoticeDialog( view );
-            }
-        } );
-        exportBtn.setOnClickListener( new View.OnClickListener()
-        {
-            @Override
-            public void onClick( View view )
-            {
-                createandDisplayPdf();
-            }
-        } );
+//        backupBtn.setOnClickListener( new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick( View view )
+//            {
+//                showNoticeDialog( view );
+//            }
+//        } );
+//        restoreBtn.setOnClickListener( new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick( View view )
+//            {
+//                showNoticeDialog( view );
+//            }
+//        } );
+//        exportBtn.setOnClickListener( new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick( View view )
+//            {
+//                createandDisplayPdf();
+//            }
+//        } );
 
         return view;
     }

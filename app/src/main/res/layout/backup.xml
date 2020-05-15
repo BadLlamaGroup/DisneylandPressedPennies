@@ -39,7 +39,7 @@
             android:paddingBottom="5dp"
             android:paddingEnd="15dp"
             android:paddingStart="15dp"
-            android:text="Tap to backup coins to SD Card."
+            android:text="Currently unavailable, under repair..."
             android:textColor="@android:color/black"
             android:textSize="14sp" />
 
@@ -81,7 +81,7 @@
             android:paddingBottom="5dp"
             android:paddingEnd="15dp"
             android:paddingStart="15dp"
-            android:text="No backup exists yet!"
+            android:text="Currently unavailable, under repair..."
             android:textColor="@android:color/black"
             android:textSize="14sp" />
 
@@ -121,7 +121,7 @@
             android:paddingBottom="5dp"
             android:paddingEnd="15dp"
             android:paddingStart="15dp"
-            android:text="Tap to export coins to a list on SD Card."
+            android:text="Currently unavailable, under repair..."
             android:textColor="@android:color/black"
             android:textSize="14sp" />
 
