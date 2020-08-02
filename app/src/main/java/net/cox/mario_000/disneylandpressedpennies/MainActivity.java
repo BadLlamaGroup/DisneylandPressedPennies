@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
@@ -28,7 +29,10 @@ import com.google.android.gms.analytics.Tracker;
 import com.google.android.material.navigation.NavigationView;
 import com.kobakei.ratethisapp.RateThisApp;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,6 +40,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -72,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final String RETIRED = "Retired";
     private static final String LAST_VERSION_CODE_KEY = "last_version_code";
     public static File COIN_PATH;
+    public static File NEW_COIN_PATH;
     public String FIRST_RUN = "MyPrefsFile";
 
     // References
@@ -102,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Set filepath
         String root = Environment.getExternalStorageDirectory().toString();
         COIN_PATH = new File( root + "/Pressed Coins at Disneyland/Coins" );
+        NEW_COIN_PATH = appContext.getFilesDir();
         sharedPreference = new SharedPreference();
         // Get saved coins
         savedCoins = sharedPreference.getCoins( getApplicationContext() );
@@ -122,7 +129,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             // Update that the app ran before
             settings.edit().putBoolean( "my_first_time", false ).apply();
-        } else
+        }
+        else
         {
             fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -150,9 +158,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // FORCE UPDATE SCREEN TO SHOW
         //new whatsNew( this ).forceShow();
 
-        updateImages();
+        //updateImages();
         //updateTitles();
         updateCoinTotals();
+
+        if ( Build.VERSION.SDK_INT >= 23 )
+        {
+            if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE ) == PackageManager.PERMISSION_GRANTED )
+            {
+                copyCoins();
+            }
+        }
 
         // Create menu drawer
         DrawerLayout drawer = findViewById( R.id.drawer_layout );
@@ -166,61 +182,74 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getFragmentManager().addOnBackStackChangedListener( new FragmentManager.OnBackStackChangedListener()
         {
             @Override
-            public void onBackStackChanged()
+            public void onBackStackChanged( )
             {
                 Fragment f = getFragmentManager().findFragmentById( R.id.mainFrag );
                 if ( f instanceof MainPage )
                 {
                     menuItemId = R.id.nav_main_page;
                     navigationView.setCheckedItem( R.id.nav_main_page );
-                } else if ( f instanceof MapsActivity )
+                }
+                else if ( f instanceof MapsActivity )
                 {
                     menuItemId = R.id.nav_maps;
                     navigationView.setCheckedItem( R.id.nav_maps );
-                } else if ( f instanceof CoinBookDetail )
+                }
+                else if ( f instanceof CoinBookDetail )
                 {
                     menuItemId = R.id.nav_coin_book;
                     navigationView.setCheckedItem( R.id.nav_coin_book );
-                } else if ( f instanceof DisneyPage )
+                }
+                else if ( f instanceof DisneyPage )
                 {
                     navigationView.setCheckedItem( R.id.nav_disneyland );
                     menuItemId = R.id.nav_disneyland;
-                } else if ( f instanceof CaliforniaPage )
+                }
+                else if ( f instanceof CaliforniaPage )
                 {
                     navigationView.setCheckedItem( R.id.nav_california );
                     menuItemId = R.id.nav_california;
-                } else if ( f instanceof allCoins )
+                }
+                else if ( f instanceof allCoins )
                 {
                     menuItemId = R.id.nav_all_coins;
                     navigationView.setCheckedItem( R.id.nav_all_coins );
-                } else if ( f instanceof DowntownPage )
+                }
+                else if ( f instanceof DowntownPage )
                 {
                     navigationView.setCheckedItem( R.id.nav_downtown );
                     menuItemId = R.id.nav_downtown;
-                } else if ( f instanceof about )
+                }
+                else if ( f instanceof about )
                 {
                     navigationView.setCheckedItem( R.id.nav_about );
                     menuItemId = R.id.nav_about;
-                } else if ( f instanceof tutorial )
+                }
+                else if ( f instanceof tutorial )
                 {
                     navigationView.setCheckedItem( R.id.nav_tutorial );
                     menuItemId = R.id.nav_tutorial;
-                } else if ( f instanceof search )
+                }
+                else if ( f instanceof search )
                 {
                     navigationView.setCheckedItem( R.id.search_key );
                     menuItemId = R.id.nav_search;
-                } else if ( f instanceof wantList )
+                }
+                else if ( f instanceof wantList )
                 {
                     //Do Nothing
-                } else if ( f instanceof Backup )
+                }
+                else if ( f instanceof Backup )
                 {
                     navigationView.setCheckedItem( R.id.nav_backup );
                     menuItemId = R.id.nav_backup;
-                } else if ( f instanceof CustomCoinList )
+                }
+                else if ( f instanceof CustomCoinList )
                 {
                     navigationView.setCheckedItem( R.id.nav_custom_coin );
                     menuItemId = R.id.nav_custom_coin;
-                } else
+                }
+                else
                 {
                     navigationView.setCheckedItem( menuItemId );
                 }
@@ -233,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
     }
 
-    public void updateImages()
+    public void updateImages( )
     {
         for ( Coin coin : savedCoins )
         {
@@ -307,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void updateTitles()
+    public void updateTitles( )
     {
         for ( Coin coin : savedCoins )
         {
@@ -394,7 +423,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public static void updateCoinTotals()
+    public static void updateCoinTotals( )
     {
         SharedPreference sharedPreference = new SharedPreference();
         savedCoins = sharedPreference.getCoins( appContext );
@@ -533,7 +562,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onBackPressed()
+    public void onBackPressed( )
     {
         DrawerLayout drawer = findViewById( R.id.drawer_layout );
         Fragment mainFragment = getFragmentManager().findFragmentById( R.id.mainFrag );
@@ -542,13 +571,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if ( drawer.isDrawerOpen( GravityCompat.START ) )
         {
             drawer.closeDrawer( GravityCompat.START );
-        } else if ( mainFragment instanceof MainPage )
+        }
+        else if ( mainFragment instanceof MainPage )
         {
             // Exit app if on Main Page
             alert( "Exit?" );
 
 
-        } else if ( mainFragment instanceof DisneyPage || mainFragment instanceof CaliforniaPage || mainFragment instanceof DowntownPage || mainFragment instanceof tutorial )
+        }
+        else if ( mainFragment instanceof DisneyPage || mainFragment instanceof CaliforniaPage || mainFragment instanceof DowntownPage || mainFragment instanceof tutorial )
         {
             // Exit to Main Page
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -561,7 +592,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     R.animator.fade_out );
             fragmentTransaction.replace( R.id.mainFrag, main );
             fragmentTransaction.commit();
-        } else
+        }
+        else
         {
             super.onBackPressed();
         }
@@ -594,78 +626,95 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             fragment = new MainPage();
             menuItemId = R.id.nav_main_page;
-        } else if ( id == R.id.nav_exit )
+        }
+        else if ( id == R.id.nav_exit )
         {
             navigationView.setCheckedItem( menuItemId );
             alert( "Exit?" );
-        } else if ( id == R.id.nav_maps )
+        }
+        else if ( id == R.id.nav_maps )
         {
             menuItemId = R.id.nav_maps;
             fragment = new MapsActivity();
-        } else if ( id == R.id.nav_coin_book )
+        }
+        else if ( id == R.id.nav_coin_book )
         {
             menuItemId = R.id.nav_coin_book;
             fragment = new CoinBookDetail();
-        } else if ( id == R.id.nav_disneyland )
+        }
+        else if ( id == R.id.nav_disneyland )
         {
             menuItemId = R.id.nav_disneyland;
             fragment = new DisneyPage();
-        } else if ( id == R.id.nav_california )
+        }
+        else if ( id == R.id.nav_california )
         {
             menuItemId = R.id.nav_california;
             fragment = new CaliforniaPage();
-        } else if ( id == R.id.nav_all_coins )
+        }
+        else if ( id == R.id.nav_all_coins )
         {
             menuItemId = R.id.nav_all_coins;
             fragment = new allCoins();
             Bundle args = new Bundle();
             args.putString( "land", "Disneyland" );
             fragment.setArguments( args );
-        } else if ( id == R.id.nav_downtown )
+        }
+        else if ( id == R.id.nav_downtown )
         {
             menuItemId = R.id.nav_downtown;
             fragment = new DowntownPage();
-        } else if ( id == R.id.nav_email )
+        }
+        else if ( id == R.id.nav_email )
         {
             DialogFragment frag = new EmailPage();
             fragmentTransaction.add( frag, "email" );
             fragmentTransaction.addToBackStack( null );
             fragmentTransaction.commit();
-        } else if ( id == R.id.nav_about )
+        }
+        else if ( id == R.id.nav_about )
         {
             menuItemId = R.id.nav_about;
             fragment = new about();
-        } else if ( id == R.id.nav_whats_new )
+        }
+        else if ( id == R.id.nav_whats_new )
         {
             new whatsNew( this ).show( true );
-        } else if ( id == R.id.nav_website )
+        }
+        else if ( id == R.id.nav_website )
         {
             String url = "http://www.badllamagroup.wixsite.com/website";
             Intent intent = new Intent( Intent.ACTION_VIEW );
             intent.setData( Uri.parse( url ) );
             startActivity( intent );
-        }else if ( id == R.id.nav_tutorial )
+        }
+        else if ( id == R.id.nav_tutorial )
         {
             menuItemId = R.id.nav_tutorial;
             fragment = new tutorial();
-        } else if ( id == R.id.nav_search )
+        }
+        else if ( id == R.id.nav_search )
         {
             menuItemId = R.id.nav_search;
             fragment = new search();
-        } else if ( id == R.id.nav_rate )
+        }
+        else if ( id == R.id.nav_rate )
         {
             RateThisApp.showRateDialog( this );
             menuItemId = R.id.nav_rate;
             fragment = new MainPage();
-        } else if ( id == R.id.nav_want_list )
+        }
+        else if ( id == R.id.nav_want_list )
         {
             fragment = new wantList();
             menuItemId = R.id.nav_want_list;
-        } else if ( id == R.id.nav_backup )
+        }
+        else if ( id == R.id.nav_backup )
         {
             fragment = new Backup();
             menuItemId = R.id.nav_backup;
-        } else if ( id == R.id.nav_custom_coin )
+        }
+        else if ( id == R.id.nav_custom_coin )
         {
             fragment = new CustomCoinList();
             menuItemId = R.id.nav_custom_coin;
@@ -734,8 +783,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return defaultMac[ 0 ];
     }
 
+    public static void copyCoins( )
+    {
+        File[] coinsInFolder = COIN_PATH.listFiles();
+        try
+        {
+            if ( coinsInFolder != null )
+            {
+                for ( File file : coinsInFolder )
+                {
+                    File srcFile = new File( COIN_PATH, file.getName() );
+                    File destFile = new File( NEW_COIN_PATH, file.getName() );
+                    FileUtils.moveFile( srcFile, destFile );
+                }
+            }
+            COIN_PATH.delete();
+            COIN_PATH = NEW_COIN_PATH;
+        } catch ( IOException e )
+        {
+            e.printStackTrace();
+        }
+    }
+
     @Override
-    public void onDestroy()
+    public void onDestroy( )
     {
         super.onDestroy();
         // very important:
@@ -751,7 +822,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onStart()
+    protected void onStart( )
     {
         super.onStart();
         // Monitor launch times and interval from installation
@@ -768,7 +839,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      *
      * @return tracker
      */
-    synchronized public Tracker getDefaultTracker()
+    synchronized public Tracker getDefaultTracker( )
     {
         if ( mTracker == null )
         {

@@ -68,12 +68,19 @@
         Click add coin to open a new page to create a new coin. This page will also keep track of how many custom coins you have.\n\n<b>Adding Custom Coin:</b>\nClick
         add coin in Custom Coin List to open this page. Click on an image to choose a picture for your coin, the sides are labeled above each image.
         You may take a new picture with the camera or choose one from your device. After that, you will enter a name for your new coin. Below that,
-        you can choose betwdaeen the three lands or choose other. You can also select the coin type and the date you collected it. You may also enter
+        you can choose between the three lands or choose other. You can also select the coin type and the date you collected it. You may also enter
         any notes you have on that particular coin. Lastly, you can always edit any custom coin you have saved.\n</string>
 
-    <string name="whatsnew">
-        Thank you for your continuing support.
+    <string name="whatsnew"><b>NEW FEATURE:</b>\nGoogle auto backup is now included. These backups are automatically done by the phone system, usually during the night while the phone is charging and connected to Wi-Fi.
+        This saves all collected coins, including custom coins, to your Google account and restores them when you re-install the app.
+        \n\n<b>UPDATE:</b>\nThe storage location for custom coins has been moved to the app\'s protected memory. This is due to storage permission changes made by Google and allows Google Backup to function properly. There will be no noticeable changes within the app.
+        \n\nThank you for your continuing support.
     </string>
+
+    <string name="whatsnew_quote">My continuing thanks to the frontline workers for your everlasting strength and dedication for our communities.
+        Also, thank you to everyone doing what\'s necessary so we can visit the parks again soon.
+    </string>
+
     <string name="website"><u>Visit Bad Llama Group HQ</u></string>
 
     <string-array name="new_coins">

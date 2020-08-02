@@ -29,6 +29,8 @@ import java.util.List;
 import androidx.core.content.ContextCompat;
 import androidx.legacy.app.FragmentCompat;
 
+import static net.cox.mario_000.disneylandpressedpennies.MainActivity.copyCoins;
+
 /**
  * Created by mario_000 on 7/14/2018.
  */
@@ -232,6 +234,10 @@ public class CustomCoinList extends Fragment implements Data, AdapterView.OnItem
         if ( grantResults[ 0 ] != PackageManager.PERMISSION_GRANTED )
         {
             getFragmentManager().popBackStackImmediate();
+        }
+        else
+        {
+            copyCoins();
         }
     }
 }

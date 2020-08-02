@@ -694,8 +694,8 @@ public class CustomCoinFragment extends Fragment
     {
         CropImage.activity()
                 .setGuidelines( CropImageView.Guidelines.ON )
-                .setRequestedSize( 290, 520 )
-                .setMinCropResultSize( 290, 520 )
+                .setRequestedSize( 145, 260 )
+                .setMinCropResultSize( 145, 260 )
                 .setAspectRatio( 29, 52 )
                 .setCropShape( CropImageView.CropShape.OVAL )
                 .setAutoZoomEnabled( true )
@@ -716,7 +716,7 @@ public class CustomCoinFragment extends Fragment
                 {
                     Bitmap originalBitmap = MediaStore.Images.Media.getBitmap( getActivity().getContentResolver(), resultUri );
                     Bitmap newBitmap = CropImage.toOvalBitmap( originalBitmap );
-                    Bitmap holderBitmap = Bitmap.createBitmap( 400, 600, Bitmap.Config.ARGB_8888 );
+                    Bitmap holderBitmap = Bitmap.createBitmap( 200, 300, Bitmap.Config.ARGB_8888 );
 
                     Bitmap finishedBitmap = Bitmap.createBitmap( holderBitmap.getWidth(), holderBitmap.getHeight(), holderBitmap.getConfig() );
                     Canvas canvas = new Canvas( finishedBitmap );

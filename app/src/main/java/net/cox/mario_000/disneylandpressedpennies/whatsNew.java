@@ -34,7 +34,6 @@ public class whatsNew
     // Strings
     private static final String LOG_TAG = "WhatsNewScreen";
     private static final String LAST_VERSION_CODE_KEY = "last_version_code";
-    private String quote;
 
     // References
     private Activity mActivity;
@@ -43,14 +42,6 @@ public class whatsNew
     public whatsNew( Activity context )
     {
         mActivity = context;
-        createQuote();
-    }
-
-    private void createQuote(){
-        StringBuilder quoteBuilder = new StringBuilder();
-        quoteBuilder.append( "Thank you to all the frontline heroes and essential workers, we would be lost without you. Stay safe and stay strong, we will be back in Disney parks soon." + '\n'  );
-        quoteBuilder.append( "- Eric" );
-        quote = quoteBuilder.toString();
     }
 
     public void show( boolean forceShow )
@@ -65,9 +56,7 @@ public class whatsNew
                 View view = inflater.inflate( R.layout.whats_new_title, null );
 
                 TextView versionName = view.findViewById( R.id.version_txt );
-                TextView introMessage = view.findViewById( R.id.quote_txt );
                 versionName.setText( "Version: " + packageInfo.versionName );
-                introMessage.setText( quote );
 
                 // Show the News since last version
                 AlertDialog.Builder builder = new AlertDialog.Builder( mActivity, R.style.WhatsNewDialog )
